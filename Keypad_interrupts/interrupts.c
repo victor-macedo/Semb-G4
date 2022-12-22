@@ -36,8 +36,6 @@
 #include "driverlib/sysctl.h"
 #include "driverlib/rom.h"
 #include "grlib/grlib.h"
-#include "drivers/cfal96x64x16.h"
-
 //*****************************************************************************
 //
 //! \addtogroup example_list
@@ -57,10 +55,10 @@
 //
 //*****************************************************************************
 /* Array of 4x4 to define characters which will be printe on specific key pressed */
-unsigned  char symbol[4][4] = {{ '1', '2',  '3', 'A'},
-                                                { '4', '5',  '6', 'B'},
-                                                { '7', '8',  '9', 'C'},
-                                                { 'F', '0',  'E', 'D'}};
+unsigned  char symbol[4][4] = {{ '1', '2',  '3', 'F'},
+                                                { '4', '5',  '6', 'E'},
+                                                { '7', '8',  '9', 'D'},
+                                                { 'A', '0',  'B', 'C'}};
 char tecla;
 //*****************************************************************************
 //
@@ -77,13 +75,6 @@ volatile uint32_t g_ui32Index;
 //
 //*****************************************************************************
 volatile uint32_t g_ui32GPIOc;
-
-//*****************************************************************************
-//
-// Graphics context used to show text on the CSTN display.
-//
-//*****************************************************************************
-tContext g_sContext;
 
 //*****************************************************************************
 //
@@ -129,9 +120,7 @@ Delay(uint32_t ui32Seconds)
 }
 //*****************************************************************************
 //
-// This is the handler for INT_GPIOC.  It triggers INT_GPIOB and saves the
-// interrupt sequence number.
-//
+// This is the handler for INT_GPIOC.
 //*****************************************************************************
 void
 IntGPIOc(void)
@@ -139,22 +128,20 @@ IntGPIOc(void)
     //
     // Disable the interrupts.
     //
-    ROM_IntDisable(INT_GPIOC);
+    GPIOIntClear(GPIO_PORTC_BASE, GPIO_INT_PIN_4);
+    GPIOIntClear(GPIO_PORTC_BASE, GPIO_INT_PIN_5);
+    GPIOIntClear(GPIO_PORTC_BASE, GPIO_INT_PIN_6);
+    GPIOIntClear(GPIO_PORTC_BASE, GPIO_INT_PIN_7);
 
-    if(ROM_GPIOPinRead(GPIO_PORTB_BASE,GPIO_PIN_3)!=0x00)
-       {
-          tecla = "A";
-       }
-
-    //
-    // Save and increment the interrupt sequence number.
-    //
-    g_ui32GPIOc = g_ui32Index++;
+   // if(ROM_GPIOPinRead(GPIO_PORTB_BASE,GPIO_PIN_3)!=0x00)
+     //  {
+       //   tecla = "A";
+      // }
 
     //
     // Enable the interrupt.
     //
-    ROM_IntEnable(INT_GPIOC);
+   // ROM_IntEnable(INT_GPIOC);
 }
 
 //*****************************************************************************
@@ -170,66 +157,35 @@ main(void)
 {
 
     //
-    // Enable lazy stacking for interrupt handlers.  This allows floating-point
-    // instructions to be used within interrupt handlers, but at the expense of
-    // extra stack usage.
-    //
-    ROM_FPULazyStackingEnable();
-
-    //
     // Set the clocking to run directly from the crystal.
     //
-    ROM_SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN |
-                       SYSCTL_XTAL_16MHZ);
+   SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN |       SYSCTL_XTAL_16MHZ);
 
-    //
-    // Set up and enable the SysTick timer.  It will be used as a reference
-    // for delay loops in the interrupt handlers.  The SysTick timer period
-    // will be set up for one second.
-    //
-    ROM_SysTickPeriodSet(ROM_SysCtlClockGet());
-    ROM_SysTickEnable();
-
-    //
-    // Enable interrupts to the processor.
-    //
-    ROM_IntMasterEnable();
-
-    //
-    // Enable the interrupt.
-    //
-    ROM_IntEnable(INT_GPIOC);
-
-    //
-    // Set the interrupt priorities so they are all equal.
-    //
-
-    ROM_IntPrioritySet(INT_GPIOC, 0x00);
-
-    //
-    // Reset the interrupt flags.
-    //
-
-    g_ui32GPIOc = 0;
-    g_ui32Index = 1;
-
-
-    //
-    // Disable interrupts to the processor.
-    //
-    //ROM_IntMasterDisable();
-
-
-    //
-    // Enable the GPIO port that is used for the on-board LED.
-    //
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
+
+    GPIOPinTypeGPIOInput(GPIO_PORTC_BASE, GPIO_PIN_4);
+    GPIOPinTypeGPIOInput(GPIO_PORTC_BASE, GPIO_PIN_5);
+    GPIOPinTypeGPIOInput(GPIO_PORTC_BASE, GPIO_PIN_6);
+    GPIOPinTypeGPIOInput(GPIO_PORTC_BASE, GPIO_PIN_7);
 
     GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_2);
     GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_3);
     GPIOPinTypeGPIOOutput(GPIO_PORTD_BASE, GPIO_PIN_6);
     GPIOPinTypeGPIOOutput(GPIO_PORTD_BASE, GPIO_PIN_7);
+
+    GPIOIntTypeSet(INT_GPIOC,GPIO_PIN_4,GPIO_FALLING_EDGE);
+    GPIOIntTypeSet(INT_GPIOC,GPIO_PIN_5,GPIO_FALLING_EDGE);
+    GPIOIntTypeSet(INT_GPIOC,GPIO_PIN_6,GPIO_FALLING_EDGE);
+    GPIOIntTypeSet(INT_GPIOC,GPIO_PIN_7,GPIO_FALLING_EDGE);
+
+    GPIOIntRegister(GPIO_PORTC_BASE,IntGPIOc);
+
+    GPIOIntEnable(GPIO_PORTC_BASE, GPIO_INT_PIN_4);
+    GPIOIntEnable(GPIO_PORTC_BASE, GPIO_INT_PIN_5);
+    GPIOIntEnable(GPIO_PORTC_BASE, GPIO_INT_PIN_6);
+    GPIOIntEnable(GPIO_PORTC_BASE, GPIO_INT_PIN_7);
 
     //
     // Loop forever.
