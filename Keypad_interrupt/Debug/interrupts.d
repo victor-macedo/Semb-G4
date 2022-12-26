@@ -24,7 +24,6 @@ interrupts.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/driverlib/sys
 interrupts.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/driverlib/sysctl.h
 interrupts.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/driverlib/rom.h
 interrupts.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/grlib/grlib.h
-interrupts.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c123g/drivers/cfal96x64x16.h
 
 ../interrupts.c:
 
@@ -73,6 +72,4 @@ interrupts.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/examples/boar
 /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/driverlib/rom.h:
 
 /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/grlib/grlib.h:
-
-/home/victor_macedo/ti/tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c123g/drivers/cfal96x64x16.h:
 

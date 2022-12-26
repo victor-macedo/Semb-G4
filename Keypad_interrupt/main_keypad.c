@@ -55,11 +55,12 @@
 //
 //*****************************************************************************
 /* Array of 4x4 to define characters which will be printe on specific key pressed */
-unsigned  char symbol[4][4] = {{ '1', '2',  '3', 'F'},
-                                                { '4', '5',  '6', 'E'},
-                                                { '7', '8',  '9', 'D'},
-                                                { 'A', '0',  'B', 'C'}};
+unsigned  char symbol[4][4] = {{ '1', '2',  '3', 'F'},//Talvez um array 3 3 seja suficiente
+                               { '4', '5',  '6', 'E'},
+                               { '7', '8',  '9', 'D'},
+                               { 'A', '0',  'B', 'C'}};
 char tecla;
+int col, row, flag_config, i_start, i_count = 0;
 //*****************************************************************************
 //
 // The count of interrupts received.  This is incremented as each interrupt
@@ -133,25 +134,121 @@ IntGPIOc(void)
     GPIOIntClear(GPIO_PORTC_BASE, GPIO_INT_PIN_6);
     GPIOIntClear(GPIO_PORTC_BASE, GPIO_INT_PIN_7);
 
-   // if(ROM_GPIOPinRead(GPIO_PORTB_BASE,GPIO_PIN_3)!=0x00)
-     //  {
-       //   tecla = "A";
-      // }
+    // Varredura das teclas
+
+    if(GPIOPinRead(GPIO_PORTB_BASE,GPIO_PIN_3)!=0)
+       {
+          row =0;
+       }
+    else if(GPIOPinRead(GPIO_PORTB_BASE,GPIO_PIN_3)!=0)
+       {
+          row =1;
+       }
+    else if(GPIOPinRead(GPIO_PORTD_BASE,GPIO_PIN_6)!=0)
+       {
+          row =2;
+       }
+    else if(GPIOPinRead(GPIO_PORTD_BASE,GPIO_PIN_7)!=0)
+       {
+          row =3;
+       }
+    if(GPIOPinRead(GPIO_PORTC_BASE,GPIO_INT_PIN_4)==0)
+       {
+        col = 0;
+       }
+    else if(GPIOPinRead(GPIO_PORTC_BASE,GPIO_INT_PIN_5)==0)
+       {
+        col = 1;
+       }
+    else if(GPIOPinRead(GPIO_PORTC_BASE,GPIO_INT_PIN_6)==0)
+       {
+        col = 2;
+       }
+    else if(GPIOPinRead(GPIO_PORTC_BASE,GPIO_INT_PIN_7)==0)
+       {
+        col = 3;
+        if (row == 0) { flag_config = 1;}
+        else if (row == 1) { flag_config = 2;}
+        else if (row == 2) { flag_config = 3;}
+        else if (row == 3) { flag_config = 4;}
+        }
+
+        tecla = symbol[col][row]; //Adquire o valor da tecla
+
+     // Rotina de configuração
+
+     if(flag_config != 0)
+     {
+         if (flag_config == 1) //Data
+         {
+             if (i_count < 8)
+                  {
+                     i_count = i_count + 1;
+                     //Salva o valor ou mostra no display
+                  }
+             else
+                 {
+                     i_count = 0;
+                     flag_config = 0;
+                 }
+         }
+         else if (flag_config == 2) // Hora
+          {
+              if (i_count < 6)
+                   {
+                      i_count = i_count + 1;
+                      //Salva o valor ou mostra no display
+                   }
+              else
+                  {
+                      i_count = 0;
+                      flag_config = 0;
+                  }
+          }
+         else if (flag_config == 3) // Min Temp
+           {
+               if (i_count < 2)
+                    {
+                       i_count = i_count + 1;
+                       //Salva o valor ou mostra no display
+                    }
+               else
+                   {
+                       i_count = 0;
+                       flag_config = 0;
+                   }
+           }
+         else if (flag_config == 4) // Max temp
+           {
+               if (i_count < 2)
+                    {
+                       i_count = i_count + 1;
+                       //Salva o valor ou mostra no display
+                    }
+               else
+                   {
+                       i_count = 0;
+                       flag_config = 0;
+                   }
+           }
+     }
+     if(tecla == 'A')
+     {
+         i_start = ~i_start; //Switch do motor
+     }
+     if(tecla =='B')
+     {
+         //Mostra velocidade
+     }
 
     //
     // Enable the interrupt.
     //
-   // ROM_IntEnable(INT_GPIOC);
+    GPIOIntEnable(GPIO_PORTC_BASE, GPIO_INT_PIN_4);
+    GPIOIntEnable(GPIO_PORTC_BASE, GPIO_INT_PIN_5);
+    GPIOIntEnable(GPIO_PORTC_BASE, GPIO_INT_PIN_6);
+    GPIOIntEnable(GPIO_PORTC_BASE, GPIO_INT_PIN_7);
 }
-
-//*****************************************************************************
-//
-// This is the main example program.  It checks to see that the interrupts are
-// processed in the correct order when they have identical priorities,
-// increasing priorities, and decreasing priorities.  This exercises interrupt
-// preemption and tail chaining.
-//
-//*****************************************************************************
 int
 main(void)
 {
