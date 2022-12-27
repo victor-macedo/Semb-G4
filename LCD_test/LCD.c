@@ -54,9 +54,9 @@ void Lcd_Cmd(char a)
 GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0); // => RS = 0
 Lcd_Port(a);
 GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, GPIO_PIN_2); // => E = 1
-__delay_ms(1);
+SysCtlDelay(26667);
 GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0); // => E = 0
-__delay_ms(1);// adding delay
+SysCtlDelay(26667);// adding delay
 }
 /**************************************************************
 * Function: void Lcd_Clear()
@@ -108,11 +108,11 @@ Lcd_Cmd(y);
 void Lcd_Init(void)
 {
 Lcd_Port(0x00);
-__delay_ms(40);
+SysCtlDelay(1066667);
 Lcd_Cmd(0x03);
-__delay_ms(10);
+SysCtlDelay(266667);
 Lcd_Cmd(0x03);
-__delay_ms(10);
+SysCtlDelay(266667);
 Lcd_Cmd(0x03);
 /////////////////////////////////////////////////////
 Lcd_Cmd(0x02);
@@ -142,11 +142,11 @@ y = a&0xF0;
 GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3,GPIO_PIN_3 ); // => RS = 1
 Lcd_Port(y>>4); //Data transfer
 GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, GPIO_PIN_2); //EN =1
-__delay_us(20);
+SysCtlDelay(533);
 GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0);//EN = 0;
 Lcd_Port(temp);
 GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, GPIO_PIN_2);//EN = 1;
-__delay_us(20);
+SysCtlDelay(533);
 GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0);//EN = 0;
 }
 

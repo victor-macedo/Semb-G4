@@ -28,7 +28,6 @@
 #include "inc/hw_memmap.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/gpio.h"
-
 //*****************************************************************************
 //
 // Define pin to LED mapping.
@@ -87,6 +86,7 @@ main(void)
     //
     GPIOPinTypeGPIOOutput(GPIO_PORTG_BASE, USER_LED);
 
+    Lcd_Init();
     //
     // Loop Forever
     //
