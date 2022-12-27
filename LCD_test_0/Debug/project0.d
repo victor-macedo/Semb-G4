@@ -16,12 +16,6 @@ project0.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/inc/hw_types.h
 project0.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/inc/hw_memmap.h
 project0.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/driverlib/sysctl.h
 project0.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/driverlib/gpio.h
-project0.obj: ../LCD.h
-project0.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/inc/tm4c123gh6pm.h
-project0.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdlib.h
-project0.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/math.h
-project0.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/_defs.h
-project0.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/machine/_limits.h
 
 ../project0.c:
 
@@ -54,16 +48,4 @@ project0.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.
 /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/driverlib/sysctl.h:
 
 /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/driverlib/gpio.h:
-
-../LCD.h:
-
-/home/victor_macedo/ti/tivaware_c_series_2_1_4_178/inc/tm4c123gh6pm.h:
-
-/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdlib.h:
-
-/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/math.h:
-
-/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/_defs.h:
-
-/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/machine/_limits.h:
 

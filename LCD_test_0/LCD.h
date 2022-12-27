@@ -15,7 +15,7 @@ for controlling
 *
 * RS ---> RB0
 * R/W ---> GND
-* EN ---> PF3
+* EN ---> Rb1
 * D4 ---> RB5
 * D5 ---> RB2
 * D6 ---> RB4
@@ -31,13 +31,13 @@ for controlling
 //#include "mcc_generated_files/mcc.h"
 #include <stdlib.h>
 #include <math.h>
-#define RS GPIO_PIN_3 //Register Select (Character or Instruction)
-#define EN GPIO_PIN_2 //LCD Clock Enable PIN, Falling Edge Triggered
+#define RS RF3 //Register Select (Character or Instruction)
+#define EN RB1 //LCD Clock Enable PIN, Falling Edge Triggered
 // 4 bit operation
-#define D4 GPIO_PIN_5 //Bit 4
-#define D5 GPIO_PIN_2 //Bit 5
-#define D6 GPIO_PIN_3 //Bit 6
-#define D7 GPIO_PIN_4 //Bit 7
+#define D4 RB5 //Bit 4
+#define D5 RB2 //Bit 5
+#define D6 RB4 //Bit 6
+#define D7 RB3 //Bit 7
 // function prototypes
 void Lcd_Port(char a);
 void Lcd_Cmd(char a);

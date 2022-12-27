@@ -18,7 +18,7 @@
 * RS ---> PF3
 * R/W ---> GND
 * EN ---> PF2
-* D4 ---> PA5
+* D4 ---> PF4
 * D5 ---> PA2
 * D6 ---> PA3
 * D7 ---> PA4
@@ -26,21 +26,21 @@
 void Lcd_Port(char a)
 {
 if(a & 1)
-    GPIOPinWrite(GPIO_PORTA_BASE, D4, 1);
+    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_4, GPIO_PIN_4);
 else
-    GPIOPinWrite(GPIO_PORTA_BASE, D4, 0);
+    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_4, 0);
 if(a & 2)
-    GPIOPinWrite(GPIO_PORTA_BASE, D5, 1);
+    GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_2, GPIO_PIN_2);
 else
-    GPIOPinWrite(GPIO_PORTA_BASE, D5, 0);
+    GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_2, 0);
 if(a & 4)
-    GPIOPinWrite(GPIO_PORTA_BASE, D6, 1);
+    GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_3, GPIO_PIN_3);
 else
-    GPIOPinWrite(GPIO_PORTA_BASE, D6, 0);
+    GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_3, 0);
 if(a & 8)
-    GPIOPinWrite(GPIO_PORTA_BASE, D7, 1);
+    GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_4, GPIO_PIN_4);
 else
-    GPIOPinWrite(GPIO_PORTA_BASE, D7, 0);
+    GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_4, 0);
 }
 /**************************************************************
 * Function: void Lcd_Cmd (char a)
@@ -51,11 +51,11 @@ else
 **************************************************************/
 void Lcd_Cmd(char a)
 {
-GPIOPinWrite(GPIO_PORTF_BASE, RS, 0); // => RS = 0
+GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0); // => RS = 0
 Lcd_Port(a);
-GPIOPinWrite(GPIO_PORTF_BASE, EN, 1); // => E = 1
+GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, GPIO_PIN_2); // => E = 1
 SysCtlDelay(26667);
-GPIOPinWrite(GPIO_PORTF_BASE, EN, 0); // => E = 0
+GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0); // => E = 0
 SysCtlDelay(26667);// adding delay
 }
 /**************************************************************
@@ -139,15 +139,15 @@ void Lcd_Write_Char(char a)
 char temp,y;
 temp = a&0x0F;
 y = a&0xF0;
-GPIOPinWrite(GPIO_PORTF_BASE, RS,1 ); // => RS = 1
+GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3,GPIO_PIN_3 ); // => RS = 1
 Lcd_Port(y>>4); //Data transfer
-GPIOPinWrite(GPIO_PORTF_BASE, EN, 1); //EN =1
+GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, GPIO_PIN_2); //EN =1
 SysCtlDelay(533);
-GPIOPinWrite(GPIO_PORTF_BASE, EN, 0);//EN = 0;
+GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0);//EN = 0;
 Lcd_Port(temp);
-GPIOPinWrite(GPIO_PORTF_BASE, EN, 1);//EN = 1;
+GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, GPIO_PIN_2);//EN = 1;
 SysCtlDelay(533);
-GPIOPinWrite(GPIO_PORTF_BASE, EN, 0);//EN = 0;
+GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0);//EN = 0;
 }
 
 /**************************************************************
@@ -187,4 +187,31 @@ void Lcd_Shift_Left(void)
 {
 Lcd_Cmd(0x01);
 Lcd_Cmd(0x08);
+}
+/**************************************************************
+* Function: void Lcd_Write_Integer(int v)
+*
+* Returns: Nothing
+*
+* Description: Converts a string to an integer
+**************************************************************/
+void Lcd_Write_Integer(int v)
+{
+char buf[8];
+Lcd_Write_String(itoa(buf, v, 10));
+}
+
+/**************************************************************
+* Function: void Lcd_Write_Float(float f)
+*
+* Returns: Nothing
+*
+* Description: Converts a string to a float
+**************************************************************/
+void Lcd_Write_Float(float f)
+{
+char* buf11;
+int status;
+buf11 = ftoa(f, &status);
+Lcd_Write_String(buf11);
 }

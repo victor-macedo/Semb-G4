@@ -183,5 +183,4 @@
 		<project id="project0.com.ti.ccstudio.buildDefinitions.TMS470.ProjectType.1197748310" name="ARM" projectType="com.ti.ccstudio.buildDefinitions.TMS470.ProjectType"/>
 	</storageModule>
 	<storageModule moduleId="scannerConfiguration"/>
-	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
 </cproject>
