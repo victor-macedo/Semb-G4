@@ -1,4 +1,4 @@
-"./interrupts.obj"
+"./main_keypad.obj"
 "./startup_ccs.obj"
 "./drivers/cfal96x64x16.obj"
 "../interrupts_ccs.cmd"

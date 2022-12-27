@@ -7,27 +7,27 @@ CMD_SRCS += \
 ../interrupts_ccs.cmd 
 
 C_SRCS += \
-../interrupts.c \
+../main_keypad.c \
 ../startup_ccs.c 
 
 C_DEPS += \
-./interrupts.d \
+./main_keypad.d \
 ./startup_ccs.d 
 
 OBJS += \
-./interrupts.obj \
+./main_keypad.obj \
 ./startup_ccs.obj 
 
 OBJS__QUOTED += \
-"interrupts.obj" \
+"main_keypad.obj" \
 "startup_ccs.obj" 
 
 C_DEPS__QUOTED += \
-"interrupts.d" \
+"main_keypad.d" \
 "startup_ccs.d" 
 
 C_SRCS__QUOTED += \
-"../interrupts.c" \
+"../main_keypad.c" \
 "../startup_ccs.c" 
 
 

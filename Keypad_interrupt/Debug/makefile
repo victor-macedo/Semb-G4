@@ -8,7 +8,7 @@ GEN_OPTS__FLAG :=
 GEN_CMDS__FLAG := 
 
 ORDERED_OBJS += \
-"./interrupts.obj" \
+"./main_keypad.obj" \
 "./startup_ccs.obj" \
 "./drivers/cfal96x64x16.obj" \
 "../interrupts_ccs.cmd" \
@@ -124,34 +124,34 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXE_OUTPUTS += \
-interrupts.out \
+Keypad_interrupt.out \
 
 EXE_OUTPUTS__QUOTED += \
-"interrupts.out" \
+"Keypad_interrupt.out" \
 
 BIN_OUTPUTS += \
-interrupts.bin \
+Keypad_interrupt.bin \
 
 BIN_OUTPUTS__QUOTED += \
-"interrupts.bin" \
+"Keypad_interrupt.bin" \
 
 
 # All Target
-all: interrupts.out
+all: Keypad_interrupt.out
 
 # Tool invocations
-interrupts.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
+Keypad_interrupt.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: ARM Linker'
-	"/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 --abi=eabi -me -O2 --advice:power=all -g --gcc --define=ccs="ccs" --define=PART_TM4C123GH6PGE --define=TARGET_IS_TM4C123_RB1 --diag_warning=225 --diag_wrap=off --display_error_number --gen_func_subsections=on --ual -z -m"interrupts_ccs.map" --stack_size=1024 --heap_size=0 -i"/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/lib" -i"/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="interrupts_linkInfo.xml" --rom_model -o "interrupts.out" $(ORDERED_OBJS)
+	"/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 --abi=eabi -me -O2 --advice:power=all -g --gcc --define=ccs="ccs" --define=PART_TM4C123GH6PGE --define=TARGET_IS_TM4C123_RB1 --diag_warning=225 --diag_wrap=off --display_error_number --gen_func_subsections=on --ual -z -m"interrupts_ccs.map" --stack_size=1024 --heap_size=0 -i"/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/lib" -i"/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="Keypad_interrupt_linkInfo.xml" --rom_model -o "Keypad_interrupt.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 	@$(MAKE) --no-print-directory post-build
 
-interrupts.bin: $(EXE_OUTPUTS)
+Keypad_interrupt.bin: $(EXE_OUTPUTS)
 	@echo 'Building secondary target: "$@"'
 	@echo 'Invoking: ARM Hex Utility'
-	"/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/bin/armhex" --diag_wrap=off -o "interrupts.bin" $(EXE_OUTPUTS__QUOTED)
+	"/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/bin/armhex" --diag_wrap=off -o "Keypad_interrupt.bin" $(EXE_OUTPUTS__QUOTED)
 	@echo 'Finished building secondary target: "$@"'
 	@echo ' '
 	@$(MAKE) --no-print-directory post-build
@@ -159,13 +159,13 @@ interrupts.bin: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "interrupts.obj" "startup_ccs.obj" "drivers/cfal96x64x16.obj" 
-	-$(RM) "interrupts.d" "startup_ccs.d" "drivers/cfal96x64x16.d" 
+	-$(RM) "main_keypad.obj" "startup_ccs.obj" "drivers/cfal96x64x16.obj" 
+	-$(RM) "main_keypad.d" "startup_ccs.d" "drivers/cfal96x64x16.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 
 post-build:
-	-"/home/victor_macedo/ti/ccs1210/ccs/utils/tiobj2bin/tiobj2bin" "interrupts.out" "interrupts.bin" "/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/bin/armofd" "/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/bin/armhex" "/home/victor_macedo/ti/ccs1210/ccs/utils/tiobj2bin/mkhex4bin"
+	-"/home/victor_macedo/ti/ccs1210/ccs/utils/tiobj2bin/tiobj2bin" "Keypad_interrupt.out" "Keypad_interrupt.bin" "/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/bin/armofd" "/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/bin/armhex" "/home/victor_macedo/ti/ccs1210/ccs/utils/tiobj2bin/mkhex4bin"
 	-@echo ' '
 
 .PHONY: all clean dependents
