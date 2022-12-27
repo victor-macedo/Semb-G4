@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 2.1.4.178 of the DK-TM4C123G Firmware Package.
+// This is part of revision 2.1.4.178 of the EK-TM4C123GXL Firmware Package.
 //
 //*****************************************************************************
 

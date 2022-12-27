@@ -95,7 +95,7 @@ main(void)
         //
         SysCtlDelay(2000000);
 
-        Lcd_Write_Char('B');
+        Lcd_Write_Char('Hello');
         //
         // Delay for a bit
         //

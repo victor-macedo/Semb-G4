@@ -26,19 +26,19 @@
 void Lcd_Port(char a)
 {
 if(a & 1)
-    GPIOPinWrite(GPIO_PORTA_BASE, D4, 1);
+    GPIOPinWrite(GPIO_PORTA_BASE, D4, D4);
 else
     GPIOPinWrite(GPIO_PORTA_BASE, D4, 0);
 if(a & 2)
-    GPIOPinWrite(GPIO_PORTA_BASE, D5, 1);
+    GPIOPinWrite(GPIO_PORTA_BASE, D5, D5);
 else
     GPIOPinWrite(GPIO_PORTA_BASE, D5, 0);
 if(a & 4)
-    GPIOPinWrite(GPIO_PORTA_BASE, D6, 1);
+    GPIOPinWrite(GPIO_PORTA_BASE, D6, D6);
 else
     GPIOPinWrite(GPIO_PORTA_BASE, D6, 0);
 if(a & 8)
-    GPIOPinWrite(GPIO_PORTA_BASE, D7, 1);
+    GPIOPinWrite(GPIO_PORTA_BASE, D7, D7);
 else
     GPIOPinWrite(GPIO_PORTA_BASE, D7, 0);
 }
@@ -51,11 +51,11 @@ else
 **************************************************************/
 void Lcd_Cmd(char a)
 {
-GPIOPinWrite(GPIO_PORTF_BASE, RS, 0); // => RS = 0
+GPIOPinWrite(GPIO_PORTF_BASE, RS, RS); // => RS = 0
 Lcd_Port(a);
-GPIOPinWrite(GPIO_PORTF_BASE, EN, 1); // => E = 1
+GPIOPinWrite(GPIO_PORTF_BASE, EN, EN); // => E = 1
 SysCtlDelay(26667);
-GPIOPinWrite(GPIO_PORTF_BASE, EN, 0); // => E = 0
+GPIOPinWrite(GPIO_PORTF_BASE, EN, EN); // => E = 0
 SysCtlDelay(26667);// adding delay
 }
 /**************************************************************
@@ -139,15 +139,15 @@ void Lcd_Write_Char(char a)
 char temp,y;
 temp = a&0x0F;
 y = a&0xF0;
-GPIOPinWrite(GPIO_PORTF_BASE, RS,1 ); // => RS = 1
+GPIOPinWrite(GPIO_PORTF_BASE, RS, RS ); // => RS = 1
 Lcd_Port(y>>4); //Data transfer
-GPIOPinWrite(GPIO_PORTF_BASE, EN, 1); //EN =1
+GPIOPinWrite(GPIO_PORTF_BASE, EN, EN); //EN =1
 SysCtlDelay(533);
-GPIOPinWrite(GPIO_PORTF_BASE, EN, 0);//EN = 0;
+GPIOPinWrite(GPIO_PORTF_BASE, EN, EN);//EN = 0;
 Lcd_Port(temp);
-GPIOPinWrite(GPIO_PORTF_BASE, EN, 1);//EN = 1;
+GPIOPinWrite(GPIO_PORTF_BASE, EN, EN);//EN = 1;
 SysCtlDelay(533);
-GPIOPinWrite(GPIO_PORTF_BASE, EN, 0);//EN = 0;
+GPIOPinWrite(GPIO_PORTF_BASE, EN, EN);//EN = 0;
 }
 
 /**************************************************************

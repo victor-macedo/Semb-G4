@@ -1,6 +1,1 @@
-"./LCD.obj"
-"./project0.obj"
-"./startup_ccs.obj"
-"../project0_ccs.cmd"
--llibc.a
--l"/home/victor_macedo/ti/tivaware_c_series_2_1_4_178/driverlib/ccs/Debug/driverlib.lib"
+"./LCD.obj" "./main_lcd.obj" "./startup_ccs.obj" "../project0_ccs.cmd" -llibc.a -l"C:/ti/ccs1100/tivaware_c_series_2_1_4_178/driverlib/ccs/Debug/driverlib.lib" 

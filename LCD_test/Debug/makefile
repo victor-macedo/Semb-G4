@@ -2,24 +2,26 @@
 # Automatically-generated file. Do not edit!
 ################################################################################
 
-CG_TOOL_ROOT := /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS
+SHELL = cmd.exe
+
+CG_TOOL_ROOT := C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS
 
 GEN_OPTS__FLAG := 
 GEN_CMDS__FLAG := 
 
 ORDERED_OBJS += \
 "./LCD.obj" \
-"./project0.obj" \
+"./main_lcd.obj" \
 "./startup_ccs.obj" \
 "../project0_ccs.cmd" \
 $(GEN_CMDS__FLAG) \
 -llibc.a \
--l"/home/victor_macedo/ti/tivaware_c_series_2_1_4_178/driverlib/ccs/Debug/driverlib.lib" \
+-l"C:/ti/ccs1100/tivaware_c_series_2_1_4_178/driverlib/ccs/Debug/driverlib.lib" \
 
 -include ../makefile.init
 
-RM := rm -rf
-RMDIR := rm -rf
+RM := DEL /F
+RMDIR := RMDIR /S/Q
 
 # All of the sources participating in the build are defined here
 -include sources.mk
@@ -140,7 +142,7 @@ all: project0.out
 project0.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: ARM Linker'
-	"/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 --abi=eabi -me -O2 --advice:power=all -g --gcc --define=ccs="ccs" --define=PART_TM4C123GH6PGE --define=TARGET_IS_TM4C123_RB1 --diag_warning=225 --diag_wrap=off --display_error_number --gen_func_subsections=on --ual -z -m"project0_ccs.map" --stack_size=256 --heap_size=0 -i"/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/lib" -i"/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="project0_linkInfo.xml" --rom_model -o "project0.out" $(ORDERED_OBJS)
+	"C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 --abi=eabi -me -O2 --advice:power=all -g --gcc --define=ccs="ccs" --define=PART_TM4C123GH6PM --define=TARGET_IS_TM4C123_RB1 --diag_warning=225 --diag_wrap=off --display_error_number --gen_func_subsections=on --ual -z -m"project0_ccs.map" --stack_size=256 --heap_size=0 -i"C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/lib" -i"C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="project0_linkInfo.xml" --rom_model -o "project0.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 	@$(MAKE) --no-print-directory post-build
@@ -148,7 +150,7 @@ project0.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 project0.bin: $(EXE_OUTPUTS)
 	@echo 'Building secondary target: "$@"'
 	@echo 'Invoking: ARM Hex Utility'
-	"/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/bin/armhex" --diag_wrap=off -o "project0.bin" $(EXE_OUTPUTS__QUOTED)
+	"C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/bin/armhex" --diag_wrap=off -o "project0.bin" $(EXE_OUTPUTS__QUOTED)
 	@echo 'Finished building secondary target: "$@"'
 	@echo ' '
 	@$(MAKE) --no-print-directory post-build
@@ -156,13 +158,13 @@ project0.bin: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "LCD.obj" "project0.obj" "startup_ccs.obj" 
-	-$(RM) "LCD.d" "project0.d" "startup_ccs.d" 
+	-$(RM) "LCD.obj" "main_lcd.obj" "startup_ccs.obj" 
+	-$(RM) "LCD.d" "main_lcd.d" "startup_ccs.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 
 post-build:
-	-"/home/victor_macedo/ti/ccs1210/ccs/utils/tiobj2bin/tiobj2bin" "project0.out" "project0.bin" "/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/bin/armofd" "/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/bin/armhex" "/home/victor_macedo/ti/ccs1210/ccs/utils/tiobj2bin/mkhex4bin"
+	-"C:/ti/ccs1100/ccs/utils/tiobj2bin/tiobj2bin" "project0.out" "project0.bin" "C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/bin/armofd" "C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/bin/armhex" "C:/ti/ccs1100/ccs/utils/tiobj2bin/mkhex4bin"
 	-@echo ' '
 
 .PHONY: all clean dependents
