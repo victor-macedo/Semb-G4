@@ -55,7 +55,7 @@
 //
 //*****************************************************************************
 /* Array of 4x4 to define characters which will be printe on specific key pressed */
-unsigned  char symbol[3][3] = {{ '1', '2',  '3', 'F'},//Talvez um array 3 3 seja suficiente
+unsigned  char symbol[4][4] = {{ '1', '2',  '3', 'F'},//Talvez um array 3 3 seja suficiente
                                { '4', '5',  '6', 'E'},
                                { '7', '8',  '9', 'D'},
                                { 'A', '0',  'B', 'C'}};
@@ -157,7 +157,7 @@ IntGPIOc(void)
 
         tecla = symbol[col][row]; //Adquire o valor da tecla
 
-     // Rotina de configuraÃ§Ã£o
+     // Rotina de configuração
 
      if(flag_config != 0)
      {
@@ -226,10 +226,8 @@ IntGPIOc(void)
     //
     // Enable the interrupt.
     //
-    GPIOIntEnable(GPIO_PORTC_BASE, GPIO_INT_PIN_4);
-    GPIOIntEnable(GPIO_PORTC_BASE, GPIO_INT_PIN_5);
-    GPIOIntEnable(GPIO_PORTC_BASE, GPIO_INT_PIN_6);
-    GPIOIntEnable(GPIO_PORTC_BASE, GPIO_INT_PIN_7);
+    GPIOIntEnable(GPIO_PORTC_BASE, GPIO_INT_PIN_4 | GPIO_INT_PIN_5 | GPIO_INT_PIN_6 | GPIO_INT_PIN_7);
+
 }
 int
 main(void)
@@ -247,12 +245,12 @@ main(void)
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
  //   while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOC))
 
-    GPIOPinTypeGPIOInput(GPIO_PORTC_BASE, GPIO_PIN_4 | GPIO_INT_PIN_5 | GPIO_INT_PIN_6 | GPIO_INT_PIN_7);
+    GPIOPinTypeGPIOInput(GPIO_PORTC_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7);
 
-    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_2 | GPIO_INT_PIN_3);
-    GPIOPinTypeGPIOOutput(GPIO_PORTD_BASE, GPIO_PIN_6 | GPIO_INT_PIN_7);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_7);
+    GPIOPinTypeGPIOOutput(GPIO_PORTD_BASE, GPIO_PIN_6);
 
-    GPIOIntTypeSet(INT_GPIOC,GPIO_PIN_4 | GPIO_INT_PIN_5 | GPIO_INT_PIN_6 | GPIO_INT_PIN_7,GPIO_FALLING_EDGE);
+    GPIOIntTypeSet(INT_GPIOC,GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7,GPIO_FALLING_EDGE);
 
 
     GPIOIntRegister(GPIO_PORTC_BASE,IntGPIOc);
@@ -280,10 +278,10 @@ main(void)
        SysCtlDelay(3);
        GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6, 0);
 
-       GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_7, GPIO_PIN_7);
+       GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, GPIO_PIN_7);
        row = 2;
        SysCtlDelay(3);
-       GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_7, 0);
+       GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, 0);
 
    // Fim da Varredura
     }
