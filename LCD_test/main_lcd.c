@@ -79,6 +79,8 @@ main(void)
     GPIOPinTypeGPIOOutput(GPIO_PORTA_BASE, D4 | D5 | D6 | D7);
     GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, EN | RS);
 
+    //GPIO_PIN_WRITE
+
     Lcd_Init();
     //
     // Loop Forever
@@ -93,12 +95,13 @@ main(void)
         //
         // Delay for a bit
         //
-        SysCtlDelay(2000000);
+        SysCtlDelay(20000);
 
-        Lcd_Write_Char('Hello');
+        Lcd_Write_Char('F');
         //
         // Delay for a bit
         //
         SysCtlDelay(2000000);
+        Lcd_Clear();
     }
 }
