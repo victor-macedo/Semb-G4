@@ -15,7 +15,13 @@
 
 
 
+void trash_func(){
+    I2CMasterSlaveAddrSet(I2C1_BASE, 0x23, false);
+    I2CMasterDataPut(I2C1_BASE, 0xAA);
+    I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_SINGLE_SEND);
+    while(I2CMasterBusy(I2C1_BASE));
 
+}
 
 
 
@@ -52,11 +58,9 @@ int main(void)
 
 
     while(1){
-        I2CMasterSlaveAddrSet(I2C1_BASE, 0x23, false);
-        I2CMasterDataPut(I2C1_BASE, 0xAA);
-        I2CMasterControl(I2C0_BASE, I2C_MASTER_CMD_SINGLE_SEND);
-        while(I2CMasterBusy(I2C1_BASE));
+        trash_func();
     }
 	return 0;
 }
+
 
