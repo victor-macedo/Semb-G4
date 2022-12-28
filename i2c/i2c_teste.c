@@ -16,18 +16,18 @@
 
 
 void trash_func(){
-    I2CMasterSlaveAddrSet(I2C2_BASE, 0x48, false);
-    I2CMasterDataPut(I2C2_BASE, 0x01);
-    I2CMasterControl(I2C2_BASE, I2C_MASTER_CMD_BURST_SEND_START);
-    while(I2CMasterBusy(I2C2_BASE));
+    I2CMasterSlaveAddrSet(I2C1_BASE, 0x48, false);
+    I2CMasterDataPut(I2C1_BASE, 0x01);
+    I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_SEND_START);
+    while(I2CMasterBusy(I2C1_BASE));
 
-    I2CMasterDataPut(I2C2_BASE, 0xAA);
-    I2CMasterControl(I2C2_BASE, I2C_MASTER_CMD_BURST_SEND_CONT);
-     while(I2CMasterBusy(I2C2_BASE));
+    I2CMasterDataPut(I2C1_BASE, 0xAA);
+    I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_SEND_CONT);
+     while(I2CMasterBusy(I2C1_BASE));
 
-     I2CMasterDataPut(I2C2_BASE, 0xAA);
-     I2CMasterControl(I2C2_BASE, I2C_MASTER_CMD_BURST_SEND_FINISH);
-     while(I2CMasterBusy(I2C2_BASE));
+     I2CMasterDataPut(I2C1_BASE, 0xAA);
+     I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_SEND_FINISH);
+     while(I2CMasterBusy(I2C1_BASE));
 
 }
 
@@ -44,24 +44,24 @@ int main(void)
 
 
 
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_I2C2);
-    SysCtlPeripheralReset(SYSCTL_PERIPH_I2C2);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_I2C1);
+    SysCtlPeripheralReset(SYSCTL_PERIPH_I2C1);
 
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
 
 
 
-    GPIOPinConfigure(GPIO_PE4_I2C2SCL);
-    GPIOPinConfigure(GPIO_PE5_I2C2SDA);
+    GPIOPinConfigure(GPIO_PA6_I2C1SCL);
+    GPIOPinConfigure(GPIO_PA7_I2C1SDA);
 
 
 
 
 
-    GPIOPinTypeI2CSCL(GPIO_PORTE_BASE, GPIO_PIN_4);
-    GPIOPinTypeI2C(GPIO_PORTE_BASE, GPIO_PIN_5);
+    GPIOPinTypeI2CSCL(GPIO_PORTA_BASE, GPIO_PIN_6);
+    GPIOPinTypeI2C(GPIO_PORTA_BASE, GPIO_PIN_7);
 
-    I2CMasterInitExpClk(I2C2_BASE, SysCtlClockGet(), false);
+    I2CMasterInitExpClk(I2C1_BASE, SysCtlClockGet(), false);
 
 
 
@@ -70,7 +70,4 @@ int main(void)
     }
 	return 0;
 }
-
-
-
 
