@@ -18,15 +18,21 @@
 void trash_func(){
     I2CMasterSlaveAddrSet(I2C1_BASE, 0x48, false);
     I2CMasterDataPut(I2C1_BASE, 0x01);
+    SysCtlDelay(1000);
     I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_SEND_START);
+    SysCtlDelay(1000);
     while(I2CMasterBusy(I2C1_BASE));
 
     I2CMasterDataPut(I2C1_BASE, 0xAA);
+    SysCtlDelay(1000);
     I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_SEND_CONT);
+    SysCtlDelay(1000);
      while(I2CMasterBusy(I2C1_BASE));
 
      I2CMasterDataPut(I2C1_BASE, 0xAA);
+     SysCtlDelay(1000);
      I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_SEND_FINISH);
+     SysCtlDelay(1000);
      while(I2CMasterBusy(I2C1_BASE));
 
 }
@@ -70,4 +76,5 @@ int main(void)
     }
 	return 0;
 }
+
 
