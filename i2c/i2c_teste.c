@@ -53,7 +53,7 @@ int main(void)
     SysCtlPeripheralEnable(SYSCTL_PERIPH_I2C1);
     SysCtlPeripheralReset(SYSCTL_PERIPH_I2C1);
 
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
 
 
 
