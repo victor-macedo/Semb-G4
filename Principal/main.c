@@ -125,6 +125,7 @@ teclado()
 {
     uint32_t status = 0;
     status = GPIOIntStatus(GPIO_PORTC_BASE,true);
+    GPIOIntClear(GPIO_PORTC_BASE, status);
 
     // Varredura das teclas
     if((status & GPIO_INT_PIN_4) == GPIO_INT_PIN_4)
@@ -216,7 +217,6 @@ teclado()
          //Mostra velocidade
      }
      Lcd_Write_Char(tecla);
-     GPIOIntClear(GPIO_PORTC_BASE, status);
 }
 //*****************************************************************************
 //
@@ -248,7 +248,7 @@ main(void)
     GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_7);
     GPIOPinTypeGPIOOutput(GPIO_PORTD_BASE, GPIO_PIN_6);
 
-    GPIOIntTypeSet(INT_GPIOC,GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7,GPIO_FALLING_EDGE);
+    GPIOIntTypeSet(GPIO_PORTC_BASE,GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7,GPIO_FALLING_EDGE);
 
 
     GPIOIntRegister(GPIO_PORTC_BASE,IntGPIOc);
