@@ -49,8 +49,8 @@
 #include <LiquidCrystal.h>
 
 // initialize the library with the numbers of the interface pins
-const int rs = 39, en = 40, d4 = 31, d5 = 11, d6 = 12, d7 = 13 ;
-//        PF3       PF2      PB7     PF0    PE0   PB2
+const int rs = 39, en = 40, d4 = 8, d5 = 11, d6 = 12, d7 = 13 ;
+//        PF3       PF2      PA5     PF0    PE0   PB2
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 void setup() {
   // set up the LCD's number of columns and rows: 
