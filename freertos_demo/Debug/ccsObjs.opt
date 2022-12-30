@@ -1,5 +1,7 @@
 "./I2C_task.obj"
+"./LCD.obj"
 "./freertos_demo.obj"
+"./keypad.obj"
 "./startup_ccs.obj"
 "./switch_task.obj"
 "./drivers/buttons.obj"

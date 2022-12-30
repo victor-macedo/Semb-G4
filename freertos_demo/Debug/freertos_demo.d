@@ -1,10 +1,10 @@
 # FIXED
 
 freertos_demo.obj: ../freertos_demo.c
-freertos_demo.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdbool.h
+freertos_demo.obj: /home/victor_macedo/workspace_v12/freertos_demo/I2C_task.h
+freertos_demo.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdint.h
 freertos_demo.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/_ti_config.h
 freertos_demo.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/linkage.h
-freertos_demo.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdint.h
 freertos_demo.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/_stdint40.h
 freertos_demo.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/sys/stdint.h
 freertos_demo.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/sys/cdefs.h
@@ -12,6 +12,7 @@ freertos_demo.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_
 freertos_demo.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/machine/_types.h
 freertos_demo.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/machine/_stdint.h
 freertos_demo.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/sys/_stdint.h
+freertos_demo.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdbool.h
 freertos_demo.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/inc/hw_memmap.h
 freertos_demo.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/inc/hw_types.h
 freertos_demo.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/driverlib/gpio.h
@@ -21,7 +22,6 @@ freertos_demo.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/driverlib/
 freertos_demo.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/driverlib/uart.h
 freertos_demo.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/utils/uartstdio.h
 freertos_demo.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdarg.h
-freertos_demo.obj: ../led_task.h
 freertos_demo.obj: ../switch_task.h
 freertos_demo.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/third_party/FreeRTOS/Source/include/FreeRTOS.h
 freertos_demo.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stddef.h
@@ -35,16 +35,22 @@ freertos_demo.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/third_part
 freertos_demo.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/third_party/FreeRTOS/Source/include/list.h
 freertos_demo.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/third_party/FreeRTOS/Source/include/queue.h
 freertos_demo.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/third_party/FreeRTOS/Source/include/semphr.h
+freertos_demo.obj: ../LCD.h
+freertos_demo.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/inc/tm4c123gh6pm.h
+freertos_demo.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdlib.h
+freertos_demo.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/math.h
+freertos_demo.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/_defs.h
+freertos_demo.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/machine/_limits.h
 
 ../freertos_demo.c:
 
-/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdbool.h:
+/home/victor_macedo/workspace_v12/freertos_demo/I2C_task.h:
+
+/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdint.h:
 
 /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/_ti_config.h:
 
 /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/linkage.h:
-
-/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdint.h:
 
 /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/_stdint40.h:
 
@@ -59,6 +65,8 @@ freertos_demo.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/third_part
 /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/machine/_stdint.h:
 
 /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/sys/_stdint.h:
+
+/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdbool.h:
 
 /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/inc/hw_memmap.h:
 
@@ -77,8 +85,6 @@ freertos_demo.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/third_part
 /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/utils/uartstdio.h:
 
 /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdarg.h:
-
-../led_task.h:
 
 ../switch_task.h:
 
@@ -105,4 +111,16 @@ freertos_demo.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/third_part
 /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/third_party/FreeRTOS/Source/include/queue.h:
 
 /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/third_party/FreeRTOS/Source/include/semphr.h:
+
+../LCD.h:
+
+/home/victor_macedo/ti/tivaware_c_series_2_1_4_178/inc/tm4c123gh6pm.h:
+
+/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdlib.h:
+
+/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/math.h:
+
+/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/_defs.h:
+
+/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/machine/_limits.h:
 

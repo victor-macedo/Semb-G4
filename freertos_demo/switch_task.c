@@ -22,6 +22,7 @@
 //
 //*****************************************************************************
 
+#include <I2C_task.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include "inc/hw_memmap.h"
@@ -33,7 +34,6 @@
 #include "drivers/buttons.h"
 #include "utils/uartstdio.h"
 #include "switch_task.h"
-#include "led_task.h"
 #include "priorities.h"
 #include "FreeRTOS.h"
 #include "task.h"

@@ -1,6 +1,6 @@
 //*****************************************************************************
 //
-// priorities.h - Priorities for the various FreeRTOS tasks.
+// led_task.h - Prototypes for the LED task.
 //
 // Copyright (c) 2012-2017 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
@@ -22,17 +22,15 @@
 //
 //*****************************************************************************
 
-#ifndef __PRIORITIES_H__
-#define __PRIORITIES_H__
+#ifndef __I2C_TASK_H__
+#define __I2C_TASK_H__
+#include <stdint.h>
 
 //*****************************************************************************
 //
-// The priorities of the various tasks.
+// Prototypes for the LED task.
 //
 //*****************************************************************************
-#define PRIORITY_SWITCH_TASK    2
-#define PRIORITY_KEY_TASK       1
-#define PRIORITY_I2C_TASK       3 //Valor escolhido apenas para teste
+extern uint32_t I2CTaskInit(void);
 
-
-#endif // __PRIORITIES_H__
+#endif // __I2C_TASK_H__

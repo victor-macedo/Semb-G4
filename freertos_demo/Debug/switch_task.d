@@ -1,10 +1,10 @@
 # FIXED
 
 switch_task.obj: ../switch_task.c
-switch_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdbool.h
+switch_task.obj: /home/victor_macedo/workspace_v12/freertos_demo/I2C_task.h
+switch_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdint.h
 switch_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/_ti_config.h
 switch_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/linkage.h
-switch_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdint.h
 switch_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/_stdint40.h
 switch_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/sys/stdint.h
 switch_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/sys/cdefs.h
@@ -12,6 +12,7 @@ switch_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20
 switch_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/machine/_types.h
 switch_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/machine/_stdint.h
 switch_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/sys/_stdint.h
+switch_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdbool.h
 switch_task.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/inc/hw_memmap.h
 switch_task.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/inc/hw_types.h
 switch_task.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/inc/hw_gpio.h
@@ -22,7 +23,6 @@ switch_task.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/examples/boa
 switch_task.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/utils/uartstdio.h
 switch_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdarg.h
 switch_task.obj: ../switch_task.h
-switch_task.obj: ../led_task.h
 switch_task.obj: ../priorities.h
 switch_task.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/third_party/FreeRTOS/Source/include/FreeRTOS.h
 switch_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stddef.h
@@ -39,13 +39,13 @@ switch_task.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/third_party/
 
 ../switch_task.c:
 
-/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdbool.h:
+/home/victor_macedo/workspace_v12/freertos_demo/I2C_task.h:
+
+/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdint.h:
 
 /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/_ti_config.h:
 
 /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/linkage.h:
-
-/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdint.h:
 
 /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/_stdint40.h:
 
@@ -60,6 +60,8 @@ switch_task.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/third_party/
 /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/machine/_stdint.h:
 
 /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/sys/_stdint.h:
+
+/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdbool.h:
 
 /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/inc/hw_memmap.h:
 
@@ -80,8 +82,6 @@ switch_task.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/third_party/
 /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdarg.h:
 
 ../switch_task.h:
-
-../led_task.h:
 
 ../priorities.h:
 

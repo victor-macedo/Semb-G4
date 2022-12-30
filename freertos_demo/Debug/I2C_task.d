@@ -1,10 +1,10 @@
 # FIXED
 
 I2C_task.obj: ../I2C_task.c
-I2C_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdbool.h
+I2C_task.obj: /home/victor_macedo/workspace_v12/freertos_demo/I2C_task.h
+I2C_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdint.h
 I2C_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/_ti_config.h
 I2C_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/linkage.h
-I2C_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdint.h
 I2C_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/_stdint40.h
 I2C_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/sys/stdint.h
 I2C_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/sys/cdefs.h
@@ -12,6 +12,7 @@ I2C_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.
 I2C_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/machine/_types.h
 I2C_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/machine/_stdint.h
 I2C_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/sys/_stdint.h
+I2C_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdbool.h
 I2C_task.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/inc/hw_memmap.h
 I2C_task.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/inc/hw_types.h
 I2C_task.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/driverlib/gpio.h
@@ -23,7 +24,6 @@ I2C_task.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/examples/boards
 I2C_task.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/examples/boards/ek-tm4c123gxl/drivers/buttons.h
 I2C_task.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/utils/uartstdio.h
 I2C_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdarg.h
-I2C_task.obj: ../led_task.h
 I2C_task.obj: ../priorities.h
 I2C_task.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/third_party/FreeRTOS/Source/include/FreeRTOS.h
 I2C_task.obj: /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stddef.h
@@ -40,13 +40,13 @@ I2C_task.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/third_party/Fre
 
 ../I2C_task.c:
 
-/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdbool.h:
+/home/victor_macedo/workspace_v12/freertos_demo/I2C_task.h:
+
+/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdint.h:
 
 /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/_ti_config.h:
 
 /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/linkage.h:
-
-/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdint.h:
 
 /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/_stdint40.h:
 
@@ -61,6 +61,8 @@ I2C_task.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/third_party/Fre
 /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/machine/_stdint.h:
 
 /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/sys/_stdint.h:
+
+/home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdbool.h:
 
 /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/inc/hw_memmap.h:
 
@@ -83,8 +85,6 @@ I2C_task.obj: /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/third_party/Fre
 /home/victor_macedo/ti/tivaware_c_series_2_1_4_178/utils/uartstdio.h:
 
 /home/victor_macedo/ti/ccs1210/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdarg.h:
-
-../led_task.h:
 
 ../priorities.h:
 

@@ -22,6 +22,7 @@
 //
 //*****************************************************************************
 
+#include <I2C_task.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include "inc/hw_memmap.h"
@@ -32,12 +33,12 @@
 #include "driverlib/sysctl.h"
 #include "driverlib/uart.h"
 #include "utils/uartstdio.h"
-#include "led_task.h"
 #include "switch_task.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
 #include "semphr.h"
+#include "LCD.h"
 
 //*****************************************************************************
 //
@@ -148,7 +149,7 @@ main(void)
     //
     // Create the switch task.
     //
-    if(SwitchTaskInit() != 0)
+    if(KEYTaskInit() != 0)
     {
 
         while(1)
