@@ -181,11 +181,8 @@ main(void)
    SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN |       SYSCTL_XTAL_16MHZ);
 
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
-  //  while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOB))
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
-//    while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOD))
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
- //   while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOC))
 
     GPIOPinTypeGPIOInput(GPIO_PORTC_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7);
 
