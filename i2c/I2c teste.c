@@ -57,8 +57,9 @@ uint32_t I2CReceive(uint32_t slave_addr)
 
 
 
-int I2CInit(void)
+int main(void)
 {
+    uint32_t temp;
     SysCtlPeripheralEnable(SYSCTL_PERIPH_I2C1);
     SysCtlPeripheralReset(SYSCTL_PERIPH_I2C1);
 
@@ -72,5 +73,10 @@ int I2CInit(void)
 
     I2CMasterInitExpClk(I2C1_BASE, SysCtlClockGet(), false);
 
+
+    while(1){
+        I2CSend(SLAVE_ADDRESS,0xAA);
+        temp = I2CReceive(SLAVE_ADDRESS);
+    }
     return 0;
 }

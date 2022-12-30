@@ -63,64 +63,6 @@ char tecla;
 int col, row, flag_config, i_start, i_count = 0;
 //*****************************************************************************
 //
-// The count of interrupts received.  This is incremented as each interrupt
-// handler runs, and its value saved into interrupt handler specific values to
-// determine the order in which the interrupt handlers were executed.
-//
-//*****************************************************************************
-volatile uint32_t g_ui32Index;
-
-//*****************************************************************************
-//
-// The value of g_ui32Index when the INT_GPIOC interrupt was processed.
-//
-//*****************************************************************************
-volatile uint32_t g_ui32GPIOc;
-
-//*****************************************************************************
-//
-// The error routine that is called if the driver library encounters an error.
-//
-//*****************************************************************************
-#ifdef DEBUG
-void
-__error__(char *pcFilename, uint32_t ui32Line)
-{
-}
-#endif
-
-//*****************************************************************************
-//
-// Delay for the specified number of seconds.  Depending upon the current
-// SysTick value, the delay will be between N-1 and N seconds (i.e. N-1 full
-// seconds are guaranteed, along with the remainder of the current second).
-//
-//*****************************************************************************
-void
-Delay(uint32_t ui32Seconds)
-{
-    //
-    // Loop while there are more seconds to wait.
-    //
-    while(ui32Seconds--)
-    {
-        //
-        // Wait until the SysTick value is less than 1000.
-        //
-        while(ROM_SysTickValueGet() > 1000)
-        {
-        }
-
-        //
-        // Wait until the SysTick value is greater than 1000.
-        //
-        while(ROM_SysTickValueGet() < 1000)
-        {
-        }
-    }
-}
-//*****************************************************************************
-//
 // This is the handler for INT_GPIOC.
 //*****************************************************************************
 void
@@ -265,22 +207,22 @@ main(void)
     //Varredura do teclado
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, GPIO_PIN_2);
        row = 3;
-       SysCtlDelay(3);
+       SysCtlDelay(30000);
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, 0);
 
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, GPIO_PIN_3);
        row = 0;
-       SysCtlDelay(3);
+       SysCtlDelay(30000);
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, 0);
 
        GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6, GPIO_PIN_6);
        row = 1;
-       SysCtlDelay(3);
+       SysCtlDelay(30000);
        GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6, 0);
 
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, GPIO_PIN_7);
        row = 2;
-       SysCtlDelay(3);
+       SysCtlDelay(30000);
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, 0);
 
    // Fim da Varredura

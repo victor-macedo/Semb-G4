@@ -68,48 +68,6 @@ unsigned  char symbol[4][4] = {{ '1', '2',  '3', 'F'},//Talvez um array 3 3 seja
 char tecla;
 int col, row, flag_config, i_start, i_count = 0;
 
-//*****************************************************************************
-//
-// The error routine that is called if the driver library encounters an error.
-//
-//*****************************************************************************
-#ifdef DEBUG
-void
-__error__(char *pcFilename, uint32_t ui32Line)
-{
-}
-#endif
-
-//*****************************************************************************
-//
-// Delay for the specified number of seconds.  Depending upon the current
-// SysTick value, the delay will be between N-1 and N seconds (i.e. N-1 full
-// seconds are guaranteed, along with the remainder of the current second).
-//
-//*****************************************************************************
-void
-Delay(uint32_t ui32Seconds)
-{
-    //
-    // Loop while there are more seconds to wait.
-    //
-    while(ui32Seconds--)
-    {
-        //
-        // Wait until the SysTick value is less than 1000.
-        //
-        while(ROM_SysTickValueGet() > 1000)
-        {
-        }
-
-        //
-        // Wait until the SysTick value is greater than 1000.
-        //
-        while(ROM_SysTickValueGet() < 1000)
-        {
-        }
-    }
-}
 void
 I2CSend(uint32_t slave_addr, uint8_t reg){
     I2CMasterSlaveAddrSet(I2C1_BASE, slave_addr, false);
