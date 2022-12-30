@@ -10,14 +10,16 @@ int read = 0;
 #define WRITE_ADDRESS 0x02
 #define trashbyte 0xAA
 #define RESET 0xC0
-#define INT_MCP 0x2B
-#define INT_bits 0x03
-
-#define CONTROL 0x0F
-#define CONTROL_SET
 
 
+#define INT_MCP 0x2B// registo do interrupts do MCP2115
+#define INT_bits 0x03//enable int quando RX0 e RX1 ficam cheios
 
+#define CONTROL 0x0F// controlo do modo de funcionamento
+#define CONTROL_SET 0x7  // pre scaler de 8, modo normal
+
+#define READ_buff0_1 0x90 //Read Buffer0SIDH
+#define READ_buff0_2 0x92 //Read Buffer0SIDH
 
 
 
@@ -44,7 +46,11 @@ void SPI_reset(){
 
 }
 
-
+void MCP_set_up(){
+    SPI_reset();
+    write_SPI(INT_MCP,INT_bits);
+    write_SPI(CONTROL,CONTROL_SET);
+}
 
 
 
@@ -127,19 +133,21 @@ int main(void){
     __enable_interrupt(); //possibilita ints
     SPI_setup();
     uint8_t received;
-    SPI_reset();
-    write_SPI(INT_MCP,INT_bits);
+    uint8_t received1;
+    MCP_set_up();
+
+
+
 
     while(1){
-        write_SPI(INT_MCP,INT_bits);
-        received = READ_SPI(INT_MCP);
+
+
+
         if(read==1){
-
-
-
+            received = READ_SPI(READ_buff0_1 );
+            received1 = READ_SPI(READ_buff0_2 );
+            read = 0;
         }
-
-
     }
     return 0;
 }
@@ -148,8 +156,9 @@ int main(void){
 
 #pragma vector = PORT2_VECTOR
 __interrupt void port_int(void){
-
+    read = 1;
     P2IFG &= ~BIT0;//LIMPA FLAG DE INTERRUPÇÃO DO PINO P2.0
 }
 //funcional
+
 
