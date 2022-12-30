@@ -73,6 +73,7 @@ int col, row, flag_config, i_start, i_count = 0;
 // can make the selections by pressing the left and right buttons.
 //
 //*****************************************************************************
+
 static void
 teclado()
 {
@@ -103,6 +104,7 @@ teclado()
         }
 
         tecla = symbol[row][col]; //Adquire o valor da tecla
+        Lcd_Write_Char(tecla);
 
      // Rotina de configuração
 
@@ -119,6 +121,7 @@ teclado()
                  {
                      i_count = 0;
                      flag_config = 0;
+                     Lcd_Clear();
                  }
          }
          else if (flag_config == 2) // Hora
@@ -132,6 +135,7 @@ teclado()
                   {
                       i_count = 0;
                       flag_config = 0;
+                      Lcd_Clear();
                   }
           }
          else if (flag_config == 3) // Min Temp
@@ -145,6 +149,7 @@ teclado()
                    {
                        i_count = 0;
                        flag_config = 0;
+                       Lcd_Clear();
                    }
            }
          else if (flag_config == 4) // Max temp
@@ -158,6 +163,7 @@ teclado()
                    {
                        i_count = 0;
                        flag_config = 0;
+                       Lcd_Clear();
                    }
            }
      }
@@ -169,7 +175,6 @@ teclado()
      {
          //Mostra velocidade
      }
-     Lcd_Write_Char(tecla);
 }
 
 static void
@@ -184,22 +189,22 @@ KEYTask()
     {
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, GPIO_PIN_2);
        row = 3;
-       SysCtlDelay(30000);
+       SysCtlDelay(100000);
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, 0);
 
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, GPIO_PIN_3);
        row = 0;
-       SysCtlDelay(30000);
+       SysCtlDelay(100000);
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, 0);
 
        GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6, GPIO_PIN_6);
        row = 1;
-       SysCtlDelay(30000);
+       SysCtlDelay(100000);
        GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6, 0);
 
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, GPIO_PIN_7);
        row = 2;
-       SysCtlDelay(30000);
+       SysCtlDelay(100000);
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, 0);
     }
 }
