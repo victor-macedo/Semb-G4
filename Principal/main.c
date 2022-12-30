@@ -4,20 +4,20 @@
 //
 // Copyright (c) 2011-2017 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
-// 
+//
 // Texas Instruments (TI) is supplying this software for use solely and
 // exclusively on TI's microcontroller products. The software is owned by
 // TI and/or its suppliers, and is protected under applicable copyright
 // laws. You may not combine this software with "viral" open-source
 // software in order to form a larger program.
-// 
+//
 // THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
 // NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
 // NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
 // A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
-// 
+//
 // This is part of revision 2.1.4.178 of the DK-TM4C123G Firmware Package.
 //
 //*****************************************************************************
@@ -67,13 +67,6 @@ unsigned  char symbol[4][4] = {{ '1', '2',  '3', 'F'},//Talvez um array 3 3 seja
                                { 'A', '0',  'B', 'C'}};
 char tecla;
 int col, row, flag_config, i_start, i_count = 0;
-
-//*****************************************************************************
-//
-// The value of g_ui32Index when the INT_GPIOC interrupt was processed.
-//
-//*****************************************************************************
-volatile uint32_t g_ui32GPIOc;
 
 //*****************************************************************************
 //
@@ -182,9 +175,9 @@ teclado()
         else if (row == 3) { flag_config = 4;}
         }
 
-        tecla = symbol[col][row]; //Adquire o valor da tecla
+        tecla = symbol[row][col]; //Adquire o valor da tecla
 
-     // Rotina de configuraÃ§Ã£o
+     // Rotina de configuração
 
      if(flag_config != 0)
      {
@@ -271,14 +264,11 @@ main(void)
 
 //*********************************************************
 //
-//  ConfiguraÃ§Ã£o Teclado
+//  Configuração Teclado
 //**********************************************************
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
-    while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOB))
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
-   while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOD))
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
-    while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOC))
 
     GPIOPinTypeGPIOInput(GPIO_PORTC_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7);
 
@@ -293,7 +283,7 @@ main(void)
     GPIOIntEnable(GPIO_PORTC_BASE, GPIO_INT_PIN_4 |GPIO_INT_PIN_5 | GPIO_INT_PIN_6 | GPIO_INT_PIN_7);
 //*********************************************************
 //
-//  ConfiguraÃ§Ã£o LCD
+//  Configuração LCD
 //**********************************************************
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
@@ -302,10 +292,11 @@ main(void)
     GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, EN | RS);
 
     Lcd_Init();
+    Lcd_Clear();
 
 //*********************************************************
 //
-//  ConfiguraÃ§Ã£o I2C
+//  Configuração I2C
 //**********************************************************
     SysCtlPeripheralEnable(SYSCTL_PERIPH_I2C1);
     SysCtlPeripheralReset(SYSCTL_PERIPH_I2C1);
@@ -320,7 +311,7 @@ main(void)
 
     I2CMasterInitExpClk(I2C1_BASE, SysCtlClockGet(), false);
 
-    //Falta os comandos para configuraÃ§Ã£o do sensor de temperatura
+    //Falta os comandos para configuração do sensor de temperatura
 
     //
     // Loop forever.
