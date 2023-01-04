@@ -163,21 +163,8 @@ KEYTaskInit(void)
 
     GPIOIntEnable(GPIO_PORTC_BASE, GPIO_INT_PIN_4 |GPIO_INT_PIN_5 | GPIO_INT_PIN_6 | GPIO_INT_PIN_7);
 
-//*********************************************************
-//
-//  Configuração Keypad e LCD
-//**********************************************************
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
-
-    GPIOPinTypeGPIOOutput(GPIO_PORTA_BASE, D4 | D5 | D6 | D7);
-    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, EN | RS);
-
-    Lcd_Init();
-    Lcd_Clear();
-
     //
-    // Create the LED task.
+    // Create the LCD task.
     //
     if(xTaskCreate(KEYTask, (const portCHAR *)"KEY", KEYTASKSTACKSIZE, NULL,
                    tskIDLE_PRIORITY + PRIORITY_KEY_TASK, NULL) != pdTRUE)
