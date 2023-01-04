@@ -84,6 +84,7 @@
 //
 //*****************************************************************************
 xSemaphoreHandle g_pUARTSemaphore;
+xQueueHandle g_pKEYQueue;
 
 //*****************************************************************************
 //
@@ -134,6 +135,7 @@ main(void)
     // Create a mutex to guard the UART.
     //
     g_pUARTSemaphore = xSemaphoreCreateMutex();
+    g_pKEYQueue = xQueueCreate(8, sizeof(char));
     //
     // Create the LED task.
     //
@@ -156,6 +158,13 @@ main(void)
         }
     }
 
+    if(LCDTaskInit() != 0)
+        {
+
+            while(1)
+            {
+            }
+        }
     //
     // Start the scheduler.  This should not return.
     //

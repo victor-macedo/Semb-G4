@@ -1,11 +1,29 @@
-#include <stdint.h>
+#include <I2C_task.h>
 #include <stdbool.h>
-#include "inc/hw_types.h"
+#include <stdint.h>
 #include "inc/hw_memmap.h"
-#include "driverlib/sysctl.h"
+#include "inc/hw_types.h"
 #include "driverlib/gpio.h"
+#include "driverlib/rom.h"
+#include "driverlib/i2c.h"
+#include "driverlib/pin_map.h"
+#include "driverlib/sysctl.h"
+#include "drivers/rgb.h"
+#include "drivers/buttons.h"
+#include "utils/uartstdio.h"
+#include "priorities.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "semphr.h"
 #include "LCD.h"
 
+#define LCDTASKSTACKSIZE        128         // Stack size in words
+
+xQueueHandle g_pKEYQueue;
+
+char tecla;
+uint32_t flag_config, i_start, i_count = 0;
 /**************************************************************
 * Function: void Lcd_Port (char a)
 *
@@ -188,3 +206,117 @@ void Lcd_Shift_Left(void)
 Lcd_Cmd(0x01);
 Lcd_Cmd(0x08);
 }
+static void
+LCDTask()
+{
+        portBASE_TYPE xStatus;
+           while(1)
+           {
+               xStatus = xQueueReceive( g_pKEYQueue, &tecla, portMAX_DELAY );
+               if( xStatus == pdPASS )
+               {
+                    Lcd_Write_Char(tecla);
+
+                         // Rotina de configuração
+
+                         if(flag_config != 0 || tecla == 'F' || tecla == 'E' || tecla == 'D'|| tecla == 'C'|| tecla == 'A'|| tecla == 'B')
+                         {
+                             if (flag_config == 1 || tecla == 'F') //Data
+                             {
+                                 flag_config =1;
+                                 if (i_count < 8)
+                                      {
+                                         i_count = i_count + 1;
+                                         //Salva o valor ou mostra no display
+                                      }
+                                 else
+                                     {
+                                         i_count = 0;
+                                         flag_config = 0;
+                                         Lcd_Clear();
+                                     }
+                             }
+                             else if (flag_config == 2 || tecla == 'E') // Hora
+                              {
+                                  flag_config = 2;
+                                  if (i_count < 6)
+                                       {
+                                          i_count = i_count + 1;
+                                          //Salva o valor ou mostra no display
+                                       }
+                                  else
+                                      {
+                                          i_count = 0;
+                                          flag_config = 0;
+                                          Lcd_Clear();
+                                      }
+                              }
+                             else if (flag_config == 3 || tecla == 'D') // Min Temp
+                               {
+                                   flag_config = 3;
+                                   if (i_count < 2)
+                                        {
+                                           i_count = i_count + 1;
+                                           //Salva o valor ou mostra no display
+                                        }
+                                   else
+                                       {
+                                           i_count = 0;
+                                           flag_config = 0;
+                                           Lcd_Clear();
+                                       }
+                               }
+                             else if (flag_config == 4 || tecla == 'C') // Max temp
+                               {
+                                   flag_config = 4;
+                                   if (i_count < 2)
+                                        {
+                                           i_count = i_count + 1;
+                                           //Salva o valor ou mostra no display
+                                        }
+                                   else
+                                       {
+                                           i_count = 0;
+                                           flag_config = 0;
+                                           Lcd_Clear();
+                                       }
+                               }
+                         }
+                         if(tecla == 'A')
+                         {
+                             i_start = ~i_start; //Switch do motor
+                         }
+                         if(tecla =='B')
+                         {
+                             //Mostra velocidade
+                         }
+                }
+           }
+}
+uint32_t
+LCDTaskInit(void)
+{
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+
+    GPIOPinTypeGPIOOutput(GPIO_PORTA_BASE, D4 | D5 | D6 | D7);
+    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, EN | RS);
+
+    Lcd_Init();
+    Lcd_Clear();
+
+    //
+    // Create the LCD task.
+    //
+    if(xTaskCreate(LCDTask, (const portCHAR *)"LCD", LCDTASKSTACKSIZE, NULL,
+                   tskIDLE_PRIORITY + PRIORITY_LCD_TASK, NULL) != pdTRUE)
+    {
+        return(1);
+    }
+
+    //
+    // Success.
+    //
+    return(0);
+}
+

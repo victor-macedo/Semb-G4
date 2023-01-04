@@ -65,7 +65,7 @@ unsigned  char symbol[4][4] = {{ '1', '2',  '3', 'F'},//Talvez um array 3 3 seja
                                { '7', '8',  '9', 'D'},
                                { 'A', '0',  'B', 'C'}};
 char tecla;
-int col, row, flag_config, i_start, i_count = 0;
+int col, row, flag_config ;
 
 //*****************************************************************************
 //
@@ -105,77 +105,6 @@ vInterrupt_Key()
 
         tecla = symbol[row][col]; //Adquire o valor da tecla
         xQueueSendToBack(g_pKEYQueue, &tecla, 0 );
-        Lcd_Write_Char(tecla);
-
-     // Rotina de configuração
-
-     if(flag_config != 0)
-     {
-         if (flag_config == 1) //Data
-         {
-             if (i_count < 8)
-                  {
-                     i_count = i_count + 1;
-                     //Salva o valor ou mostra no display
-                  }
-             else
-                 {
-                     i_count = 0;
-                     flag_config = 0;
-                     Lcd_Clear();
-                 }
-         }
-         else if (flag_config == 2) // Hora
-          {
-              if (i_count < 6)
-                   {
-                      i_count = i_count + 1;
-                      //Salva o valor ou mostra no display
-                   }
-              else
-                  {
-                      i_count = 0;
-                      flag_config = 0;
-                      Lcd_Clear();
-                  }
-          }
-         else if (flag_config == 3) // Min Temp
-           {
-               if (i_count < 2)
-                    {
-                       i_count = i_count + 1;
-                       //Salva o valor ou mostra no display
-                    }
-               else
-                   {
-                       i_count = 0;
-                       flag_config = 0;
-                       Lcd_Clear();
-                   }
-           }
-         else if (flag_config == 4) // Max temp
-           {
-               if (i_count < 2)
-                    {
-                       i_count = i_count + 1;
-                       //Salva o valor ou mostra no display
-                    }
-               else
-                   {
-                       i_count = 0;
-                       flag_config = 0;
-                       Lcd_Clear();
-                   }
-           }
-     }
-     if(tecla == 'A')
-     {
-         i_start = ~i_start; //Switch do motor
-     }
-     if(tecla =='B')
-     {
-         //Mostra velocidade
-     }
 }
 
 static void
@@ -234,7 +163,6 @@ KEYTaskInit(void)
 
     GPIOIntEnable(GPIO_PORTC_BASE, GPIO_INT_PIN_4 |GPIO_INT_PIN_5 | GPIO_INT_PIN_6 | GPIO_INT_PIN_7);
 
-    g_pKEYQueue = xQueueCreate(8, sizeof(long));
 //*********************************************************
 //
 //  Configuração Keypad e LCD
