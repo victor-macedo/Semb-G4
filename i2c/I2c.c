@@ -48,7 +48,7 @@ void I2C_get_temp(){
     I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_SINGLE_SEND);
     while(I2CMasterBusy(I2C1_BASE)); // delay de 40 ms
 
-    I2CMasterSlaveAddrSet(I2C1_BASE, SLAVE_ADDRESS_READ, false);
+    I2CMasterSlaveAddrSet(I2C1_BASE, SLAVE_ADDRESS_READ, true);
     I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_FIFO_BURST_RECEIVE_START);
     while(I2CMasterBusy(I2C1_BASE));
     temp1 = I2CMasterDataGet(I2C1_BASE);
