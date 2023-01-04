@@ -45,17 +45,18 @@ void I2C_get_temp(){
     uint32_t temp1, temp2;
     I2CMasterSlaveAddrSet(I2C1_BASE, SLAVE_ADDRESS_WRITE, false);
     I2CMasterDataPut(I2C1_BASE, TEMP_REG);
-    I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_SINGLE_SEND);
+    I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_SEND_START);
     while(I2CMasterBusy(I2C1_BASE)); // delay de 40 ms
-
+    SysCtlDelay(2000000);
     I2CMasterSlaveAddrSet(I2C1_BASE, SLAVE_ADDRESS_READ, true);
-    I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_FIFO_BURST_RECEIVE_START);
+    I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_RECEIVE_START);
     while(I2CMasterBusy(I2C1_BASE));
     temp1 = I2CMasterDataGet(I2C1_BASE);
-    I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_FIFO_BURST_RECEIVE_FINISH);
+    I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_RECEIVE_FINISH);
     while(I2CMasterBusy(I2C1_BASE));
     temp2 = I2CMasterDataGet(I2C1_BASE);
     temp = (temp1<<8|temp2);//nao sei se esta certp
+    SysCtlDelay(2000000);
 }
 
 
