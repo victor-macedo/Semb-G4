@@ -75,7 +75,7 @@ int col, row, flag_config, i_start, i_count = 0;
 //*****************************************************************************
 
 static void
-teclado()
+vInterrupt_Key()
 {
     uint32_t status = 0;
     status = GPIOIntStatus(GPIO_PORTC_BASE,true);
@@ -104,6 +104,7 @@ teclado()
         }
 
         tecla = symbol[row][col]; //Adquire o valor da tecla
+        xQueueSendToBack(g_pKEYQueue, &tecla, 0 );
         Lcd_Write_Char(tecla);
 
      // Rotina de configuração
@@ -180,7 +181,7 @@ teclado()
 static void
 IntGPIOc(void)
 {
-    teclado();
+    vInterrupt_Key();
 }
 static void
 KEYTask()
@@ -232,6 +233,8 @@ KEYTaskInit(void)
     GPIOIntRegister(GPIO_PORTC_BASE,IntGPIOc);
 
     GPIOIntEnable(GPIO_PORTC_BASE, GPIO_INT_PIN_4 |GPIO_INT_PIN_5 | GPIO_INT_PIN_6 | GPIO_INT_PIN_7);
+
+    g_pKEYQueue = xQueueCreate(8, sizeof(long));
 //*********************************************************
 //
 //  Configuração Keypad e LCD

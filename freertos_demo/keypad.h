@@ -31,5 +31,6 @@
 //
 //*****************************************************************************
 extern uint32_t KEYTaskInit(void);
+void vInterrupt_Key(void);
 
 #endif // __KEY_TASK_H__

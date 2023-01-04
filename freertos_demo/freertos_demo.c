@@ -134,7 +134,6 @@ main(void)
     // Create a mutex to guard the UART.
     //
     g_pUARTSemaphore = xSemaphoreCreateMutex();
-
     //
     // Create the LED task.
     //
