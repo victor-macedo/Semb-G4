@@ -119,22 +119,22 @@ KEYTask()
     {
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, GPIO_PIN_2);
        row = 3;
-       SysCtlDelay(100000);
+       vTaskDelay(80);
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, 0);
 
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, GPIO_PIN_3);
        row = 0;
-       SysCtlDelay(100000);
+       vTaskDelay(80);
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, 0);
 
        GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6, GPIO_PIN_6);
        row = 1;
-       SysCtlDelay(100000);
+       vTaskDelay(80);
        GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6, 0);
 
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, GPIO_PIN_7);
        row = 2;
-       SysCtlDelay(100000);
+       vTaskDelay(80);
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, 0);
     }
 }

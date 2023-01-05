@@ -32,9 +32,6 @@
 #include "driverlib/i2c.h"
 #include "driverlib/pin_map.h"
 #include "driverlib/sysctl.h"
-#include "drivers/rgb.h"
-#include "drivers/buttons.h"
-#include "utils/uartstdio.h"
 #include "priorities.h"
 #include "FreeRTOS.h"
 #include "task.h"
@@ -56,14 +53,14 @@
 xQueueHandle g_pTempQueue;
 
 extern xSemaphoreHandle ;
-#define SLAVE_ADDRESS_WRITE 0x90
-#define SLAVE_ADDRESS_READ 0x91
+#define SLAVE_ADDRESS_WRITE 0x48
+#define SLAVE_ADDRESS_READ 0x48
 #define CONFIG_TMP 0x01
 #define CONFIG_TMP_BITS 0x00
 #define TEMP_REG 0x00
 
-uint32_t temp;
-
+//uint32_t temp;
+uint32_t uValue_Temp, uTmax, uTmin, uVel;
 static void
 I2CSend(uint32_t slave_addr, uint8_t reg){
     I2CMasterSlaveAddrSet(I2C1_BASE, slave_addr, false);
@@ -92,28 +89,28 @@ I2CSENDCONFIG(){
 static uint32_t
 I2CReceive(uint32_t slave_addr)
 {
-    uint32_t temp1, temp2;
+    uint32_t temp, temp1, temp2;
     I2CMasterSlaveAddrSet(I2C1_BASE, SLAVE_ADDRESS_WRITE, false);
     I2CMasterDataPut(I2C1_BASE, TEMP_REG);
     I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_SEND_START);
     while(I2CMasterBusy(I2C1_BASE)); // delay de 40 ms
-    SysCtlDelay(2000000);
+    SysCtlDelay(20000);
     I2CMasterSlaveAddrSet(I2C1_BASE, SLAVE_ADDRESS_READ, true);
     I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_RECEIVE_START);
     while(I2CMasterBusy(I2C1_BASE));
     temp1 = I2CMasterDataGet(I2C1_BASE);
+    SysCtlDelay(200);
     I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_RECEIVE_FINISH);
     while(I2CMasterBusy(I2C1_BASE));
     temp2 = I2CMasterDataGet(I2C1_BASE);
-    temp = (temp1<<8|temp2);//nao sei se esta certp
-    SysCtlDelay(2000000);
+    temp = (temp1<<1|temp2)*128/255;//nao sei se esta certp
+    SysCtlDelay(200000);
     return temp;
 }
 
 static void
 I2CTask()
 {
-    uint32_t uValue_Temp;
     portBASE_TYPE xStatus;
     while(1)
     {   /*Usar no CAN
@@ -125,6 +122,7 @@ I2CTask()
         // Faz a leitura do valor atraves da comunicação I2C e manda o valor para a Queue
         uValue_Temp = I2CReceive(SLAVE_ADDRESS_READ);
         xQueueSendToBack( g_pTempQueue, &uValue_Temp, 1000 );
+        uVel = (uTmax - uValue_Temp)/(uTmax-uTmin);
     }
 }
 

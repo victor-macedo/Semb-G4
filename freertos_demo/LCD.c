@@ -23,7 +23,9 @@
 xQueueHandle g_pKEYQueue;
 
 char tecla;
-uint32_t flag_config, i_start, i_count = 0;
+char string_teclado[8];
+uint32_t flag_config, i_start, uTmax, uTmin,
+
 /**************************************************************
 * Function: void Lcd_Port (char a)
 *
@@ -261,6 +263,8 @@ LCDTask()
                                         }
                                    else
                                        {
+
+                                           //uTmin = 0;
                                            i_count = 0;
                                            flag_config = 0;
                                            Lcd_Clear();
@@ -272,10 +276,12 @@ LCDTask()
                                    if (i_count < 2)
                                         {
                                            i_count = i_count + 1;
+                                           strncat(string_teclado,&tecla,1);
                                            //Salva o valor ou mostra no display
                                         }
                                    else
                                        {
+                                           //uTmax = 0
                                            i_count = 0;
                                            flag_config = 0;
                                            Lcd_Clear();
@@ -285,6 +291,7 @@ LCDTask()
                          if(tecla == 'A')
                          {
                              i_start = ~i_start; //Switch do motor
+                             Lcd_Clear();
                          }
                          if(tecla =='B')
                          {
@@ -301,7 +308,7 @@ LCDTaskInit(void)
 
     GPIOPinTypeGPIOOutput(GPIO_PORTA_BASE, D4 | D5 | D6 | D7);
     GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, EN | RS);
-
+    i_count = 0;
     Lcd_Init();
     Lcd_Clear();
 
