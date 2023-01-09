@@ -21,10 +21,11 @@
 #define LCDTASKSTACKSIZE        128         // Stack size in words
 
 xQueueHandle g_pKEYQueue;
+xSemaphoreHandle g_pSTARTSemaphore;
 
 char tecla;
 char string_teclado[8];
-uint32_t flag_config, i_start, uTmax, uTmin,
+uint32_t flag_config, i_count, uTmax, uTmin;
 
 /**************************************************************
 * Function: void Lcd_Port (char a)
@@ -326,4 +327,3 @@ LCDTaskInit(void)
     //
     return(0);
 }
-

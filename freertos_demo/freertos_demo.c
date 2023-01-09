@@ -83,7 +83,7 @@
 // The mutex that protects concurrent access of UART from multiple tasks.
 //
 //*****************************************************************************
-xSemaphoreHandle g_pStartSemaphore;
+xSemaphoreHandle g_pSTARTSemaphore;
 xQueueHandle g_pKEYQueue;
 
 //*****************************************************************************
