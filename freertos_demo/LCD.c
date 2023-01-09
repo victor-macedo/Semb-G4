@@ -8,6 +8,7 @@
 #include "driverlib/i2c.h"
 #include "driverlib/pin_map.h"
 #include "driverlib/sysctl.h"
+#include "driverlib/timer.h"
 #include "drivers/rgb.h"
 #include "drivers/buttons.h"
 #include "utils/uartstdio.h"
@@ -249,6 +250,9 @@ LCDTask()
                                        }
                                   else
                                       {
+                                          //Necessidade de adaptar o valor recebido
+                                          //TimerLoadSet(TIMER0_BASE, TIMER_BOTH, 3000);
+                                          TimerEnable(TIMER0_BASE, TIMER_BOTH);
                                           i_count = 0;
                                           flag_config = 0;
                                           Lcd_Clear();
@@ -304,6 +308,10 @@ LCDTask()
 uint32_t
 LCDTaskInit(void)
 {
+
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER0);
+    TimerConfigure(TIMER0_BASE, TIMER_CFG_RTC);
+
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
 
