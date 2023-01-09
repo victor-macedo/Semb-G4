@@ -21,6 +21,7 @@
 #define LCDTASKSTACKSIZE        128         // Stack size in words
 
 xQueueHandle g_pKEYQueue;
+xSemaphoreHandle g_pSTARTSemaphore;
 
 char tecla;
 char string_teclado[8];
@@ -290,7 +291,7 @@ LCDTask()
                          }
                          if(tecla == 'A')
                          {
-                             i_start = ~i_start; //Switch do motor
+                             xSemaphoreGive(g_pSTARTSemaphore);; //Switch do motor
                              Lcd_Clear();
                          }
                          if(tecla =='B')
