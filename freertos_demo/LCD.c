@@ -21,11 +21,10 @@
 #define LCDTASKSTACKSIZE        128         // Stack size in words
 
 xQueueHandle g_pKEYQueue;
-xSemaphoreHandle g_pSTARTSemaphore;
 
 char tecla;
 char string_teclado[8];
-uint32_t flag_config, i_count, uTmax, uTmin;
+uint32_t flag_config, i_start, uTmax, uTmin, i_count;
 
 /**************************************************************
 * Function: void Lcd_Port (char a)
@@ -75,9 +74,9 @@ void Lcd_Cmd(char a)
 GPIOPinWrite(GPIO_PORTF_BASE, RS, 0); // => RS = 0
 Lcd_Port(a);
 GPIOPinWrite(GPIO_PORTF_BASE, EN, EN); // => E = 1
-SysCtlDelay(26667);
+vTaskDelay(1 / portTICK_RATE_MS);
 GPIOPinWrite(GPIO_PORTF_BASE, EN, 0); // => E = 0
-SysCtlDelay(26667);// adding delay
+vTaskDelay(1 / portTICK_RATE_MS);
 }
 /**************************************************************
 * Function: void Lcd_Clear()
@@ -129,11 +128,11 @@ Lcd_Cmd(y);
 void Lcd_Init(void)
 {
 Lcd_Port(0x00);
-SysCtlDelay(10000);
+vTaskDelay(0.00037 / portTICK_RATE_MS);
 Lcd_Cmd(0x03);
-SysCtlDelay(15000);
+vTaskDelay(0.00056 / portTICK_RATE_MS);
 Lcd_Cmd(0x03);
-SysCtlDelay(10000);
+vTaskDelay(0.00037 / portTICK_RATE_MS);
 Lcd_Cmd(0x03);
 /////////////////////////////////////////////////////
 Lcd_Cmd(0x02);
@@ -163,11 +162,11 @@ y = a&0xF0;
 GPIOPinWrite(GPIO_PORTF_BASE, RS, RS ); // => RS = 1
 Lcd_Port(y>>4); //Data transfer
 GPIOPinWrite(GPIO_PORTF_BASE, EN, EN); //EN =1
-SysCtlDelay(10000);
+vTaskDelay(0.00037 / portTICK_RATE_MS);
 GPIOPinWrite(GPIO_PORTF_BASE, EN, 0);//EN = 0;
 Lcd_Port(temp);
 GPIOPinWrite(GPIO_PORTF_BASE, EN, EN);//EN = 1;
-SysCtlDelay(400);
+vTaskDelay(0.000015 / portTICK_RATE_MS);
 GPIOPinWrite(GPIO_PORTF_BASE, EN, 0);//EN = 0;
 }
 
@@ -291,7 +290,7 @@ LCDTask()
                          }
                          if(tecla == 'A')
                          {
-                             xSemaphoreGive(g_pSTARTSemaphore); //Switch do motor
+                             i_start = ~i_start; //Switch do motor
                              Lcd_Clear();
                          }
                          if(tecla =='B')
@@ -327,3 +326,4 @@ LCDTaskInit(void)
     //
     return(0);
 }
+
