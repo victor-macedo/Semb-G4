@@ -26,7 +26,7 @@ xSemaphoreHandle g_pSTARTSemaphore;
 
 char tecla;
 char string_teclado[8];
-uint32_t flag_config, i_start, uTmax, uTmin, i_count;
+uint32_t flag_config, uTmax, uTmin, i_count,tempo;
 
 /**************************************************************
 * Function: void Lcd_Port (char a)
@@ -139,7 +139,7 @@ Lcd_Cmd(0x03);
 /////////////////////////////////////////////////////
 Lcd_Cmd(0x02);
 Lcd_Cmd(0x02);//Function set 1, 0-4bits
-Lcd_Cmd(0x00);// n� linhas  font 5x8 N� de linhas 1
+Lcd_Cmd(0x00);// n linhas  font 5x8 N de linhas 1
 
 Lcd_Cmd(0x00);// display on/off
 Lcd_Cmd(0x0F);// 1, Display-on, Cursor - 1, Blink -0
@@ -223,7 +223,7 @@ LCDTask()
 
                          // Rotina de configuração
 
-                         if(flag_config != 0 || tecla == 'F' || tecla == 'E' || tecla == 'D'|| tecla == 'C'|| tecla == 'A'|| tecla == 'B')
+                         if(flag_config != 0 || tecla == 'F' || tecla == 'E' || tecla == 'D'|| tecla == 'C')
                          {
                              if (flag_config == 1 || tecla == 'F') //Data
                              {
@@ -300,7 +300,8 @@ LCDTask()
                          }
                          if(tecla =='B')
                          {
-                             //Mostra velocidade
+                            tempo = TimerValueGet(TIMER0_BASE,TIMER_BOTH);
+                            Lcd_Write_Char(tempo);
                          }
                 }
            }
