@@ -231,7 +231,7 @@ LCDTask()
                                  flag_config =1;
                                  if (i_count = 0)
                                      Lcd_Clear();
-                                     Lcd_Write_Char("Data: dd-mm-yyyy");
+                                     Lcd_Write_String("Data: dd-mm-yyyy");
                                  if (i_count < 8)
                                       {
                                          i_count = i_count + 1;
@@ -309,6 +309,7 @@ LCDTask()
                                 Lcd_Write_Char(tempo);
                              }
                          }
+                         tempo = TimerValueGet(TIMER0_BASE,TIMER_BOTH);
                 }
            }
 }
