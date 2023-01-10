@@ -183,7 +183,7 @@ void Lcd_Write_String(const char *a)
 {
 int i;
 for(i=0;a[i]!='\0';i++)
-Lcd_Write_Char(a[i]);
+xQueueSendToBack(g_pKEYQueue, &a[i], 0 );
 }
 /**************************************************************
 * Function: void Lcd_Shift_Right()
@@ -220,7 +220,6 @@ LCDTask()
                if( xStatus == pdPASS )
                {
                     Lcd_Write_Char(tecla);
-                    Lcd_Write_String("Data: dd-mm-yyyy");
                          // Rotina de configuração
 
                          if(flag_config != 0 || tecla == 'F' || tecla == 'E' || tecla == 'D'|| tecla == 'C'|| tecla == 'A'|| tecla == 'B')
@@ -298,12 +297,12 @@ LCDTask()
                                        }
                                }
 
-                             else if(tecla == 'A')
+                             else if(&tecla == 'A')
                              {
                                  xSemaphoreGive(g_pSTARTSemaphore); //Switch do motor
                                  Lcd_Clear();
                              }
-                             else if(tecla =='B')
+                             else if(&tecla =='B')
                              {
                                 tempo = TimerValueGet(TIMER0_BASE,TIMER_BOTH);
                                 Lcd_Write_Char(9);

@@ -136,7 +136,7 @@ main(void)
     // Create a mutex to guard the UART.
     //
     g_pSTARTSemaphore = xSemaphoreCreateBinary();
-    g_pKEYQueue = xQueueCreate(8, sizeof(char));
+    g_pKEYQueue = xQueueCreate(16, sizeof(char));
     //
     // Create the LED task.
     //

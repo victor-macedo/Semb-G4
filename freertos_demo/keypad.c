@@ -79,7 +79,7 @@ vInterrupt_Key()
 {
     uint32_t status = 0;
     status = GPIOIntStatus(GPIO_PORTC_BASE,true);
-    vTaskDelay(10 / portTICK_RATE_MS); //Falta teste desse debouncing
+    vTaskDelay(10000 / portTICK_RATE_MS); //Falta teste desse debouncing
 
     // Varredura das teclas
     if((status & GPIO_INT_PIN_4) == GPIO_INT_PIN_4)
@@ -158,10 +158,10 @@ KEYTaskInit(void)
     GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_7);
     GPIOPinTypeGPIOOutput(GPIO_PORTD_BASE, GPIO_PIN_6);
 
-    GPIOIntTypeSet(INT_GPIOC,GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7,GPIO_FALLING_EDGE);
+    GPIOIntTypeSet(INT_GPIOC, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, GPIO_FALLING_EDGE);
 
 
-    GPIOIntRegister(GPIO_PORTC_BASE,IntGPIOc);
+    GPIOIntRegister(GPIO_PORTC_BASE, IntGPIOc);
 
     GPIOIntEnable(GPIO_PORTC_BASE, GPIO_INT_PIN_4 |GPIO_INT_PIN_5 | GPIO_INT_PIN_6 | GPIO_INT_PIN_7);
 
