@@ -229,7 +229,7 @@ LCDTask()
                              {
 
                                  flag_config =1;
-                                 if (i_count = 0)
+                                 if (i_count == 0)
                                      Lcd_Clear();
                                      Lcd_Write_String("Data: dd-mm-yyyy");
                                  if (i_count < 8)
@@ -300,7 +300,7 @@ LCDTask()
 
                              else if(tecla == 'A')
                              {
-                                 xSemaphoreGive(g_pSTARTSemaphore);; //Switch do motor
+                                 xSemaphoreGive(g_pSTARTSemaphore); //Switch do motor
                                  Lcd_Clear();
                              }
                              else if(tecla =='B')

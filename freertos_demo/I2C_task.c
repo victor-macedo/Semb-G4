@@ -52,9 +52,9 @@
 //*****************************************************************************
 xQueueHandle g_pTempQueue;
 
-extern xSemaphoreHandle ;
-#define SLAVE_ADDRESS_WRITE 0x41
-#define SLAVE_ADDRESS_READ 0x41
+//extern xSemaphoreHandle;
+#define SLAVE_ADDRESS_WRITE 0x90
+#define SLAVE_ADDRESS_READ 0x91
 #define CONFIG_TMP 0x01
 #define CONFIG_TMP_BITS 0x00
 #define TEMP_REG 0x00

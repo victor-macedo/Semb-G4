@@ -79,7 +79,7 @@ vInterrupt_Key()
 {
     uint32_t status = 0;
     status = GPIOIntStatus(GPIO_PORTC_BASE,true);
-    vTaskDelay(0.0001 / portTICK_RATE_MS); //Falta teste desse debouncing
+    vTaskDelay(0.01 / portTICK_RATE_MS); //Falta teste desse debouncing
 
     // Varredura das teclas
     if((status & GPIO_INT_PIN_4) == GPIO_INT_PIN_4)
@@ -106,6 +106,7 @@ vInterrupt_Key()
         tecla = symbol[row][col]; //Adquire o valor da tecla
         xQueueSendToBack(g_pKEYQueue, &tecla, 0 );
         GPIOIntClear(GPIO_PORTC_BASE, status);
+
 }
 
 static void
