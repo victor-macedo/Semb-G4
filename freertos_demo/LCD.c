@@ -220,10 +220,10 @@ LCDTask()
                if( xStatus == pdPASS )
                {
                     Lcd_Write_Char(tecla);
-
+                    Lcd_Write_String("Data: dd-mm-yyyy");
                          // Rotina de configuração
 
-                         if(flag_config != 0 || tecla == 'F' || tecla == 'E' || tecla == 'D'|| tecla == 'C'||tecla == 'A'||tecla == 'B')
+                         if(flag_config != 0 || tecla == 'F' || tecla == 'E' || tecla == 'D'|| tecla == 'C'|| tecla == 'A'|| tecla == 'B')
                          {
                              if (flag_config == 1 || tecla == 'F') //Data
                              {
@@ -306,7 +306,7 @@ LCDTask()
                              else if(tecla =='B')
                              {
                                 tempo = TimerValueGet(TIMER0_BASE,TIMER_BOTH);
-                                Lcd_Write_Char(tempo);
+                                Lcd_Write_Char(9);
                              }
                          }
                          tempo = TimerValueGet(TIMER0_BASE,TIMER_BOTH);
