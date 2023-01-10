@@ -33,6 +33,7 @@
 #include "driverlib/interrupt.h"
 #include "driverlib/pin_map.h"
 #include "driverlib/sysctl.h"
+#include "driverlib/timer.h"
 #include "drivers/rgb.h"
 #include "drivers/buttons.h"
 #include "utils/uartstdio.h"
@@ -57,16 +58,17 @@
 //*****************************************************************************
 
 xQueueHandle g_pKEYQueue;
-
+xSemaphoreHandle g_pSTARTSemaphore;
 //*****************************************************************************
 /* Array of 4x4 to define characters which will be printe on specific key pressed */
 unsigned  char symbol[4][4] = {{ '1', '2',  '3', 'F'},//Talvez um array 3 3 seja suficiente
                                { '4', '5',  '6', 'E'},
                                { '7', '8',  '9', 'D'},
                                { 'A', '0',  'B', 'C'}};
-char tecla;
-int col, row, flag_config ;
-
+char tecla,cclear;
+uint8_t col, row, flag_config, i_count, tempo ;
+char string_teclado[8];
+bool bvarre, bstart;
 //*****************************************************************************
 //
 // This task toggles the user selected LED at a user selected frequency. User
@@ -79,8 +81,7 @@ vInterrupt_Key()
 {
     uint32_t status = 0;
     status = GPIOIntStatus(GPIO_PORTC_BASE,true);
-    vTaskDelay(10000 / portTICK_RATE_MS); //Falta teste desse debouncing
-
+    GPIOIntClear(GPIO_PORTC_BASE, status);
     // Varredura das teclas
     if((status & GPIO_INT_PIN_4) == GPIO_INT_PIN_4)
        {
@@ -105,39 +106,122 @@ vInterrupt_Key()
 
         tecla = symbol[row][col]; //Adquire o valor da tecla
         xQueueSendToBack(g_pKEYQueue, &tecla, 0 );
-        GPIOIntClear(GPIO_PORTC_BASE, status);
+        // Rotina de configuração
 
+     if (flag_config == 1) //Data
+     {
+         if (i_count == 0)
+             xQueueSendToBack(g_pKEYQueue, &cclear, 0 );
+             Lcd_Write_String("Data: dd-mm-yyyy");
+         if (i_count < 8)
+              {
+                 i_count = i_count + 1;
+                 //Salva o valor ou mostra no display
+              }
+         else
+             {
+                 i_count = 0;
+                 flag_config = 0;
+                 xQueueSendToBack(g_pKEYQueue, &cclear, 0 );
+             }
+     }
+     else if (flag_config == 2) // Hora
+      {
+          if (i_count < 6)
+               {
+                  i_count = i_count + 1;
+                  //Salva o valor ou mostra no display
+               }
+          else
+              {
+                  //Necessidade de adaptar o valor recebido
+                  //TimerLoadSet(TIMER0_BASE, TIMER_BOTH, 3000);
+                  TimerEnable(TIMER0_BASE, TIMER_BOTH);
+                  i_count = 0;
+                  flag_config = 0;
+                  xQueueSendToBack(g_pKEYQueue, &cclear, 0 );
+              }
+      }
+     else if (flag_config == 3) // Min Temp
+       {
+           if (i_count < 2)
+                {
+                   i_count = i_count + 1;
+                   //Salva o valor ou mostra no display
+                }
+           else
+               {
+               tempo = TimerValueGet(TIMER0_BASE,TIMER_BOTH);
+               Lcd_Write_Char(tempo);
+                   //uTmin = 0;
+                   i_count = 0;
+                   flag_config = 0;
+                   xQueueSendToBack(g_pKEYQueue, &cclear, 0 );
+               }
+       }
+     else if (flag_config == 4) // Max temp
+       {
+           if (i_count < 2)
+                {
+                   i_count = i_count + 1;
+                   //strncat(string_teclado,&tecla,1);
+                   //Salva o valor ou mostra no display
+                }
+           else
+               {
+                   //uTmax = 0
+                   i_count = 0;
+                   flag_config = 0;
+                   xQueueSendToBack(g_pKEYQueue, &cclear, 0 );
+               }
+       }
+
+    if(tecla == 'A')
+    {
+     //xSemaphoreGive(g_pSTARTSemaphore); //Switch do motor
+     bstart = 1;
+     xQueueSendToBack(g_pKEYQueue, &cclear, 0 );
+    }
+    if(tecla =='B')
+    {
+    Lcd_Write_Char(9);
+    }
 }
 
 static void
 IntGPIOc(void)
 {
+    bvarre = 0;
     vInterrupt_Key();
+    bvarre = 1;
 }
 static void
 KEYTask()
 {
     while(1)
     {
-       GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, GPIO_PIN_2);
-       row = 3;
-       vTaskDelay(80);
-       GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, 0);
+        while(bvarre)
+        {
+           GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, GPIO_PIN_2);
+           row = 3;
+           vTaskDelay(80);
+           GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, 0);
 
-       GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, GPIO_PIN_3);
-       row = 0;
-       vTaskDelay(80);
-       GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, 0);
+           GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, GPIO_PIN_3);
+           row = 0;
+           vTaskDelay(80);
+           GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, 0);
 
-       GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6, GPIO_PIN_6);
-       row = 1;
-       vTaskDelay(80);
-       GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6, 0);
+           GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6, GPIO_PIN_6);
+           row = 1;
+           vTaskDelay(80);
+           GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6, 0);
 
-       GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, GPIO_PIN_7);
-       row = 2;
-       vTaskDelay(80);
-       GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, 0);
+           GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, GPIO_PIN_7);
+           row = 2;
+           vTaskDelay(80);
+           GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, 0);
+        }
     }
 }
 
@@ -164,6 +248,10 @@ KEYTaskInit(void)
     GPIOIntRegister(GPIO_PORTC_BASE, IntGPIOc);
 
     GPIOIntEnable(GPIO_PORTC_BASE, GPIO_INT_PIN_4 |GPIO_INT_PIN_5 | GPIO_INT_PIN_6 | GPIO_INT_PIN_7);
+
+    cclear = "L";
+    bvarre = 1;
+    i_count = 0;
 
     //
     // Create the LCD task.

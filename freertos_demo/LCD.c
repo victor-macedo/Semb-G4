@@ -22,11 +22,10 @@
 #define LCDTASKSTACKSIZE        128         // Stack size in words
 
 xQueueHandle g_pKEYQueue;
-xSemaphoreHandle g_pSTARTSemaphore;
 
 char tecla;
 char string_teclado[8];
-uint32_t flag_config, uTmax, uTmin, i_count,tempo;
+uint32_t flag_config,tempo;
 
 /**************************************************************
 * Function: void Lcd_Port (char a)
@@ -219,112 +218,26 @@ LCDTask()
                xStatus = xQueueReceive( g_pKEYQueue, &tecla, portMAX_DELAY );
                if( xStatus == pdPASS )
                {
+                   if (tecla == 'L')
+                   {
+                       Lcd_Clear();
+                   }
+                   else
+                   {
                     Lcd_Write_Char(tecla);
-                         // Rotina de configuração
-
-                         if(flag_config != 0 || tecla == 'F' || tecla == 'E' || tecla == 'D'|| tecla == 'C'|| tecla == 'A'|| tecla == 'B')
-                         {
-                             if (flag_config == 1 || tecla == 'F') //Data
-                             {
-
-                                 flag_config =1;
-                                 if (i_count == 0)
-                                     Lcd_Clear();
-                                     Lcd_Write_String("Data: dd-mm-yyyy");
-                                 if (i_count < 8)
-                                      {
-                                         i_count = i_count + 1;
-                                         //Salva o valor ou mostra no display
-                                      }
-                                 else
-                                     {
-                                         i_count = 0;
-                                         flag_config = 0;
-                                         Lcd_Clear();
-                                     }
-                             }
-                             else if (flag_config == 2 || tecla == 'E') // Hora
-                              {
-                                  flag_config = 2;
-                                  if (i_count < 6)
-                                       {
-                                          i_count = i_count + 1;
-                                          //Salva o valor ou mostra no display
-                                       }
-                                  else
-                                      {
-                                          //Necessidade de adaptar o valor recebido
-                                          //TimerLoadSet(TIMER0_BASE, TIMER_BOTH, 3000);
-                                          TimerEnable(TIMER0_BASE, TIMER_BOTH);
-                                          i_count = 0;
-                                          flag_config = 0;
-                                          Lcd_Clear();
-                                      }
-                              }
-                             else if (flag_config == 3 || tecla == 'D') // Min Temp
-                               {
-                                   flag_config = 3;
-                                   if (i_count < 2)
-                                        {
-                                           i_count = i_count + 1;
-                                           //Salva o valor ou mostra no display
-                                        }
-                                   else
-                                       {
-                                       tempo = TimerValueGet(TIMER0_BASE,TIMER_BOTH);
-                                       Lcd_Write_Char(tempo);
-                                           //uTmin = 0;
-                                           i_count = 0;
-                                           flag_config = 0;
-                                           Lcd_Clear();
-                                       }
-                               }
-                             else if (flag_config == 4 || tecla == 'C') // Max temp
-                               {
-                                   flag_config = 4;
-                                   if (i_count < 2)
-                                        {
-                                           i_count = i_count + 1;
-                                           strncat(string_teclado,&tecla,1);
-                                           //Salva o valor ou mostra no display
-                                        }
-                                   else
-                                       {
-                                           //uTmax = 0
-                                           i_count = 0;
-                                           flag_config = 0;
-                                           Lcd_Clear();
-                                       }
-                               }
-
-                             else if(&tecla == 'A')
-                             {
-                                 xSemaphoreGive(g_pSTARTSemaphore); //Switch do motor
-                                 Lcd_Clear();
-                             }
-                             else if(&tecla =='B')
-                             {
-                                tempo = TimerValueGet(TIMER0_BASE,TIMER_BOTH);
-                                Lcd_Write_Char(9);
-                             }
-                         }
-                         tempo = TimerValueGet(TIMER0_BASE,TIMER_BOTH);
+                   }
+                        tempo = TimerValueGet(TIMER0_BASE,TIMER_BOTH);
                 }
            }
 }
 uint32_t
 LCDTaskInit(void)
 {
-
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER0);
-    TimerConfigure(TIMER0_BASE, TIMER_CFG_RTC);
-
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
 
     GPIOPinTypeGPIOOutput(GPIO_PORTA_BASE, D4 | D5 | D6 | D7);
     GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, EN | RS);
-    i_count = 0;
     Lcd_Init();
     Lcd_Clear();
 

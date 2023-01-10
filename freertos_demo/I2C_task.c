@@ -94,17 +94,17 @@ I2CReceive(uint32_t slave_addr)
     I2CMasterDataPut(I2C1_BASE, TEMP_REG);
     I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_SEND_START);
     while(I2CMasterBusy(I2C1_BASE)); // delay de 40 ms
-    vTaskDelay(0.00074 / portTICK_RATE_MS);
+    vTaskDelay(30 / portTICK_RATE_MS);
     I2CMasterSlaveAddrSet(I2C1_BASE, SLAVE_ADDRESS_READ, true);
     I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_RECEIVE_START);
     while(I2CMasterBusy(I2C1_BASE));
     temp1 = I2CMasterDataGet(I2C1_BASE);
-    vTaskDelay(0.0000074 / portTICK_RATE_MS);
+    vTaskDelay(30 / portTICK_RATE_MS);
     I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_RECEIVE_FINISH);
     while(I2CMasterBusy(I2C1_BASE));
     temp2 = I2CMasterDataGet(I2C1_BASE);
-    temp = (temp1<<1|temp2)*128/255;//nao sei se esta certp
-    vTaskDelay(0.0074 / portTICK_RATE_MS);
+    temp = (temp1<<1|temp2)*128/255;
+    vTaskDelay(3 / portTICK_RATE_MS);
     return temp;
 }
 
@@ -113,15 +113,10 @@ I2CTask()
 {
     portBASE_TYPE xStatus;
     while(1)
-    {   /*Usar no CAN
-        xStatus = xQueueReceive( g_pKeyQueue, &lReceivedValue, 100 );
-        if( xStatus == pdPASS )
-        {
-        }*/
-
+    {
         // Faz a leitura do valor atraves da comunicação I2C e manda o valor para a Queue
         uValue_Temp = I2CReceive(SLAVE_ADDRESS_READ);
-        xQueueSendToBack( g_pTempQueue, &uValue_Temp, 1000 );
+        xQueueSendToBack( g_pTempQueue, &uValue_Temp, 10000/portTICK_RATE_MS );
         uVel = (uTmax - uValue_Temp)/(uTmax-uTmin);
     }
 }

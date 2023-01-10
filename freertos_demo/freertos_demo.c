@@ -23,6 +23,7 @@
 //*****************************************************************************
 
 #include <I2C_task.h>
+#include <PWM_task.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include "inc/hw_memmap.h"
@@ -33,7 +34,6 @@
 #include "driverlib/sysctl.h"
 #include "driverlib/uart.h"
 #include "utils/uartstdio.h"
-#include "switch_task.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
