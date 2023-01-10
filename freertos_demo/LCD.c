@@ -292,16 +292,17 @@ LCDTask()
                                            Lcd_Clear();
                                        }
                                }
-                         }
-                         if(tecla == 'A')
-                         {
-                             xSemaphoreGive(g_pSTARTSemaphore);; //Switch do motor
-                             Lcd_Clear();
-                         }
-                         if(tecla =='B')
-                         {
-                            tempo = TimerValueGet(TIMER0_BASE,TIMER_BOTH);
-                            Lcd_Write_Char(tempo);
+
+                             else if(tecla == 'A')
+                             {
+                                 xSemaphoreGive(g_pSTARTSemaphore);; //Switch do motor
+                                 Lcd_Clear();
+                             }
+                             else if(tecla =='B')
+                             {
+                                tempo = TimerValueGet(TIMER0_BASE,TIMER_BOTH);
+                                Lcd_Write_Char(tempo);
+                             }
                          }
                 }
            }
