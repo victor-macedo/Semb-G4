@@ -223,11 +223,15 @@ LCDTask()
 
                          // Rotina de configuração
 
-                         if(flag_config != 0 || tecla == 'F' || tecla == 'E' || tecla == 'D'|| tecla == 'C')
+                         if(flag_config != 0 || tecla == 'F' || tecla == 'E' || tecla == 'D'|| tecla == 'C'||tecla == 'A'||tecla == 'B')
                          {
                              if (flag_config == 1 || tecla == 'F') //Data
                              {
+
                                  flag_config =1;
+                                 if (i_count = 0)
+                                     Lcd_Clear();
+                                     Lcd_Write_Char("Data: dd-mm-yyyy");
                                  if (i_count < 8)
                                       {
                                          i_count = i_count + 1;
@@ -268,7 +272,8 @@ LCDTask()
                                         }
                                    else
                                        {
-
+                                       tempo = TimerValueGet(TIMER0_BASE,TIMER_BOTH);
+                                       Lcd_Write_Char(tempo);
                                            //uTmin = 0;
                                            i_count = 0;
                                            flag_config = 0;
