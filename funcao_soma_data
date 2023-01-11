@@ -1,0 +1,105 @@
+
+#include <stdio.h>
+#include <stdbool.h>
+
+int segundos_anterior;
+
+
+int ano_data;//ano defenido
+int segundos_data;//segundos defenido
+int minutos_data;//minutos defenidos
+int horas_data;//horas defenidas
+int mes_data;//mes defenido
+int dia_do_mes_data;
+
+
+int meses_bisseistos[15] = {366,31,29,31,30,31,30,31,31,30,31,30,31};
+int meses_normais[15]= {365,31,28,31,30,31,30,31,31,30,31,30,31};
+
+void soma_data(int segundos_bruto){
+    int segundos;
+    bool bi;
+    int minutos;
+    int horas ;
+    int dias;
+
+
+    segundos = segundos_bruto - segundos_anterior;
+    segundos_anterior = segundos_bruto;
+
+
+
+
+    if ((ano_data % 4 == 0)  && (ano_data % 100 != 0)){
+        bi = true;
+    }
+    else{
+        bi = false;
+    }
+
+
+
+
+    segundos_data = segundos_data + (segundos % 60); //segundos da data
+
+    if(segundos_data>=60){
+        ++minutos_data;
+        segundos_data = segundos_data-60;
+    }
+
+
+    minutos = segundos/ 60;
+    minutos_data =  minutos_data + (minutos % 60);
+
+
+
+    if(minutos_data>=60){
+           ++horas_data;
+           minutos_data = minutos_data-60;
+       }
+
+    horas = minutos/60;
+    horas_data = horas_data + (horas % 24);
+
+    if(horas_data>=24){
+               ++dias;
+               horas_data = horas_data-24;
+     }
+
+    dias = dias + horas/24;
+
+
+    while(dias>0){
+        if(bi){
+            ++dia_do_mes_data;
+            if (dia_do_mes_data>meses_bisseistos[mes_data]){
+                dia_do_mes_data = 0;
+                ++mes_data;
+            }
+            if(mes_data>12){
+                mes_data = 1;
+                ++ano_data;
+                bi = false;                
+            }
+        }
+        if(!bi){
+            ++dia_do_mes_data;
+            if (dia_do_mes_data>meses_normais[mes_data]){
+                dia_do_mes_data = 0;
+                ++mes_data;
+                }
+            if(mes_data>12){
+                mes_data = 1;
+                ++ano_data;
+                if ((ano_data % 4 == 0)  && (ano_data % 100 != 0)){
+                    bi = true;
+                }
+                else{
+                    bi = false;
+               }
+            }
+        dias=dias-1;
+        }
+     }
+}
+
