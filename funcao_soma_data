@@ -97,9 +97,9 @@ void soma_data(int segundos_bruto){
                 else{
                     bi = false;
                }
-            }
-        dias=dias-1;
+            }        
         }
+        dias=dias-1;
      }
 }
 
