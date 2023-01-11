@@ -82,6 +82,7 @@ vInterrupt_Key()
     uint32_t status = 0;
     status = GPIOIntStatus(GPIO_PORTC_BASE,true);
     GPIOIntClear(GPIO_PORTC_BASE, status);
+    vTaskDelay(10/portTICK_RATE_MS);
     // Varredura das teclas
     if((status & GPIO_INT_PIN_4) == GPIO_INT_PIN_4)
        {
@@ -105,9 +106,9 @@ vInterrupt_Key()
         }
 
         tecla = symbol[row][col]; //Adquire o valor da tecla
+        if (tecla == 'A'){flag_config = 5;}
+        if (tecla == 'B'){flag_config = 6;}
         xQueueSendToBack(g_pKEYQueue, &tecla, 0 );
-    if (tecla == 'A'){flag_config = 5;}
-    if (tecla == 'B'){flag_config = 6;}
 
         // Rotina de configuração
 
@@ -189,6 +190,7 @@ vInterrupt_Key()
         {
         Lcd_Write_Char(9);
         }
+     vTaskDelay(10/portTICK_RATE_MS);
 }
 
 static void
