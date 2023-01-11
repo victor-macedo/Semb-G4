@@ -106,6 +106,9 @@ vInterrupt_Key()
 
         tecla = symbol[row][col]; //Adquire o valor da tecla
         xQueueSendToBack(g_pKEYQueue, &tecla, 0 );
+    if (tecla == 'A'){flag_config = 5;}
+    if (tecla == 'B'){flag_config = 6;}
+
         // Rotina de configuração
 
      if (flag_config == 1) //Data
@@ -176,16 +179,16 @@ vInterrupt_Key()
                }
        }
 
-    if(tecla == 'A')
-    {
-     //xSemaphoreGive(g_pSTARTSemaphore); //Switch do motor
-     bstart = 1;
-     xQueueSendToBack(g_pKEYQueue, &cclear, 0 );
-    }
-    if(tecla =='B')
-    {
-    Lcd_Write_Char(9);
-    }
+     else if(flag_config == 5)
+        {
+         //xSemaphoreGive(g_pSTARTSemaphore); //Switch do motor
+         bstart = 1;
+         xQueueSendToBack(g_pKEYQueue, &cclear, 0 );
+        }
+     else if(flag_config == 6)
+        {
+        Lcd_Write_Char(9);
+        }
 }
 
 static void
