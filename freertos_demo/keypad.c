@@ -66,9 +66,10 @@ unsigned  char symbol[4][4] = {{ '1', '2',  '3', 'F'},//Talvez um array 3 3 seja
                                { '7', '8',  '9', 'D'},
                                { 'A', '0',  'B', 'C'}};
 char tecla,cclear;
-uint8_t col, row, flag_config, i_count, tempo ;
+uint8_t col, row, flag_config, i_count, tempo, temp_max, temp_min;
 char string_teclado[8];
 bool bvarre, bstart;
+char sData[] = "Data: dd-mm-yyyy";
 //*****************************************************************************
 //
 // This task toggles the user selected LED at a user selected frequency. User
@@ -106,9 +107,8 @@ vInterrupt_Key()
         }
 
         tecla = symbol[row][col]; //Adquire o valor da tecla
-        if ((row = 3) && (col = 0)){ flag_config = 5;}
-        if ((row = 3) && (col = 2)){ flag_config = 6;}
-        vTaskDelay(1);
+        if ((row == 3) && (col == 0)){ flag_config = 5;}
+        if ((row == 3) && (col == 2)){ flag_config = 6;}
         xQueueSendToBack(g_pKEYQueue, &tecla, 0 );
 
         // Rotina de configuração
@@ -118,7 +118,7 @@ vInterrupt_Key()
      {
          if (i_count == 0)
              xQueueSendToBack(g_pKEYQueue, &cclear, 0 );
-             Lcd_Write_String("Data: dd-mm-yyyy");
+             Lcd_Write_String(sData);
          if (i_count < 8)
               {
                  i_count = i_count + 1;
@@ -212,22 +212,22 @@ KEYTask()
         {
            GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, GPIO_PIN_2);
            row = 3;
-           vTaskDelay(80);
+           vTaskDelay(100);
            GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, 0);
 
            GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, GPIO_PIN_3);
            row = 0;
-           vTaskDelay(80);
+           vTaskDelay(100);
            GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, 0);
 
            GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6, GPIO_PIN_6);
            row = 1;
-           vTaskDelay(80);
+           vTaskDelay(100);
            GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6, 0);
 
            GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, GPIO_PIN_7);
            row = 2;
-           vTaskDelay(80);
+           vTaskDelay(100);
            GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, 0);
         }
     }
