@@ -106,8 +106,9 @@ vInterrupt_Key()
         }
 
         tecla = symbol[row][col]; //Adquire o valor da tecla
-        if (tecla == 'A'){ flag_config = 5;}
-        if (tecla == 'B'){ flag_config = 6;}
+        if ((row = 3) && (col = 0)){ flag_config = 5;}
+        if ((row = 3) && (col = 2)){ flag_config = 6;}
+        vTaskDelay(1);
         xQueueSendToBack(g_pKEYQueue, &tecla, 0 );
 
         // Rotina de configuração
