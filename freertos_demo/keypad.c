@@ -106,13 +106,14 @@ vInterrupt_Key()
         }
 
         tecla = symbol[row][col]; //Adquire o valor da tecla
-        if (tecla == 'A'){flag_config = 5;}
-        if (tecla == 'B'){flag_config = 6;}
+        if (tecla == 'A'){ flag_config = 5;}
+        if (tecla == 'B'){ flag_config = 6;}
         xQueueSendToBack(g_pKEYQueue, &tecla, 0 );
 
         // Rotina de configuração
 
-     if (flag_config == 1) //Data
+     switch (flag_config){
+     case (1)://Data
      {
          if (i_count == 0)
              xQueueSendToBack(g_pKEYQueue, &cclear, 0 );
@@ -129,7 +130,7 @@ vInterrupt_Key()
                  xQueueSendToBack(g_pKEYQueue, &cclear, 0 );
              }
      }
-     else if (flag_config == 2) // Hora
+     case (2): // Hora
       {
           if (i_count < 6)
                {
@@ -146,7 +147,7 @@ vInterrupt_Key()
                   xQueueSendToBack(g_pKEYQueue, &cclear, 0 );
               }
       }
-     else if (flag_config == 3) // Min Temp
+     case(3): // Min Temp
        {
            if (i_count < 2)
                 {
@@ -163,7 +164,7 @@ vInterrupt_Key()
                    xQueueSendToBack(g_pKEYQueue, &cclear, 0 );
                }
        }
-     else if (flag_config == 4) // Max temp
+     case(4): // Max temp
        {
            if (i_count < 2)
                 {
@@ -180,16 +181,17 @@ vInterrupt_Key()
                }
        }
 
-     else if(flag_config == 5)
+     case(5):
         {
          //xSemaphoreGive(g_pSTARTSemaphore); //Switch do motor
          bstart = 1;
          xQueueSendToBack(g_pKEYQueue, &cclear, 0 );
         }
-     else if(flag_config == 6)
+     case(6):
         {
         Lcd_Write_Char(9);
         }
+     }
      vTaskDelay(10/portTICK_RATE_MS);
 }
 
