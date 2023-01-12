@@ -62,14 +62,14 @@ xSemaphoreHandle g_pSTARTSemaphore;
 //*****************************************************************************
 /* Array of 4x4 to define characters which will be printe on specific key pressed */
 unsigned  char symbol[4][4] = {{ '1', '2',  '3', 'F'},//Talvez um array 3 3 seja suficiente
-                               { '4', '5',  '6', 'E'},
-                               { '7', '8',  '9', 'D'},
-                               { 'A', '0',  'B', 'C'}};
+                               { '4', '5',  '6', 'Hora'},
+                               { '7', '8',  '9', 'Temp'},
+                               { 'A', '0',  'Velo', 'C'}};
 char tecla,cclear;
 uint8_t col, row, flag_config, i_count, tempo, temp_max, temp_min;
 char string_teclado[8];
 bool bvarre, bstart;
-char sData[] = "Data: dd-mm-yyyy";
+unsigned char sData [] = "dd-mm-yyyy";
 //*****************************************************************************
 //
 // This task toggles the user selected LED at a user selected frequency. User
