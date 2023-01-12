@@ -86,7 +86,7 @@ vInterrupt_Key()
     uint32_t status = 0;
     int cont;
     bool val[102];
-    char sData[] = "Data: ";
+    char str[] = "Data: ";
     status = GPIOIntStatus(GPIO_PORTC_BASE,true);
     GPIOIntClear(GPIO_PORTC_BASE, status);
     // Varredura das teclas
@@ -130,7 +130,7 @@ vInterrupt_Key()
             {
                 if (i_count == 0)
                     xQueueSendToBack(g_pKEYQueue, &cclear, 0 );
-                    Lcd_Write_String(sData);
+                    Lcd_Write_String(str);
                 if (i_count < 8)
                      {
                         i_count = i_count + 1;
@@ -170,7 +170,7 @@ vInterrupt_Key()
                   else
                       {
                       tempo = TimerValueGet(TIMER0_BASE,TIMER_BOTH);
-                      Lcd_Write_Char(tempo);
+                      //Lcd_Write_Char(tempo);
                           //uTmin = 0;
                           i_count = 0;
                           flag_config = 0;
@@ -202,7 +202,7 @@ vInterrupt_Key()
                }
             case(6):
                {
-               Lcd_Write_Char(9);
+               //Lcd_Write_Char(9);
                }
             }
             vTaskDelay(10/portTICK_RATE_MS);
@@ -213,7 +213,7 @@ vInterrupt_Key()
           case(0):
                   for(cont=1;cont<100;++cont){
                       val[cont] = GPIOPinRead(GPIO_PORTC_BASE,GPIO_PIN_4);
-                      vTaskDelay(0.1);//sample de 0.1 ms
+                      vTaskDelay(10);//sample de 0.1 ms
                   }
                   for(cont=1;cont<100;++cont){
                       if(val[cont]==1){
@@ -227,7 +227,7 @@ vInterrupt_Key()
           case(1):
                   for(cont=1;cont<100;++cont){
                       val[cont] = GPIOPinRead(GPIO_PORTC_BASE,GPIO_PIN_5);
-                      vTaskDelay(0.1);//sample de 0.1 ms
+                      vTaskDelay(10);//sample de 0.1 ms
                       }
                   for(cont=1;cont<100;++cont){
                       if(val[cont]==1){
@@ -241,7 +241,7 @@ vInterrupt_Key()
           case(2):
                  for(cont=1;cont<100;++cont){
                      val[cont] = GPIOPinRead(GPIO_PORTC_BASE,GPIO_PIN_6);
-                     vTaskDelay(0.1);//sample de 0.1 ms
+                     vTaskDelay(10);//sample de 0.1 ms
                      }
                  for(cont=1;cont<100;++cont){
                      if(val[cont]==1){
@@ -255,7 +255,7 @@ vInterrupt_Key()
           case(3):
                  for(cont=1;cont<100;++cont){
                      val[cont] = GPIOPinRead(GPIO_PORTC_BASE,GPIO_PIN_7);
-                     vTaskDelay(0.1);//sample de 0.1 ms
+                     vTaskDelay(10);//sample de 0.1 ms
                      }
                  for(cont=1;cont<100;++cont){
                      if(val[cont]==1){

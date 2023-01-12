@@ -224,8 +224,8 @@ LCDTask()
                    }
                    else
                    {
-                    //Lcd_Write_String(tecla);
-                      Lcd_Write_String('tecla');
+                    //Lcd_Write_Char(tecla);
+                      //Lcd_Write_String();
                    }
                         tempo = TimerValueGet(TIMER0_BASE,TIMER_BOTH);
                 }

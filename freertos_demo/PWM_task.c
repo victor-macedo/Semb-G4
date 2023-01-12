@@ -49,8 +49,9 @@
 extern xQueueHandle g_pLEDQueue;
 extern xSemaphoreHandle g_pUARTSemaphore;
 
-int temp_max,temp_min,temp;
+uint8_t temp_max,temp_min,temp;
 bool bstart;
+xQueueHandle g_pTEMPQueue;
 //*****************************************************************************
 //
 // This task reads the buttons' state and passes this information to LEDTask.
@@ -59,38 +60,43 @@ bool bstart;
 static void
 PWMTask(void *pvParameters)
 {
+    portBASE_TYPE xStatus;
     //Temp por uma Queue que recebe caso o valor seja diferente
     uint32_t vel;
-    if (temp>=temp_max){
-        PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT, true);
-    }
-    else{
-        PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT, false);
-    }
-    if(temp>temp_min){
-        if(bstart == false){
-            PWMPulseWidthSet(PWM1_BASE, PWM_OUT_4,300);
-            PWMOutputState(PWM1_BASE, PWM_OUT_4_BIT, true);//inicializacvao do motor para ultrapassar a velocidade minima
-            //delay
-            bstart = true;
+    xStatus = xQueueReceive( g_pTEMPQueue, &temp, portMAX_DELAY );
+    if( xStatus == pdPASS )
+    {
+        if (temp>=temp_max){
+            PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT, true);
         }
-        if(temp < temp_max){
-            vel = (temp-temp_min)/(temp_max-temp_min)*320;
-            if(vel>(320*0.2)){
-                 PWMPulseWidthSet(PWM1_BASE, PWM_OUT_4,vel);
+        else{
+            PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT, false);
+        }
+        if(temp>temp_min){
+            if(bstart == false){
+                PWMPulseWidthSet(PWM1_BASE, PWM_OUT_4,300);
+                PWMOutputState(PWM1_BASE, PWM_OUT_4_BIT, true);//inicializacvao do motor para ultrapassar a velocidade minima
+                //delay
+                bstart = true;
             }
-            else {
-                PWMPulseWidthSet(PWM1_BASE, PWM_OUT_4,320*0.2);
+            if(temp < temp_max){
+                vel = (temp-temp_min)/(temp_max-temp_min)*320;
+                if(vel>(320*0.2)){
+                     PWMPulseWidthSet(PWM1_BASE, PWM_OUT_4,vel);
+                }
+                else {
+                    PWMPulseWidthSet(PWM1_BASE, PWM_OUT_4,320*0.2);
+                }
+            }
+            if(temp >= temp_max){
+                PWMPulseWidthSet(PWM1_BASE, PWM_OUT_4,320);
             }
         }
-        if(temp >= temp_max){
-            PWMPulseWidthSet(PWM1_BASE, PWM_OUT_4,320);
-        }
-    }
-    else{
-        PWMOutputState(PWM1_BASE, PWM_OUT_4_BIT, false);
-        bstart = false;
+        else{
+            PWMOutputState(PWM1_BASE, PWM_OUT_4_BIT, false);
+            bstart = false;
 
+        }
     }
 }
 
