@@ -182,7 +182,8 @@ void Lcd_Write_String(const char *a)
 {
 int i;
 for(i=0;a[i]!='\0';i++)
-xQueueSendToBack(g_pKEYQueue, &a[i], 0 );
+//xQueueSendToBack(g_pKEYQueue, &a[i], 0 );
+    Lcd_Write_Char(a[i]);
 }
 /**************************************************************
 * Function: void Lcd_Shift_Right()
