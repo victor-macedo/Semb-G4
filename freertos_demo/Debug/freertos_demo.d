@@ -22,7 +22,6 @@ freertos_demo.obj: C:/ti/ccs1100/tivaware_c_series_2_1_4_178/driverlib/sysctl.h
 freertos_demo.obj: C:/ti/ccs1100/tivaware_c_series_2_1_4_178/driverlib/uart.h
 freertos_demo.obj: C:/ti/ccs1100/tivaware_c_series_2_1_4_178/utils/uartstdio.h
 freertos_demo.obj: C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/stdarg.h
-freertos_demo.obj: ../switch_task.h
 freertos_demo.obj: C:/ti/ccs1100/tivaware_c_series_2_1_4_178/third_party/FreeRTOS/Source/include/FreeRTOS.h
 freertos_demo.obj: C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/stddef.h
 freertos_demo.obj: C:/Users/student/workspace_v11/freertos_demo/FreeRTOSConfig.h
@@ -85,8 +84,6 @@ C:/ti/ccs1100/tivaware_c_series_2_1_4_178/driverlib/uart.h:
 C:/ti/ccs1100/tivaware_c_series_2_1_4_178/utils/uartstdio.h:
 
 C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/stdarg.h:
-
-../switch_task.h:
 
 C:/ti/ccs1100/tivaware_c_series_2_1_4_178/third_party/FreeRTOS/Source/include/FreeRTOS.h:
 

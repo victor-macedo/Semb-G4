@@ -33,7 +33,6 @@
 #include "driverlib/interrupt.h"
 #include "driverlib/pin_map.h"
 #include "driverlib/sysctl.h"
-#include "driverlib/timer.h"
 #include "drivers/rgb.h"
 #include "drivers/buttons.h"
 #include "utils/uartstdio.h"
@@ -49,7 +48,7 @@
 // The stack size for the LED toggle task.
 //
 //*****************************************************************************
-#define KEYTASKSTACKSIZE        128         // Stack size in words
+#define KEYTASKSTACKSIZE        1000         // Stack size in words
 
 //*****************************************************************************
 //
@@ -58,21 +57,18 @@
 //*****************************************************************************
 
 xQueueHandle g_pKEYQueue;
-xSemaphoreHandle g_pSTARTSemaphore;
+
 //*****************************************************************************
 /* Array of 4x4 to define characters which will be printe on specific key pressed */
 unsigned  char symbol[4][4] = {{ '1', '2',  '3', 'F'},//Talvez um array 3 3 seja suficiente
                                { '4', '5',  '6', 'E'},
                                { '7', '8',  '9', 'D'},
-                               { 'A', '0',  'B', 'C'}};
-char tecla,cclear;
+                               { 'W', '0',  'B', 'C'}};
+char tecla,sData,sHora,sTMax;
 uint8_t col, row, flag_config, i_count, tempo, temp_max, temp_min;
-char tecla,cclear;
-uint8_t col, row, flag_config, i_count, tempo ;
-char string_teclado[8];
-bool bvarre=true;
-bool bstartk=false;
-bool bouncing = false;
+//char string_teclado[8];
+bool bvarre, bstart;
+
 //*****************************************************************************
 //
 // This task toggles the user selected LED at a user selected frequency. User
@@ -83,194 +79,143 @@ bool bouncing = false;
 static void
 vInterrupt_Key()
 {
-    uint32_t status = 0;
-    int cont;
-    bool val[102];
-    char str[] = "Data: ";
+    uint8_t status = 0;
+    char str[] = "Temperatura max:000";
     status = GPIOIntStatus(GPIO_PORTC_BASE,true);
     GPIOIntClear(GPIO_PORTC_BASE, status);
+    //vTaskDelay(1500/ portTICK_RATE_MS);
+    GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_4 |GPIO_INT_PIN_5 | GPIO_INT_PIN_6 | GPIO_INT_PIN_7);
+    flag_config = 0;
     // Varredura das teclas
+    if((status & GPIO_INT_PIN_4) == GPIO_INT_PIN_4)
+       {
+        col = 0;
+       }
+    else if((status & GPIO_INT_PIN_5) == GPIO_INT_PIN_5)
+       {
+        col = 1;
+       }
+    else if((status & GPIO_INT_PIN_6) == GPIO_INT_PIN_6)
+       {
+        col = 2;
+       }
+    else if((status & GPIO_INT_PIN_7) == GPIO_INT_PIN_7)
+       {
+        col = 3;
+        if (row == 0) { flag_config = 1;}
+        else if (row == 1) { flag_config = 2;}
+        else if (row == 2) { flag_config = 3;}
+        else if (row == 3) { flag_config = 4;}
+        }
+        tecla = symbol[row][col]; //Adquire o valor da tecla
+        if ((row == 3) && (col == 0)){ flag_config = 5;}
+        if ((row == 3) && (col == 2)){ flag_config = 6;}
 
-    if(bouncing == false){
-        bouncing = true;
-        GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_4 |GPIO_INT_PIN_5 | GPIO_INT_PIN_6 | GPIO_INT_PIN_7);
-        bvarre = false;
+        xQueueSendToBack(g_pKEYQueue, &tecla, 0 );
 
-        if((status & GPIO_INT_PIN_4) == GPIO_INT_PIN_4)
-            {
-             col = 0;
-            }
-         else if((status & GPIO_INT_PIN_5) == GPIO_INT_PIN_5)
-            {
-             col = 1;
-            }
-         else if((status & GPIO_INT_PIN_6) == GPIO_INT_PIN_6)
-            {
-             col = 2;
-            }
-         else if((status & GPIO_INT_PIN_7) == GPIO_INT_PIN_7)
-            {
-             col = 3;
-             if (row == 0) { flag_config = 1;}
-             else if (row == 1) { flag_config = 2;}
-             else if (row == 2) { flag_config = 3;}
-             else if (row == 3) { flag_config = 4;}
+        switch (flag_config){
+             case(0):
+             {
+                 break;
              }
 
-             tecla = symbol[row][col]; //Adquire o valor da tecla
-             if ((row == 3) && (col == 0)){ flag_config = 5;}
-             if ((row == 3) && (col == 2)){ flag_config = 6;}
-
-            tecla = symbol[row][col]; //Adquire o valor da tecla
-            xQueueSendToBack(g_pKEYQueue, &tecla, 0 );
-            // Rotina de configuração
-
-            switch (flag_config){
-            case (1)://Data
-            {
-                if (i_count == 0)
-                    xQueueSendToBack(g_pKEYQueue, &cclear, 0 );
-                    Lcd_Write_String(str);
-                if (i_count < 8)
-                     {
-                        i_count = i_count + 1;
-                        //Salva o valor ou mostra no display
-                     }
-                else
-                    {
-                        i_count = 0;
-                        flag_config = 0;
-                        xQueueSendToBack(g_pKEYQueue, &cclear, 0 );
-                    }
-            }
-            case (2): // Hora
+             case (1)://Data
              {
-                 if (i_count < 6)
+                 if (i_count == 0)
+                     Lcd_Clear();
+                     Lcd_Write_String(sData);
+
+                 if (i_count < 8)
                       {
                          i_count = i_count + 1;
                          //Salva o valor ou mostra no display
                       }
                  else
                      {
-                         //Necessidade de adaptar o valor recebido
-                         //TimerLoadSet(TIMER0_BASE, TIMER_BOTH, 3000);
-                         TimerEnable(TIMER0_BASE, TIMER_BOTH);
                          i_count = 0;
                          flag_config = 0;
-                         xQueueSendToBack(g_pKEYQueue, &cclear, 0 );
+                         Lcd_Clear();
                      }
+                 break;
              }
-            case(3): // Min Temp
+             case (2): // Hora
               {
-                  if (i_count < 2)
+                  if (i_count == 0)
+                          Lcd_Clear();
+                          Lcd_Write_String(sHora);
+                  if (i_count < 6)
                        {
                           i_count = i_count + 1;
                           //Salva o valor ou mostra no display
                        }
                   else
                       {
-                      tempo = TimerValueGet(TIMER0_BASE,TIMER_BOTH);
-                      //Lcd_Write_Char(tempo);
-                          //uTmin = 0;
+                          //Necessidade de adaptar o valor recebido
+                          //TimerLoadSet(TIMER0_BASE, TIMER_BOTH, 3000);
+                          //TimerEnable(TIMER0_BASE, TIMER_BOTH);
                           i_count = 0;
                           flag_config = 0;
-                          xQueueSendToBack(g_pKEYQueue, &cclear, 0 );
+                          Lcd_Clear();
                       }
+                  break;
               }
-            case(4): // Max temp
-              {
-                  if (i_count < 2)
+             case(3): // Min Temp
+               {
+                   if (i_count < 2)
+                        {
+                           i_count = i_count + 1;
+                           //Salva o valor ou mostra no display
+                        }
+                   else
                        {
-                          i_count = i_count + 1;
-                          //strncat(string_teclado,&tecla,1);
-                          //Salva o valor ou mostra no display
+                       //tempo = TimerValueGet(TIMER0_BASE,TIMER_BOTH);
+                       Lcd_Write_Char(tempo);
+                           //uTmin = 0;
+                           i_count = 0;
+                           flag_config = 0;
+                           Lcd_Clear();
                        }
-                  else
-                      {
-                          //uTmax = 0
-                          i_count = 0;
-                          flag_config = 0;
-                          xQueueSendToBack(g_pKEYQueue, &cclear, 0 );
-                      }
-              }
-
-            case(5):
-               {
-                //xSemaphoreGive(g_pSTARTSemaphore); //Switch do motor
-                //bstart = 1;
-                xQueueSendToBack(g_pKEYQueue, &cclear, 0 );
+                   break;
                }
-            case(6):
+             case(4): // Max temp
                {
-               //Lcd_Write_Char(9);
-               }
-            }
-            vTaskDelay(10/portTICK_RATE_MS);
-       }
-
-    while(bouncing){
-        switch (col){
-          case(0):
-                  for(cont=1;cont<100;++cont){
-                      val[cont] = GPIOPinRead(GPIO_PORTC_BASE,GPIO_PIN_4);
-                      vTaskDelay(10);//sample de 0.1 ms
-                  }
-                  for(cont=1;cont<100;++cont){
-                      if(val[cont]==1){
-                          break;//esta em bouncing e vai voltar a repetir este teste
-                      }
-                   }
-                  if(cont>=100){
-                      bouncing = false;//nao esta em bouncing e pode sair
-                  }
-                  break;
-          case(1):
-                  for(cont=1;cont<100;++cont){
-                      val[cont] = GPIOPinRead(GPIO_PORTC_BASE,GPIO_PIN_5);
-                      vTaskDelay(10);//sample de 0.1 ms
-                      }
-                  for(cont=1;cont<100;++cont){
-                      if(val[cont]==1){
-                          break;//esta em bouncing e vai voltar a repetir este teste
+                   if (i_count == 0)
+                          Lcd_Clear();
+                          Lcd_Write_String(sTMax);
+                   if (i_count < 2)
+                        {
+                           i_count = i_count + 1;
+                           //strncat(string_teclado,&tecla,1);
+                           //Salva o valor ou mostra no display
+                        }
+                   else
+                       {
+                           //uTmax = 0
+                           i_count = 0;
+                           flag_config = 0;
+                           Lcd_Clear();
                        }
-                   }
-                  if(cont>=100){
-                      bouncing = false;//nao esta em bouncing e pode sair
-                    }
-                  break;
-          case(2):
-                 for(cont=1;cont<100;++cont){
-                     val[cont] = GPIOPinRead(GPIO_PORTC_BASE,GPIO_PIN_6);
-                     vTaskDelay(10);//sample de 0.1 ms
-                     }
-                 for(cont=1;cont<100;++cont){
-                     if(val[cont]==1){
-                         break;//esta em bouncing e vai voltar a repetir este teste
-                     }
-                 }
-                 if(cont>=100){
-                     bouncing = false;//nao esta em bouncing e pode sair
-                 }
+                   break;
+               }
+
+             case(5):
+                {
+                 //xSemaphoreGive(g_pSTARTSemaphore); //Switch do motor
+                 //bstart = 1;
+                 Lcd_Clear();
+                 Lcd_Write_String(str);
                  break;
-          case(3):
-                 for(cont=1;cont<100;++cont){
-                     val[cont] = GPIOPinRead(GPIO_PORTC_BASE,GPIO_PIN_7);
-                     vTaskDelay(10);//sample de 0.1 ms
-                     }
-                 for(cont=1;cont<100;++cont){
-                     if(val[cont]==1){
-                         break;//esta em bouncing e vai voltar a repetir este teste
-                     }
-                 }
-                 if(cont>=100){
-                     bouncing = false;//nao esta em bouncing e pode sair
-                 }
+                }
+             case(6):
+                {
+                 Lcd_Clear();
+                 //Lcd_Write_Char(9);
                  break;
-        }
-    }
-    GPIOIntEnable(GPIO_PORTC_BASE, GPIO_INT_PIN_4 |GPIO_INT_PIN_5 | GPIO_INT_PIN_6 | GPIO_INT_PIN_7);
+                }
+             }
+        //vTaskDelay(100/ portTICK_RATE_MS);
+        GPIOIntEnable(GPIO_PORTC_BASE, GPIO_INT_PIN_4 |GPIO_INT_PIN_5 | GPIO_INT_PIN_6 | GPIO_INT_PIN_7);
 }
-
 
 static void
 IntGPIOc(void)
@@ -280,27 +225,31 @@ IntGPIOc(void)
 static void
 KEYTask()
 {
+    char sData[] = "Data: dd-mm-yyyy";
+    char sHora[] = "Hora: ";
+    char sTMax[] = "Maxima temp: ";
+    i_count = 0;
     while(1)
     {
-           GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, GPIO_PIN_2);
-           row = 3;
-           vTaskDelay(100);
-           GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, 0);
+       GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, GPIO_PIN_2);
+       row = 3;
+       vTaskDelay(80);
+       GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, 0);
 
-           GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, GPIO_PIN_3);
-           row = 0;
-           vTaskDelay(100);
-           GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, 0);
+       GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, GPIO_PIN_3);
+       row = 0;
+       vTaskDelay(80);
+       GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, 0);
 
-           GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6, GPIO_PIN_6);
-           row = 1;
-           vTaskDelay(100);
-           GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6, 0);
+       GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6, GPIO_PIN_6);
+       row = 1;
+       vTaskDelay(80);
+       GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6, 0);
 
-           GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, GPIO_PIN_7);
-           row = 2;
-           vTaskDelay(100);
-           GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, 0);
+       GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, GPIO_PIN_7);
+       row = 2;
+       vTaskDelay(80);
+       GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, 0);
     }
 }
 
@@ -321,16 +270,12 @@ KEYTaskInit(void)
     GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_7);
     GPIOPinTypeGPIOOutput(GPIO_PORTD_BASE, GPIO_PIN_6);
 
-    GPIOIntTypeSet(INT_GPIOC, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, GPIO_FALLING_EDGE);
+    GPIOIntTypeSet(INT_GPIOC,GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7,GPIO_FALLING_EDGE);
 
 
-    GPIOIntRegister(GPIO_PORTC_BASE, IntGPIOc);
+    GPIOIntRegister(GPIO_PORTC_BASE,IntGPIOc);
 
     GPIOIntEnable(GPIO_PORTC_BASE, GPIO_INT_PIN_4 |GPIO_INT_PIN_5 | GPIO_INT_PIN_6 | GPIO_INT_PIN_7);
-
-    cclear = "L";
-    char sData[] = "Data: ";
-    i_count = 0;
 
     //
     // Create the LCD task.

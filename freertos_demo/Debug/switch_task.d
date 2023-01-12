@@ -1,10 +1,10 @@
 # FIXED
 
 switch_task.obj: ../switch_task.c
-switch_task.obj: C:/Users/student/workspace_v11/freertos_demo/I2C_task.h
-switch_task.obj: C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/stdint.h
+switch_task.obj: C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/stdbool.h
 switch_task.obj: C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/_ti_config.h
 switch_task.obj: C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/linkage.h
+switch_task.obj: C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/stdint.h
 switch_task.obj: C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/_stdint40.h
 switch_task.obj: C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/sys/stdint.h
 switch_task.obj: C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/sys/cdefs.h
@@ -12,7 +12,6 @@ switch_task.obj: C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/
 switch_task.obj: C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/machine/_types.h
 switch_task.obj: C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/machine/_stdint.h
 switch_task.obj: C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/sys/_stdint.h
-switch_task.obj: C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/stdbool.h
 switch_task.obj: C:/ti/ccs1100/tivaware_c_series_2_1_4_178/inc/hw_memmap.h
 switch_task.obj: C:/ti/ccs1100/tivaware_c_series_2_1_4_178/inc/hw_types.h
 switch_task.obj: C:/ti/ccs1100/tivaware_c_series_2_1_4_178/inc/hw_gpio.h
@@ -23,6 +22,7 @@ switch_task.obj: C:/ti/ccs1100/tivaware_c_series_2_1_4_178/examples/boards/ek-tm
 switch_task.obj: C:/ti/ccs1100/tivaware_c_series_2_1_4_178/utils/uartstdio.h
 switch_task.obj: C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/stdarg.h
 switch_task.obj: ../switch_task.h
+switch_task.obj: ../led_task.h
 switch_task.obj: ../priorities.h
 switch_task.obj: C:/ti/ccs1100/tivaware_c_series_2_1_4_178/third_party/FreeRTOS/Source/include/FreeRTOS.h
 switch_task.obj: C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/stddef.h
@@ -39,13 +39,13 @@ switch_task.obj: C:/ti/ccs1100/tivaware_c_series_2_1_4_178/third_party/FreeRTOS/
 
 ../switch_task.c:
 
-C:/Users/student/workspace_v11/freertos_demo/I2C_task.h:
-
-C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/stdint.h:
+C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/stdbool.h:
 
 C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/_ti_config.h:
 
 C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/linkage.h:
+
+C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/stdint.h:
 
 C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/_stdint40.h:
 
@@ -60,8 +60,6 @@ C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/machine/_types.h:
 C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/machine/_stdint.h:
 
 C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/sys/_stdint.h:
-
-C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/stdbool.h:
 
 C:/ti/ccs1100/tivaware_c_series_2_1_4_178/inc/hw_memmap.h:
 
@@ -82,6 +80,8 @@ C:/ti/ccs1100/tivaware_c_series_2_1_4_178/utils/uartstdio.h:
 C:/ti/ccs1100/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include/stdarg.h:
 
 ../switch_task.h:
+
+../led_task.h:
 
 ../priorities.h:
 

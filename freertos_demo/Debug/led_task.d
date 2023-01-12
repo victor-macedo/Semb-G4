@@ -16,9 +16,6 @@ led_task.obj: C:/ti/ccs1100/tivaware_c_series_2_1_4_178/inc/hw_memmap.h
 led_task.obj: C:/ti/ccs1100/tivaware_c_series_2_1_4_178/inc/hw_types.h
 led_task.obj: C:/ti/ccs1100/tivaware_c_series_2_1_4_178/driverlib/gpio.h
 led_task.obj: C:/ti/ccs1100/tivaware_c_series_2_1_4_178/driverlib/rom.h
-led_task.obj: C:/ti/ccs1100/tivaware_c_series_2_1_4_178/driverlib/i2c.h
-led_task.obj: C:/ti/ccs1100/tivaware_c_series_2_1_4_178/driverlib/pin_map.h
-led_task.obj: C:/ti/ccs1100/tivaware_c_series_2_1_4_178/driverlib/sysctl.h
 led_task.obj: C:/ti/ccs1100/tivaware_c_series_2_1_4_178/examples/boards/ek-tm4c123gxl/drivers/rgb.h
 led_task.obj: C:/ti/ccs1100/tivaware_c_series_2_1_4_178/examples/boards/ek-tm4c123gxl/drivers/buttons.h
 led_task.obj: C:/ti/ccs1100/tivaware_c_series_2_1_4_178/utils/uartstdio.h
@@ -69,12 +66,6 @@ C:/ti/ccs1100/tivaware_c_series_2_1_4_178/inc/hw_types.h:
 C:/ti/ccs1100/tivaware_c_series_2_1_4_178/driverlib/gpio.h:
 
 C:/ti/ccs1100/tivaware_c_series_2_1_4_178/driverlib/rom.h:
-
-C:/ti/ccs1100/tivaware_c_series_2_1_4_178/driverlib/i2c.h:
-
-C:/ti/ccs1100/tivaware_c_series_2_1_4_178/driverlib/pin_map.h:
-
-C:/ti/ccs1100/tivaware_c_series_2_1_4_178/driverlib/sysctl.h:
 
 C:/ti/ccs1100/tivaware_c_series_2_1_4_178/examples/boards/ek-tm4c123gxl/drivers/rgb.h:
 

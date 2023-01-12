@@ -8,7 +8,6 @@
 #include "driverlib/i2c.h"
 #include "driverlib/pin_map.h"
 #include "driverlib/sysctl.h"
-#include "driverlib/timer.h"
 #include "drivers/rgb.h"
 #include "drivers/buttons.h"
 #include "utils/uartstdio.h"
@@ -19,13 +18,13 @@
 #include "semphr.h"
 #include "LCD.h"
 
-#define LCDTASKSTACKSIZE        128         // Stack size in words
+#define LCDTASKSTACKSIZE        1000         // Stack size in words
 
 xQueueHandle g_pKEYQueue;
 
 char tecla;
 char string_teclado[8];
-uint32_t flag_config,tempo;
+uint32_t flag_config, i_start, uTmax, uTmin, i_count;
 
 /**************************************************************
 * Function: void Lcd_Port (char a)
@@ -138,7 +137,7 @@ Lcd_Cmd(0x03);
 /////////////////////////////////////////////////////
 Lcd_Cmd(0x02);
 Lcd_Cmd(0x02);//Function set 1, 0-4bits
-Lcd_Cmd(0x00);// n linhas  font 5x8 N de linhas 1
+Lcd_Cmd(0x00);// n� linhas  font 5x8 N� de linhas 1
 
 Lcd_Cmd(0x00);// display on/off
 Lcd_Cmd(0x0F);// 1, Display-on, Cursor - 1, Blink -0
@@ -182,7 +181,7 @@ void Lcd_Write_String(const char *a)
 {
 int i;
 for(i=0;a[i]!='\0';i++)
-xQueueSendToBack(g_pKEYQueue, &a[i], 0 );
+Lcd_Write_Char(a[i]);
 }
 /**************************************************************
 * Function: void Lcd_Shift_Right()
@@ -212,23 +211,16 @@ Lcd_Cmd(0x08);
 static void
 LCDTask()
 {
+        Lcd_Init();
+        Lcd_Clear();
         portBASE_TYPE xStatus;
            while(1)
            {
                xStatus = xQueueReceive( g_pKEYQueue, &tecla, portMAX_DELAY );
-               if( xStatus == pdPASS )
-               {
-                   if (tecla == 'L')
-                   {
-                       Lcd_Clear();
-                   }
-                   else
-                   {
-                    //Lcd_Write_Char(tecla);
-                      //Lcd_Write_String();
-                   }
-                        tempo = TimerValueGet(TIMER0_BASE,TIMER_BOTH);
-                }
+                            if( xStatus == pdPASS )
+                            {
+                               Lcd_Write_String(tecla);
+                            }
            }
 }
 uint32_t
@@ -239,8 +231,7 @@ LCDTaskInit(void)
 
     GPIOPinTypeGPIOOutput(GPIO_PORTA_BASE, D4 | D5 | D6 | D7);
     GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, EN | RS);
-    Lcd_Init();
-    Lcd_Clear();
+    i_count = 0;
 
     //
     // Create the LCD task.
