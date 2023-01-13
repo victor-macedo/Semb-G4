@@ -30,7 +30,7 @@
 // The priorities of the various tasks.
 //
 //*****************************************************************************
-#define PRIORITY_SWITCH_TASK    3
+#define PRIORITY_PWM_TASK       3
 #define PRIORITY_KEY_TASK       1
 #define PRIORITY_LCD_TASK       2
 #define PRIORITY_I2C_TASK       4 //Valor escolhido apenas para teste

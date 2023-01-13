@@ -179,10 +179,14 @@ xQueueSendToBack(g_pKEYQueue, &a[i], 1 );
 *
 * Description: Shifts text on the LCD right
 **************************************************************/
-void Lcd_Shift_Right(void)
+void Lcd_Shift_Right(int a)
 {
-Lcd_Cmd(0x01);
-Lcd_Cmd(0x0C);
+ int i;
+ for(i=0;i==a;i++)
+ {
+     Lcd_Cmd(0x01);
+     Lcd_Cmd(0x0C);
+ }
 }
 
 /**************************************************************
@@ -192,10 +196,14 @@ Lcd_Cmd(0x0C);
 *
 * Description: Shifts text on the LCD left
 **************************************************************/
-void Lcd_Shift_Left(void)
+void Lcd_Shift_Left(int a)
 {
-Lcd_Cmd(0x01);
-Lcd_Cmd(0x08);
+ int i;
+ for(i=0;i==a;i++)
+ {
+     Lcd_Cmd(0x01);
+     Lcd_Cmd(0x08);
+ }
 }
 static void
 LCDTask()

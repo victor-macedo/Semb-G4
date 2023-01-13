@@ -82,7 +82,6 @@
 // The mutex that protects concurrent access of UART from multiple tasks.
 //
 //*****************************************************************************
-xSemaphoreHandle g_pSTARTSemaphore;
 xQueueHandle g_pKEYQueue;
 
 //*****************************************************************************
@@ -135,7 +134,6 @@ main(void)
     //
     // Create a mutex to guard the UART.
     //
-    g_pSTARTSemaphore = xSemaphoreCreateBinary();
     g_pKEYQueue = xQueueCreate(32, sizeof(char));
     //
     // Create the LED task.
