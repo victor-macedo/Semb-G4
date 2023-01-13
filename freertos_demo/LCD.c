@@ -182,7 +182,7 @@ xQueueSendToBack(g_pKEYQueue, &a[i], 1 );
 void Lcd_Shift_Right(void)
 {
      Lcd_Cmd(0x01);
-     Lcd_Cmd(0x0C);
+     Lcd_Cmd(0x04);
 }
 
 /**************************************************************
@@ -195,7 +195,7 @@ void Lcd_Shift_Right(void)
 void Lcd_Shift_Left(void)
 {
      Lcd_Cmd(0x01);
-     Lcd_Cmd(0x08);
+     Lcd_Cmd(0x00);
 }
 static void
 LCDTask()
@@ -215,6 +215,10 @@ LCDTask()
                                 else if (tecla == 'Z')
                                 {
                                     Lcd_Shift_Left();
+                                }
+                                else if (tecla == 'B')
+                                {
+                                    Lcd_Shift_Right();
                                 }
                                 else
                                 {

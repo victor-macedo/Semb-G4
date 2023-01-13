@@ -65,13 +65,14 @@ char symbol[4][4] =            {{ '1', '2',  '3', 'F'},//Talvez um array 3 3 sej
                                { '7', '8',  '9', 'D'},
                                { 'A', '0',  'B', 'C'}};
 char tecla;
-static const char sTMax[] = "Temp max:000 °C";
-static const char sTMin[] = "Temp min:000 °C";
+static const char sTMax[] = "Temp max:000 C";
+static const char sTMin[] = "Temp min:000 C";
 static const char sData[] = "Data: dd-mm-yyyy";
 static const char sHora[] = "Hora: hh:mm";
-//static const char sClear = 'W';
-//static const char sLeft = 'Z';
-uint8_t col, row, flag_config, i_count, tempo, temp_max, temp_min;
+static const char sClear = 'W';
+static const char sLeft = 'Z';
+static const char sRight = 'B';
+uint8_t col, row, flag_config, i_count, temp_max, temp_min;
 bool bvarre, bstart,test;
 uint32_t utempo_inicio;
 
@@ -81,7 +82,24 @@ uint32_t utempo_inicio;
 // can make the selections by pressing the left and right buttons.
 //
 //*****************************************************************************
-
+void
+Key_Shift_Left(int a)
+{
+    int i;
+    for(i=0; i<a; i++)
+    {
+        xQueueSendToBack(g_pKEYQueue, &sLeft, 0 );
+    }
+}
+void
+Key_Shift_Right(int a)
+{
+    int i;
+    for(i=0; i<a; i++)
+    {
+        xQueueSendToBack(g_pKEYQueue, &sRight, 0 );
+    }
+}
 static void
 vInterrupt_Key()
 {
@@ -90,14 +108,13 @@ vInterrupt_Key()
     char sTMax[] = "Temp max:000 C";
     char sTMin[] = "Temp min:000 C";
     char sData[] = "Data: dd-mm-yyyy";
-    char sHora[] = "Hora: hh:mm";
+    char sHora[] = "Hora: hh:mm:ss";
 
     status = GPIOIntStatus(GPIO_PORTC_BASE,true);
     GPIOIntClear(GPIO_PORTC_BASE, status);
     GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_4 |GPIO_INT_PIN_5 | GPIO_INT_PIN_6 | GPIO_INT_PIN_7);
     vTaskDelay(500/ portTICK_RATE_MS);
 
-    flag_config = 0;
     // Varredura das teclas
     if((status & GPIO_INT_PIN_4) == GPIO_INT_PIN_4)
        {
@@ -134,40 +151,46 @@ vInterrupt_Key()
              case (1)://Data
              {
                  if (i_count == 0)
-                     Lcd_Clear();
+                 {
+                     xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
                      Lcd_Write_String(sData);
-                     Lcd_Shift_Left(10);
-                 if (i_count < 8)
+                     Key_Shift_Left(10);
+                     i_count++;
+                 }
+                 else if (i_count < 8)
                       {
-                         i_count = i_count + 1;
                          //Salva o valor ou mostra no display
+                         i_count++;
                       }
                  else
                      {
                          i_count = 0;
                          flag_config = 0;
-                         Lcd_Clear();
+                         xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
                      }
                  break;
              }
              case (2): // Hora
               {
                   if (i_count == 0)
-                          Lcd_Clear();
-                          Lcd_Write_String(sHora);
-                          Lcd_Shift_Left(5);
-                  if (i_count < 6)
+                  {
+                       xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                       Lcd_Write_String(sHora);
+                       Key_Shift_Left(5);
+                       i_count++;
+                  }
+                 else if (i_count < 6)
                        {
-                          i_count = i_count + 1;
                           //Salva o valor ou mostra no display
+                         i_count++;
                        }
                   else
                       {
                           //Necessidade de adaptar o valor recebido
-                          utempo_inicio = SysTickValueGet();
-                          i_count = 0;
-                          flag_config = 0;
-                          Lcd_Clear();
+                      utempo_inicio = (SysTickValueGet()/ (portTICK_RATE_MS*1000));
+                      i_count = 0;
+                      flag_config = 0;
+                      xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
                       }
                   break;
               }
@@ -175,23 +198,22 @@ vInterrupt_Key()
                {
                    if (i_count == 0)
                     {
-                       Lcd_Clear();
+                       xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
                        Lcd_Write_String(sTMin);
-                       Lcd_Shift_Left(6);
+                       Key_Shift_Left(5);
+                       i_count++;
                     }
-                   if (i_count < 2)
+                   else if (i_count < 3)
                         {
-                           i_count = i_count + 1;
                            //Salva o valor ou mostra no display
+                           i_count++;
                         }
                    else
                        {
-                       //tempo = TimerValueGet(TIMER0_BASE,TIMER_BOTH);
-                       Lcd_Write_Char(tempo);
-                           //uTmin = 0;
+                           //temp_min = Converter string em int;
                            i_count = 0;
                            flag_config = 0;
-                           Lcd_Clear();
+                           xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
                        }
                    break;
                }
@@ -199,22 +221,22 @@ vInterrupt_Key()
                {
                    if (i_count == 0)
                    {
-                          Lcd_Clear();
+                          xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
                           Lcd_Write_String(sTMax);
-                          Lcd_Shift_Left(6);
+                          Key_Shift_Left(5);
+                          i_count++;
                    }
-                   if (i_count < 2)
+                   else if (i_count < 3)
                         {
-                           i_count = i_count + 1;
                            //strncat(string_teclado,&tecla,1);
-                           //Salva o valor ou mostra no display
+                           i_count++;
                         }
                    else
                        {
-                           //uTmax = 0
+                           //temp_max = Converter string em int;
                            i_count = 0;
                            flag_config = 0;
-                           Lcd_Clear();
+                           xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
                        }
                    break;
                }
@@ -222,15 +244,14 @@ vInterrupt_Key()
              case(5): //Start
                 {
                  //bstart = 1;
-                 //Lcd_Clear();
+                  xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
                  //Lcd_Write_String(str);
 
                  break;
                 }
              case(6): //Velocidade
                 {
-                 Lcd_Clear();
-                 //Lcd_Write_Char(9);
+                  xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
                  break;
                 }
              }
@@ -258,6 +279,8 @@ KEYTask()
 {
     i_count = 0;
     test = false;
+    flag_config = 0;
+    SysTickEnable();
     while(test ==false)
     {
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, GPIO_PIN_2);
@@ -301,7 +324,6 @@ KEYTaskInit(void)
     GPIOIntRegister(GPIO_PORTC_BASE,IntGPIOc);
 
     GPIOIntEnable(GPIO_PORTC_BASE, GPIO_INT_PIN_4 |GPIO_INT_PIN_5 | GPIO_INT_PIN_6 | GPIO_INT_PIN_7);
-
     //
     // Create the LCD task.
     //

@@ -60,7 +60,7 @@ extern xSemaphoreHandle ;
 #define TEMP_REG 0x00
 
 //uint32_t temp;
-uint32_t uValue_Temp, uTmax, uTmin, uVel;
+uint32_t uValue_Temp_New,uValue_Temp_Old, uTmax, uTmin, uVel;
 static void
 I2CSend(uint32_t slave_addr, uint8_t reg){
     I2CMasterSlaveAddrSet(I2C1_BASE, slave_addr, false);
@@ -103,7 +103,7 @@ I2CReceive(uint32_t slave_addr)
     I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_RECEIVE_FINISH);
     while(I2CMasterBusy(I2C1_BASE));
     temp2 = I2CMasterDataGet(I2C1_BASE);
-    temp = ((temp1<<1|temp2)*128/255);//nao sei se esta certp
+    temp = (int)((temp1<<1)|(temp2>>8))*128/255;//nao sei se esta certp
     vTaskDelay(100 / portTICK_RATE_MS);
     return temp;
 }
@@ -111,17 +111,16 @@ I2CReceive(uint32_t slave_addr)
 static void
 I2CTask()
 {
+    uValue_Temp_Old = 0;
     while(1)
-    {   /*Usar no CAN
-        xStatus = xQueueReceive( g_pKeyQueue, &lReceivedValue, 100 );
-        if( xStatus == pdPASS )
-        {
-        }*/
-
-        // Faz a leitura do valor atraves da comunicação I2C e manda o valor para a Queue
-        uValue_Temp = I2CReceive(SLAVE_ADDRESS_READ);
+    {
         vTaskDelay(1000 / portTICK_RATE_MS);
-        xQueueSendToBack( g_pTempQueue, &uValue_Temp, 10000 / portTICK_RATE_MS );
+        uValue_Temp_New = I2CReceive(SLAVE_ADDRESS_READ);
+        while (uValue_Temp_New != uValue_Temp_Old)
+        {
+            uValue_Temp_Old = uValue_Temp_New;
+            xQueueSendToBack( g_pTempQueue, &uValue_Temp_New, 10000 / portTICK_RATE_MS );
+        }
     }
 }
 

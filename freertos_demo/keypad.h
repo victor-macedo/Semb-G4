@@ -32,5 +32,6 @@
 //*****************************************************************************
 extern uint32_t KEYTaskInit(void);
 void vInterrupt_Key(void);
+void Key_Shift_Left(int a);
 
 #endif // __KEY_TASK_H__
