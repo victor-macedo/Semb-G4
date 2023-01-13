@@ -179,14 +179,10 @@ xQueueSendToBack(g_pKEYQueue, &a[i], 1 );
 *
 * Description: Shifts text on the LCD right
 **************************************************************/
-void Lcd_Shift_Right(int a)
+void Lcd_Shift_Right(void)
 {
- int i;
- for(i=0;i==a;i++)
- {
      Lcd_Cmd(0x01);
      Lcd_Cmd(0x0C);
- }
 }
 
 /**************************************************************
@@ -196,14 +192,10 @@ void Lcd_Shift_Right(int a)
 *
 * Description: Shifts text on the LCD left
 **************************************************************/
-void Lcd_Shift_Left(int a)
+void Lcd_Shift_Left(void)
 {
- int i;
- for(i=0;i==a;i++)
- {
      Lcd_Cmd(0x01);
      Lcd_Cmd(0x08);
- }
 }
 static void
 LCDTask()
@@ -214,9 +206,20 @@ LCDTask()
            while(1)
            {
                xStatus = xQueueReceive( g_pKEYQueue, &tecla, portMAX_DELAY );
-                            if( xStatus == pdPASS )
+                              if( xStatus == pdPASS )
                             {
-                               Lcd_Write_Char(tecla);
+                                if (tecla == 'W')
+                                {
+                                    Lcd_Clear();
+                                }
+                                else if (tecla == 'Z')
+                                {
+                                    Lcd_Shift_Left();
+                                }
+                                else
+                                {
+                                    Lcd_Write_Char(tecla);
+                                }
                             }
            }
 }

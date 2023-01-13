@@ -83,7 +83,7 @@
 //
 //*****************************************************************************
 xQueueHandle g_pKEYQueue;
-
+xQueueHandle g_pTempQueue;
 //*****************************************************************************
 //
 // The error routine that is called if the driver library encounters an error.
@@ -135,6 +135,7 @@ main(void)
     // Create a mutex to guard the UART.
     //
     g_pKEYQueue = xQueueCreate(32, sizeof(char));
+    g_pTempQueue = xQueueCreate(32, sizeof(uint32_t));
     //
     // Create the LED task.
     //
@@ -158,6 +159,14 @@ main(void)
     }
 
     if(LCDTaskInit() != 0)
+        {
+
+            while(1)
+            {
+            }
+        }
+    //if(0 != 0)
+    if(PWMTaskInit() != 0)
         {
 
             while(1)

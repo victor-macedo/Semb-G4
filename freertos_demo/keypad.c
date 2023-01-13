@@ -60,11 +60,17 @@ xQueueHandle g_pKEYQueue;
 
 //*****************************************************************************
 /* Array of 4x4 to define characters which will be printe on specific key pressed */
-unsigned  char symbol[4][4] = {{ '1', '2',  '3', 'F'},//Talvez um array 3 3 seja suficiente
+char symbol[4][4] =            {{ '1', '2',  '3', 'F'},//Talvez um array 3 3 seja suficiente
                                { '4', '5',  '6', 'E'},
                                { '7', '8',  '9', 'D'},
                                { 'A', '0',  'B', 'C'}};
-char tecla,sData,sHora,sTMax;
+char tecla;
+static const char sTMax[] = "Temp max:000 °C";
+static const char sTMin[] = "Temp min:000 °C";
+static const char sData[] = "Data: dd-mm-yyyy";
+static const char sHora[] = "Hora: hh:mm";
+//static const char sClear = 'W';
+//static const char sLeft = 'Z';
 uint8_t col, row, flag_config, i_count, tempo, temp_max, temp_min;
 bool bvarre, bstart,test;
 uint32_t utempo_inicio;
@@ -81,8 +87,8 @@ vInterrupt_Key()
 {
     test = true;
     uint8_t status = 0;
-    char sTMax[] = "Temp max:000 °C";
-    char sTMin[] = "Temp min:000 °C";
+    char sTMax[] = "Temp max:000 C";
+    char sTMin[] = "Temp min:000 C";
     char sData[] = "Data: dd-mm-yyyy";
     char sHora[] = "Hora: hh:mm";
 
@@ -117,7 +123,7 @@ vInterrupt_Key()
         if ((row == 3) && (col == 0)){ flag_config = 5;}
         if ((row == 3) && (col == 2)){ flag_config = 6;}
 
-        xQueueSendToBack(g_pKEYQueue, &tecla, 1 );
+        xQueueSendToBack(g_pKEYQueue, &tecla, 0 );
 
         switch (flag_config){
              case(0):
@@ -216,7 +222,7 @@ vInterrupt_Key()
              case(5): //Start
                 {
                  //bstart = 1;
-                 Lcd_Clear();
+                 //Lcd_Clear();
                  //Lcd_Write_String(str);
 
                  break;
@@ -256,22 +262,18 @@ KEYTask()
     {
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, GPIO_PIN_2);
        row = 3;
-       vTaskDelay(1 / portTICK_RATE_MS);
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, 0);
 
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, GPIO_PIN_3);
        row = 0;
-       vTaskDelay(1 / portTICK_RATE_MS);
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, 0);
 
        GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6, GPIO_PIN_6);
        row = 1;
-       vTaskDelay(1 / portTICK_RATE_MS);
        GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6, 0);
 
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, GPIO_PIN_7);
        row = 2;
-       vTaskDelay(1 / portTICK_RATE_MS);
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, 0);
     }
 }
