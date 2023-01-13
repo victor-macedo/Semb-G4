@@ -44,14 +44,14 @@
 // The stack size for the display task.
 //
 //*****************************************************************************
-#define PWMTASKSTACKSIZE        128         // Stack size in words
+#define PWMTASKSTACKSIZE       500        // Stack size in words
 
 extern xQueueHandle g_pLEDQueue;
 extern xSemaphoreHandle g_pUARTSemaphore;
 
 uint8_t temp_max,temp_min,temp;
 bool bstart;
-xQueueHandle g_pTEMPQueue;
+xQueueHandle g_pTempQueue;
 //*****************************************************************************
 //
 // This task reads the buttons' state and passes this information to LEDTask.
@@ -62,40 +62,43 @@ PWMTask(void *pvParameters)
 {
     portBASE_TYPE xStatus;
     //Temp por uma Queue que recebe caso o valor seja diferente
-    uint32_t vel;
-    xStatus = xQueueReceive( g_pTEMPQueue, &temp, portMAX_DELAY );
-    if( xStatus == pdPASS )
+    uint32_t vel,temp;
+    while (1)
     {
-        if (temp>=temp_max){
-            PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT, true);
-        }
-        else{
-            PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT, false);
-        }
-        if(temp>temp_min){
-            if(bstart == false){
-                PWMPulseWidthSet(PWM1_BASE, PWM_OUT_4,300);
-                PWMOutputState(PWM1_BASE, PWM_OUT_4_BIT, true);//inicializacvao do motor para ultrapassar a velocidade minima
-                //delay
-                bstart = true;
+        xStatus = xQueueReceive( g_pTempQueue, &temp, portMAX_DELAY );
+        if( xStatus == pdPASS )
+        {
+            if (temp>=temp_max){
+                PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT, true);
             }
-            if(temp < temp_max){
-                vel = (temp-temp_min)/(temp_max-temp_min)*320;
-                if(vel>(320*0.2)){
-                     PWMPulseWidthSet(PWM1_BASE, PWM_OUT_4,vel);
+            else{
+                PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT, false);
+            }
+            if(temp>temp_min){
+                if(bstart == false){
+                    PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,30000);
+                    PWMOutputState(PWM0_BASE, PWM_OUT_3_BIT, true);//inicializacvao do motor para ultrapassar a velocidade minima
+                    //delay
+                    bstart = true;
                 }
-                else {
-                    PWMPulseWidthSet(PWM1_BASE, PWM_OUT_4,320*0.2);
+                if(temp < temp_max){
+                    vel = (temp-temp_min)/(temp_max-temp_min)*30000;
+                    if(vel>(30000*0.2)){
+                         PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,vel);
+                    }
+                    else {
+                        PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,30000*0.2);
+                    }
+                }
+                if(temp >= temp_max){
+                    PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,30000);
                 }
             }
-            if(temp >= temp_max){
-                PWMPulseWidthSet(PWM1_BASE, PWM_OUT_4,320);
-            }
-        }
-        else{
-            PWMOutputState(PWM1_BASE, PWM_OUT_4_BIT, false);
-            bstart = false;
+            else{
+                PWMOutputState(PWM0_BASE, PWM_OUT_3_BIT, true);
+                bstart = false;
 
+            }
         }
     }
 }
@@ -110,30 +113,32 @@ PWMTaskInit(void)
 {
      SysCtlPWMClockSet(SYSCTL_PWMDIV_1); // sem pre scaler
 
-     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
      SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
 
      SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);
      SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);
 
      GPIOPinConfigure(GPIO_PB4_M0PWM2);
-     GPIOPinConfigure(GPIO_PF0_M1PWM4);
+     GPIOPinConfigure(GPIO_PB5_M0PWM3);
 
-     GPIOPinTypePWM(GPIO_PORTF_BASE, GPIO_PIN_0);
+     GPIOPinTypePWM(GPIO_PORTB_BASE, GPIO_PIN_5);
      GPIOPinTypePWM(GPIO_PORTB_BASE, GPIO_PIN_4);
 
      PWMGenConfigure(PWM0_BASE, PWM_GEN_1, PWM_GEN_MODE_DOWN | PWM_GEN_MODE_NO_SYNC);
-     PWMGenConfigure(PWM1_BASE, PWM_GEN_2, PWM_GEN_MODE_DOWN | PWM_GEN_MODE_NO_SYNC);
 
      //Set the Period (expressed in clock ticks)
-     PWMGenPeriodSet(PWM0_BASE, PWM_GEN_1, 320);
-     PWMGenPeriodSet(PWM1_BASE, PWM_GEN_2, 320);
+     PWMGenPeriodSet(PWM0_BASE, PWM_GEN_1, 30000);
 
-     PWMPulseWidthSet(PWM0_BASE, PWM_OUT_2,320/2);//pwm do buzzer
-     PWMPulseWidthSet(PWM1_BASE, PWM_OUT_4,100);
+     PWMPulseWidthSet(PWM0_BASE, PWM_OUT_2,15000);//pwm do buzzer
+     PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,0);
 
      PWMGenEnable(PWM0_BASE, PWM_GEN_1);
-     PWMGenEnable(PWM1_BASE, PWM_GEN_2);
+
+
+
+
+     PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT, false);
+     PWMOutputState(PWM0_BASE, PWM_OUT_3_BIT, false);
 
     //
     // Create the switch task.

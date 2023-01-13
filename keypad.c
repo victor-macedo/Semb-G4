@@ -60,7 +60,7 @@ xQueueHandle g_pKEYQueue;
 
 //*****************************************************************************
 /* Array of 4x4 to define characters which will be printe on specific key pressed */
-unsigned  char symbol[4][4] = {{ '1', '2',  '3', 'F'},//Talvez um array 3 3 seja suficiente
+char symbol[4][4] =            {{ '1', '2',  '3', 'F'},//Talvez um array 3 3 seja suficiente
                                { '4', '5',  '6', 'E'},
                                { '7', '8',  '9', 'D'},
                                { 'A', '0',  'B', 'C'}};
@@ -117,7 +117,7 @@ vInterrupt_Key()
         if ((row == 3) && (col == 0)){ flag_config = 5;}
         if ((row == 3) && (col == 2)){ flag_config = 6;}
 
-        xQueueSendToBack(g_pKEYQueue, &tecla, 1 );
+        xQueueSendToBack(g_pKEYQueue, &tecla, 0 );
 
         switch (flag_config){
              case(0):
@@ -216,7 +216,7 @@ vInterrupt_Key()
              case(5): //Start
                 {
                  //bstart = 1;
-                 Lcd_Clear();
+                 //Lcd_Clear();
                  //Lcd_Write_String(str);
 
                  break;
