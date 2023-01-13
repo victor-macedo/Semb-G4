@@ -48,7 +48,7 @@
 // The stack size for the LED toggle task.
 //
 //*****************************************************************************
-#define KEYTASKSTACKSIZE        1000         // Stack size in words
+#define KEYTASKSTACKSIZE        3000         // Stack size in words
 
 //*****************************************************************************
 //
@@ -63,11 +63,10 @@ xQueueHandle g_pKEYQueue;
 unsigned  char symbol[4][4] = {{ '1', '2',  '3', 'F'},//Talvez um array 3 3 seja suficiente
                                { '4', '5',  '6', 'E'},
                                { '7', '8',  '9', 'D'},
-                               { 'W', '0',  'B', 'C'}};
+                               { 'A', '0',  'B', 'C'}};
 char tecla,sData,sHora,sTMax;
 uint8_t col, row, flag_config, i_count, tempo, temp_max, temp_min;
-//char string_teclado[8];
-bool bvarre, bstart;
+bool bvarre, bstart,test;
 
 //*****************************************************************************
 //
@@ -79,12 +78,15 @@ bool bvarre, bstart;
 static void
 vInterrupt_Key()
 {
+    test = true;
+    int i;
     uint8_t status = 0;
     char str[] = "Temperatura max:000";
     status = GPIOIntStatus(GPIO_PORTC_BASE,true);
     GPIOIntClear(GPIO_PORTC_BASE, status);
-    //vTaskDelay(1500/ portTICK_RATE_MS);
     GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_4 |GPIO_INT_PIN_5 | GPIO_INT_PIN_6 | GPIO_INT_PIN_7);
+    vTaskDelay(500/ portTICK_RATE_MS);
+
     flag_config = 0;
     // Varredura das teclas
     if((status & GPIO_INT_PIN_4) == GPIO_INT_PIN_4)
@@ -111,7 +113,7 @@ vInterrupt_Key()
         if ((row == 3) && (col == 0)){ flag_config = 5;}
         if ((row == 3) && (col == 2)){ flag_config = 6;}
 
-        xQueueSendToBack(g_pKEYQueue, &tecla, 0 );
+        xQueueSendToBack(g_pKEYQueue, &tecla, 1 );
 
         switch (flag_config){
              case(0):
@@ -123,7 +125,7 @@ vInterrupt_Key()
              {
                  if (i_count == 0)
                      Lcd_Clear();
-                     Lcd_Write_String(sData);
+                     //Lcd_Write_String(sData);
 
                  if (i_count < 8)
                       {
@@ -181,7 +183,7 @@ vInterrupt_Key()
                {
                    if (i_count == 0)
                           Lcd_Clear();
-                          Lcd_Write_String(sTMax);
+                          //Lcd_Write_String(sTMax);
                    if (i_count < 2)
                         {
                            i_count = i_count + 1;
@@ -204,6 +206,8 @@ vInterrupt_Key()
                  //bstart = 1;
                  Lcd_Clear();
                  Lcd_Write_String(str);
+                 for(i=0;i==5;i++)
+                     {Lcd_Shift_Left();}
                  break;
                 }
              case(6):
@@ -213,14 +217,24 @@ vInterrupt_Key()
                  break;
                 }
              }
-        //vTaskDelay(100/ portTICK_RATE_MS);
+        vTaskDelay(500/ portTICK_RATE_MS);
         GPIOIntEnable(GPIO_PORTC_BASE, GPIO_INT_PIN_4 |GPIO_INT_PIN_5 | GPIO_INT_PIN_6 | GPIO_INT_PIN_7);
+        test = false;
 }
 
 static void
 IntGPIOc(void)
 {
-    vInterrupt_Key();
+
+    if(test==false){
+        vInterrupt_Key();
+    }
+
+    else{
+        uint8_t status = 0;
+        status = GPIOIntStatus(GPIO_PORTC_BASE,true);
+        GPIOIntClear(GPIO_PORTC_BASE, status);
+    }
 }
 static void
 KEYTask()
@@ -229,26 +243,27 @@ KEYTask()
     char sHora[] = "Hora: ";
     char sTMax[] = "Maxima temp: ";
     i_count = 0;
-    while(1)
+    test = false;
+    while(test ==false)
     {
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, GPIO_PIN_2);
        row = 3;
-       vTaskDelay(80);
+       vTaskDelay(20 / portTICK_RATE_MS);
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, 0);
 
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, GPIO_PIN_3);
        row = 0;
-       vTaskDelay(80);
+       vTaskDelay(20 / portTICK_RATE_MS);
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, 0);
 
        GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6, GPIO_PIN_6);
        row = 1;
-       vTaskDelay(80);
+       vTaskDelay(20 / portTICK_RATE_MS);
        GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6, 0);
 
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, GPIO_PIN_7);
        row = 2;
-       vTaskDelay(80);
+       vTaskDelay(20 / portTICK_RATE_MS);
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, 0);
     }
 }
@@ -270,7 +285,7 @@ KEYTaskInit(void)
     GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_7);
     GPIOPinTypeGPIOOutput(GPIO_PORTD_BASE, GPIO_PIN_6);
 
-    GPIOIntTypeSet(INT_GPIOC,GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7,GPIO_FALLING_EDGE);
+    GPIOIntTypeSet(GPIO_PORTC_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, GPIO_FALLING_EDGE);
 
 
     GPIOIntRegister(GPIO_PORTC_BASE,IntGPIOc);

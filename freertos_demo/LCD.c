@@ -23,7 +23,6 @@
 xQueueHandle g_pKEYQueue;
 
 char tecla;
-char string_teclado[8];
 uint32_t flag_config, i_start, uTmax, uTmin, i_count;
 
 /**************************************************************
@@ -97,26 +96,16 @@ Lcd_Cmd(1);
 *
 * Description: Sets the LCD cursor position
 **************************************************************/
-void Lcd_Set_Cursor(char a, char b)
+void Lcd_Set_Cursor(char b)
 {
 char temp,z,y;
-if(a == 1)
-{
+
 temp = 0x80 + b - 1;
 z = temp>>4;
 y = temp & 0x0F;
 Lcd_Cmd(z);
 Lcd_Cmd(y);
-}
 
-else if(a == 2)
-{
-temp = 0xC0 + b - 1;
-z = temp>>4;
-y = temp & 0x0F;
-Lcd_Cmd(z);
-Lcd_Cmd(y);
-}
 }
 /**************************************************************
 * Function: void Lcd_Init()
@@ -162,11 +151,11 @@ y = a&0xF0;
 GPIOPinWrite(GPIO_PORTF_BASE, RS, RS ); // => RS = 1
 Lcd_Port(y>>4); //Data transfer
 GPIOPinWrite(GPIO_PORTF_BASE, EN, EN); //EN =1
-vTaskDelay(0.00037 / portTICK_RATE_MS);
+SysCtlDelay(10000);
 GPIOPinWrite(GPIO_PORTF_BASE, EN, 0);//EN = 0;
 Lcd_Port(temp);
 GPIOPinWrite(GPIO_PORTF_BASE, EN, EN);//EN = 1;
-vTaskDelay(0.000015 / portTICK_RATE_MS);
+SysCtlDelay(400);
 GPIOPinWrite(GPIO_PORTF_BASE, EN, 0);//EN = 0;
 }
 
@@ -181,7 +170,7 @@ void Lcd_Write_String(const char *a)
 {
 int i;
 for(i=0;a[i]!='\0';i++)
-Lcd_Write_Char(a[i]);
+xQueueSendToBack(g_pKEYQueue, &a[i], 1 );
 }
 /**************************************************************
 * Function: void Lcd_Shift_Right()
@@ -219,7 +208,7 @@ LCDTask()
                xStatus = xQueueReceive( g_pKEYQueue, &tecla, portMAX_DELAY );
                             if( xStatus == pdPASS )
                             {
-                               Lcd_Write_String(tecla);
+                               Lcd_Write_Char(tecla);
                             }
            }
 }
