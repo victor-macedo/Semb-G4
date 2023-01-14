@@ -33,7 +33,7 @@
 //*****************************************************************************
 
 xQueueHandle g_pKEYQueue;
-
+extern xSemaphoreHandle g_pSTARTSemaphore;
 //*****************************************************************************
 /* Array of 4x4 to define characters which will be printe on specific key pressed */
 char symbol[4][4] =            {{ '1', '2',  '3', 'F'},
@@ -230,7 +230,7 @@ vInterrupt_Key()
 
              case(5): //Start
                 {
-                     bstart =~bstart;
+                     xSemaphoreGive( g_pSTARTSemaphore );
                      xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
                      break;
                 }
@@ -269,6 +269,7 @@ KEYTask()
     flag_config = 0;
     bstart = 0;
     SysTickEnable();
+    g_pSTARTSemaphore= xSemaphoreCreateBinary();
     while(test ==false)
     {
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, GPIO_PIN_2);

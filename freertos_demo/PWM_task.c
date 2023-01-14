@@ -32,6 +32,8 @@ static const char sClear = 'W';
 
 xQueueHandle g_pTempQueue;
 xQueueHandle g_pKEYQueue;
+
+xSemaphoreHandle g_pSTARTSemaphore;
 //*****************************************************************************
 //
 // A tarefa recebe os valores de temperatura, calcula a velocidade e manda
@@ -42,9 +44,9 @@ static void
 PWMTask(void *pvParameters)
 {
     portBASE_TYPE xStatus;
-    while(1)
+    if( xSemaphoreTake( g_pSTARTSemaphore, portMAX_DELAY ) == pdTRUE )
     {
-        while (bstart==1)
+        while(1)
         {
             xStatus = xQueueReceive( g_pTempQueue, &temp, portMAX_DELAY );
             if( xStatus == pdPASS )
