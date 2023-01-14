@@ -42,16 +42,30 @@ char symbol[4][4] =            {{ '1', '2',  '3', 'F'},
                                { 'A', '0',  'B', 'C'}};
 char tecla;
 static const char sTMax[] = "Temp max:000 C";
+static const char sinv[] = "invalido";
 static const char sTMin[] = "Temp min:000 C";
 static const char sData[] = "Data: dd-mm-yyyy";
-static const char sHora[] = "Hora: hh:mm";
+static const char sHora[] = "Hora: hh:mm:ss";
 static const char sVel[] = "Velocidade: ";
 static const char sClear = 'W';
 static const char sLeft = 'Z';
 static const char sRight = 'B';
-uint8_t col, row, flag_config, i_count, temp_max, temp_min;
-uint32_t utempo_inicio,vel;
+uint8_t col, row, flag_config, i_count,dias,meses,a,hora,minu,secu;
+uint16_t  temp_max, temp_min;
+uint32_t utempo_inicio,vel,ano;
+char t_min[3];
+char t_max[3];
+char day[2];
+char mes[2];
+char hor[2];
+char min[2];
+char sec[2];
+char ano_t[6];
+uint8_t meses_bisseistos[13] = {1,31,29,31,30,31,30,31,31,30,31,30,31};
+uint8_t meses_normais[13]= {1,31,28,31,30,31,30,31,31,30,31,30,31};
+
 bool bvarre, bstart,test;
+#define TEMP_MAX_MAX 150
 
 //*****************************************************************************
 //
@@ -123,59 +137,136 @@ vInterrupt_Key()
 
              case (1)://Data
              {
+                 if(a==3){
+                    ano_t[i_count-5]= symbol[row][col];
+                    i_count++;
+                    if(i_count == 9){
+                        ano = atoi(ano_t);
+                        a=0;
+                     }
+                  }
+                  if(a==2){
+                     mes[i_count-3]= symbol[row][col];
+                     i_count++;
+                     if(i_count == 5){
+                        Key_Shift_Right(1);
+                        meses   = atoi(mes);
+                         ++a;
+                       }
+                    }
+
+                 if(a==1){
+                    day[i_count-1]= symbol[row][col];
+                    i_count++;
+                    if(i_count == 3){
+                      Key_Shift_Right(1);
+                      dias  = atoi(day);
+                       ++a;
+                       }
+                     }
                  if (i_count == 0)
                  {
                      xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
                      Lcd_Write_String(sData);
                      Key_Shift_Left(10);
                      i_count++;
+                     ++a;
                  }
-                 else if (i_count == 3|5)
-                 {
-                     Key_Shift_Right(1);
-                     i_count++;
-                 }
-                 if (i_count < 8)
-                      {
-                         //Precisa adicionar aqui a função pra juntar as teclas em uma string
-                         i_count++;
-                      }
-                 else
+
+                 if(a==0)
                      {
                          i_count = 0;
                          flag_config = 0;
                          xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                         if(meses<13 && meses>0 && dias>0 && ano > 0 ){
+                           if ((ano % 4 == 0)  && (ano % 100 != 0)){
+                               if(dias>meses_bisseistos[meses]){
+                                   dias = 0;
+                                   meses = 0;
+                                   ano = 0;
+                                   Lcd_Write_String(sinv);
+
+                               }
+                               }
+                            else{
+                                if(dias>meses_normais[meses]){
+                                    dias = 0;
+                                    meses = 0;
+                                    ano = 0;
+                                    Lcd_Write_String(sinv);
+
+                                }
+                             }
+                         }
+                         else{
+                             dias = 0;
+                             meses = 0;
+                             ano = 0;
+                             Lcd_Write_String(sinv);
+                         }
                      }
                  break;
              }
+
              case (2): // Hora
               {
+
+
+                 if(a==3){
+                   sec[i_count-5]= symbol[row][col];
+                   i_count++;
+                   if(i_count == 7){
+                       secu =atoi(sec);
+                       ++a;
+                   }
+                 }
+
+                 if(a==2){
+                  min[i_count-3]= symbol[row][col];
+                  i_count++;
+                  if(i_count == 5){
+                    Key_Shift_Right(1);
+                    minu =atoi(min);
+                    ++a;
+                     }
+                  }
+
+                 if(a==1){
+                     hor[i_count-1]= symbol[row][col];
+                     i_count++;
+                     if(i_count == 3){
+                       Key_Shift_Right(1);
+                       hora =atoi(hor);
+                       ++a;
+                     }
+                 }
+
+
                   if (i_count == 0)
                   {
                        xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
                        Lcd_Write_String(sHora);
-                       Key_Shift_Left(5);
+                       Key_Shift_Left(8);
                        i_count++;
+                       a = 1;
                   }
-                  else if(i_count == 3|5)
-                  {
-                      Key_Shift_Right(1);
-                      i_count++;
-                  }
-                  if (i_count < 6)
-                       {
-                          //Precisa adicionar aqui a função pra juntar as teclas em uma string
-                          //Vai ser mais facil se dividir em horas, minutos, segundos
-                          //Talvez seja necessario dividir em ifs pra conseguir separar os dados
-                          i_count++;
-                       }
-                  else
+                  if(a==4)
                       {
-                      //Necessidade de adaptar o valor recebido
-                      utempo_inicio = (SysTickValueGet()/ (portTICK_RATE_MS*1000));
+                      if( hora<24 && hora>0 && minu < 60 && minu>0 && secu<60 && secu>0 ){
+                          utempo_inicio = (SysTickValueGet()/ (portTICK_RATE_MS*1000));
+                          xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                      }
+                      else {
+                          xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                          Lcd_Write_String(sinv);
+                          hora = 0;
+                          minu = 0;
+                          secu = 0;
+                      }
+                      //Necessidade de adaptar o valor recebid
                       i_count = 0;
                       flag_config = 0;
-                      xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                      a= 0;
                       }
                   break;
               }
@@ -192,14 +283,24 @@ vInterrupt_Key()
                         {
                            //Precisa adicionar aqui a função pra juntar as teclas em uma string
                            //Salva o valor ou mostra no display
+                           t_min[i_count-1]= symbol[row][col];
                            i_count++;
                         }
                    else
                        {
                            //temp_min = Converter string em int;
-                           i_count = 0;
+                           t_min[i_count-1]= symbol[row][col];
+                           temp_min = atoi(t_min);
+                           i_count=0;
+                           if(temp_min > temp_max){
+                               xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                               temp_min = 0;
+                               Lcd_Write_String(sinv);
+                           }
+                           else {
+                                xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                                }
                            flag_config = 0;
-                           xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
                        }
                    break;
                }
@@ -216,14 +317,25 @@ vInterrupt_Key()
                         {
                            //Precisa adicionar aqui a função pra juntar as teclas em uma string
                            //strncat(string_teclado,&tecla,1);
+                           t_max[i_count-1]= symbol[row][col];
                            i_count++;
+
                         }
                    else
                        {
                            //temp_max = Converter string em int;
+                           t_max[i_count-1]= symbol[row][col];
+                           temp_max = atoi(t_max);
                            i_count = 0;
+                           if(temp_max>150){
+                               xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                               temp_max = 0;
+                               Lcd_Write_String(sinv);
+                           }
+                           else {
+                               xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                           }
                            flag_config = 0;
-                           xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
                        }
                    break;
                }
