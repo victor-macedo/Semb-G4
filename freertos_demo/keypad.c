@@ -230,7 +230,7 @@ vInterrupt_Key()
 
              case(5): //Start
                 {
-                     bstart = 1;
+                     bstart =~bstart;
                      xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
                      break;
                 }
