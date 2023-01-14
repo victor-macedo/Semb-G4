@@ -14,6 +14,7 @@
 #include "queue.h"
 #include "semphr.h"
 #include "LCD.h"
+
 xQueueHandle g_pKEYQueue;
 xQueueHandle g_pTempQueue;
 
@@ -91,6 +92,17 @@ main(void)
     // Create the PWM task.
     //
     if(PWMTaskInit() != 0)
+        {
+
+            while(1)
+            {
+            }
+        }
+
+    //
+    // Create the Att task.
+    //
+    if(AttTaskInit() != 0)
         {
 
             while(1)

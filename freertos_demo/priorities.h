@@ -30,10 +30,11 @@
 // The priorities of the various tasks.
 //
 //*****************************************************************************
-#define PRIORITY_PWM_TASK       3
+#define PRIORITY_PWM_TASK    4
+#define PRIORITY_ATT_TASK       2
+#define PRIORITY_LCD_TASK       3
 #define PRIORITY_KEY_TASK       1
-#define PRIORITY_LCD_TASK       2
-#define PRIORITY_I2C_TASK       4
+#define PRIORITY_I2C_TASK       5
 
 
 #endif // __PRIORITIES_H__
