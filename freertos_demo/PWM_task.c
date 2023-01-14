@@ -23,11 +23,15 @@
 //*****************************************************************************
 #define PWMTASKSTACKSIZE       500        // Stack size in words
 
-extern xQueueHandle g_pLEDQueue;
 
 uint32_t temp_max,temp_min,temp,vel;
 bool bstart,btemp;
+static const char sAMin[] = "Temp min atingida";
+static const char sAMax[] = "Temp max atingida";
+static const char sClear = 'W';
+
 xQueueHandle g_pTempQueue;
+xQueueHandle g_pKEYQueue;
 //*****************************************************************************
 //
 // A tarefa recebe os valores de temperatura, calcula a velocidade e manda
@@ -76,12 +80,17 @@ PWMTask(void *pvParameters)
                     if(temp >= temp_max)
                     {
                         PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,30000);
+                        xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                        xQueueSendToBack(g_pKEYQueue, &sAMax, 0 );
+
                     }
                 }
                 else
                 {
                     PWMOutputState(PWM0_BASE, PWM_OUT_3_BIT, true);
                     btemp = false;
+                    xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                    xQueueSendToBack(g_pKEYQueue, &sAMin, 0 );
 
                 }
             }
