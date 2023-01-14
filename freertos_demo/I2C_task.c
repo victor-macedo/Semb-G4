@@ -1,27 +1,3 @@
-//*****************************************************************************
-//
-// led_task.c - A simple flashing LED task.
-//
-// Copyright (c) 2012-2017 Texas Instruments Incorporated.  All rights reserved.
-// Software License Agreement
-// 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
-// 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
-// 
-// This is part of revision 2.1.4.178 of the EK-TM4C123GXL Firmware Package.
-//
-//*****************************************************************************
-
 #include <I2C_task.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -40,39 +16,30 @@
 
 //*****************************************************************************
 //
-// The stack size for the LED toggle task.
+// The stack size for the I2C toggle task.
 //
 //*****************************************************************************
 #define I2CTASKSTACKSIZE        1000         // Stack size in words
 
 //*****************************************************************************
 //
-// The queue that holds messages sent to the LED task.
+// The queue that holds messages sent to the I2C task.
 //
 //*****************************************************************************
 xQueueHandle g_pTempQueue;
 
-extern xSemaphoreHandle ;
 #define SLAVE_ADDRESS_WRITE 0x48
 #define SLAVE_ADDRESS_READ 0x48
 #define CONFIG_TMP 0x01
 #define CONFIG_TMP_BITS 0x00
 #define TEMP_REG 0x00
 
-//uint32_t temp;
-uint32_t uValue_Temp_New,uValue_Temp_Old, uTmax, uTmin, uVel;
-static void
-I2CSend(uint32_t slave_addr, uint8_t reg){
-    I2CMasterSlaveAddrSet(I2C1_BASE, slave_addr, false);
-    I2CMasterDataPut(I2C1_BASE, reg);
-    I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_SEND_START);
-    while(I2CMasterBusy(I2C1_BASE));
-}
+uint32_t uValue_Temp_New,uValue_Temp_Old;
 
 //*****************************************************************************
 //
-// This task toggles the user selected LED at a user selected frequency. User
-// can make the selections by pressing the left and right buttons.
+// Usando o protocolo de I2C essa tarefa adquire os valores da temperatura
+// do sensor e repassa para PWM atraves de uma queue
 //
 //*****************************************************************************
 
@@ -103,7 +70,7 @@ I2CReceive(uint32_t slave_addr)
     I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_RECEIVE_FINISH);
     while(I2CMasterBusy(I2C1_BASE));
     temp2 = I2CMasterDataGet(I2C1_BASE);
-    temp = (int)((temp1<<1)|(temp2>>8))*128/255;//nao sei se esta certp
+    temp = (int)((temp1<<1)|(temp2>>8))*128/255;
     vTaskDelay(100 / portTICK_RATE_MS);
     return temp;
 }
@@ -126,7 +93,7 @@ I2CTask()
 
 //*****************************************************************************
 //
-// Initializes the LED task.
+// Initializes the I2C task.
 //
 //*****************************************************************************
 uint32_t
@@ -147,10 +114,10 @@ I2CTaskInit(void)
 
         I2CSENDCONFIG();
 
-        g_pTempQueue = xQueueCreate(2, sizeof(uint32_t)); //A definir o exato numero de valores na queue
+        g_pTempQueue = xQueueCreate(4, sizeof(uint32_t));
 
     //
-    // Create the LED task.
+    // Create the I2C task.
     //
     if(xTaskCreate(I2CTask, (const portCHAR *)"I2C", I2CTASKSTACKSIZE, NULL,
                    tskIDLE_PRIORITY + PRIORITY_I2C_TASK, NULL) != pdTRUE)

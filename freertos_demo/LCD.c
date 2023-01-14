@@ -123,10 +123,9 @@ vTaskDelay(0.00056 / portTICK_RATE_MS);
 Lcd_Cmd(0x03);
 vTaskDelay(0.00037 / portTICK_RATE_MS);
 Lcd_Cmd(0x03);
-/////////////////////////////////////////////////////
 Lcd_Cmd(0x02);
 Lcd_Cmd(0x02);//Function set 1, 0-4bits
-Lcd_Cmd(0x00);// n� linhas  font 5x8 N� de linhas 1
+Lcd_Cmd(0x00);// n linhas  font 5x8 N de linhas 1
 
 Lcd_Cmd(0x00);// display on/off
 Lcd_Cmd(0x0F);// 1, Display-on, Cursor - 1, Blink -0
@@ -198,6 +197,12 @@ void Lcd_Shift_Left(void)
      Lcd_Cmd(0x00);
 }
 static void
+//*****************************************************************************
+//
+// O LCD é um recurso compartilhado e funciona com Gatekeeper,
+// recebendo strings das outras tasks
+//
+//*****************************************************************************
 LCDTask()
 {
         Lcd_Init();

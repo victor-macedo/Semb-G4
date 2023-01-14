@@ -1,27 +1,3 @@
-//*****************************************************************************
-//
-// led_task.c - A simple flashing LED task.
-//
-// Copyright (c) 2012-2017 Texas Instruments Incorporated.  All rights reserved.
-// Software License Agreement
-// 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
-// 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
-// 
-// This is part of revision 2.1.4.178 of the EK-TM4C123GXL Firmware Package.
-//
-//*****************************************************************************
-
 #include <I2C_task.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -45,14 +21,14 @@
 
 //*****************************************************************************
 //
-// The stack size for the LED toggle task.
+// The stack size for the KEY toggle task.
 //
 //*****************************************************************************
 #define KEYTASKSTACKSIZE        3000         // Stack size in words
 
 //*****************************************************************************
 //
-// The queue that holds messages sent to the LED task.
+// The queue that holds messages sent to the KEY task.
 //
 //*****************************************************************************
 
@@ -60,7 +36,7 @@ xQueueHandle g_pKEYQueue;
 
 //*****************************************************************************
 /* Array of 4x4 to define characters which will be printe on specific key pressed */
-char symbol[4][4] =            {{ '1', '2',  '3', 'F'},//Talvez um array 3 3 seja suficiente
+char symbol[4][4] =            {{ '1', '2',  '3', 'F'},
                                { '4', '5',  '6', 'E'},
                                { '7', '8',  '9', 'D'},
                                { 'A', '0',  'B', 'C'}};
@@ -69,17 +45,18 @@ static const char sTMax[] = "Temp max:000 C";
 static const char sTMin[] = "Temp min:000 C";
 static const char sData[] = "Data: dd-mm-yyyy";
 static const char sHora[] = "Hora: hh:mm";
+static const char sVel[] = "Velocidade: ";
 static const char sClear = 'W';
 static const char sLeft = 'Z';
 static const char sRight = 'B';
 uint8_t col, row, flag_config, i_count, temp_max, temp_min;
+uint32_t utempo_inicio,vel;
 bool bvarre, bstart,test;
-uint32_t utempo_inicio;
 
 //*****************************************************************************
 //
-// This task toggles the user selected LED at a user selected frequency. User
-// can make the selections by pressing the left and right buttons.
+// Essa tarefa realiza a varredura das teclas e deteta a tecla,
+// além disso há as configuracoes do sistema
 //
 //*****************************************************************************
 void
@@ -105,10 +82,6 @@ vInterrupt_Key()
 {
     test = true;
     uint8_t status = 0;
-    char sTMax[] = "Temp max:000 C";
-    char sTMin[] = "Temp min:000 C";
-    char sData[] = "Data: dd-mm-yyyy";
-    char sHora[] = "Hora: hh:mm:ss";
 
     status = GPIOIntStatus(GPIO_PORTC_BASE,true);
     GPIOIntClear(GPIO_PORTC_BASE, status);
@@ -136,10 +109,10 @@ vInterrupt_Key()
         else if (row == 2) { flag_config = 3;}
         else if (row == 3) { flag_config = 4;}
         }
-        tecla = symbol[row][col]; //Adquire o valor da tecla
         if ((row == 3) && (col == 0)){ flag_config = 5;}
         if ((row == 3) && (col == 2)){ flag_config = 6;}
 
+        tecla = symbol[row][col];
         xQueueSendToBack(g_pKEYQueue, &tecla, 0 );
 
         switch (flag_config){
@@ -157,9 +130,14 @@ vInterrupt_Key()
                      Key_Shift_Left(10);
                      i_count++;
                  }
-                 else if (i_count < 8)
+                 else if (i_count == 3|5)
+                 {
+                     Key_Shift_Right(1);
+                     i_count++;
+                 }
+                 if (i_count < 8)
                       {
-                         //Salva o valor ou mostra no display
+                         //Precisa adicionar aqui a função pra juntar as teclas em uma string
                          i_count++;
                       }
                  else
@@ -179,14 +157,21 @@ vInterrupt_Key()
                        Key_Shift_Left(5);
                        i_count++;
                   }
-                 else if (i_count < 6)
+                  else if(i_count == 3|5)
+                  {
+                      Key_Shift_Right(1);
+                      i_count++;
+                  }
+                  if (i_count < 6)
                        {
-                          //Salva o valor ou mostra no display
-                         i_count++;
+                          //Precisa adicionar aqui a função pra juntar as teclas em uma string
+                          //Vai ser mais facil se dividir em horas, minutos, segundos
+                          //Talvez seja necessario dividir em ifs pra conseguir separar os dados
+                          i_count++;
                        }
                   else
                       {
-                          //Necessidade de adaptar o valor recebido
+                      //Necessidade de adaptar o valor recebido
                       utempo_inicio = (SysTickValueGet()/ (portTICK_RATE_MS*1000));
                       i_count = 0;
                       flag_config = 0;
@@ -205,6 +190,7 @@ vInterrupt_Key()
                     }
                    else if (i_count < 3)
                         {
+                           //Precisa adicionar aqui a função pra juntar as teclas em uma string
                            //Salva o valor ou mostra no display
                            i_count++;
                         }
@@ -228,6 +214,7 @@ vInterrupt_Key()
                    }
                    else if (i_count < 3)
                         {
+                           //Precisa adicionar aqui a função pra juntar as teclas em uma string
                            //strncat(string_teclado,&tecla,1);
                            i_count++;
                         }
@@ -243,16 +230,16 @@ vInterrupt_Key()
 
              case(5): //Start
                 {
-                 //bstart = 1;
-                  xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
-                 //Lcd_Write_String(str);
-
-                 break;
+                     bstart = 1;
+                     xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                     break;
                 }
              case(6): //Velocidade
                 {
-                  xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
-                 break;
+                     xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                     xQueueSendToBack(g_pKEYQueue, &sVel, 0 );
+                     xQueueSendToBack(g_pKEYQueue, &vel, 0 ); //Não sei se essa função vai funcionar, pois talvez seja necessario converter o int de velocidade para uma string
+                     break;
                 }
              }
         vTaskDelay(500/ portTICK_RATE_MS);
@@ -280,6 +267,7 @@ KEYTask()
     i_count = 0;
     test = false;
     flag_config = 0;
+    bstart = 0;
     SysTickEnable();
     while(test ==false)
     {
@@ -303,7 +291,7 @@ KEYTask()
 
 //*****************************************************************************
 //
-// Initializes the LED task.
+// Initializes the Key task.
 //
 //*****************************************************************************
 uint32_t
@@ -325,7 +313,7 @@ KEYTaskInit(void)
 
     GPIOIntEnable(GPIO_PORTC_BASE, GPIO_INT_PIN_4 |GPIO_INT_PIN_5 | GPIO_INT_PIN_6 | GPIO_INT_PIN_7);
     //
-    // Create the LCD task.
+    // Create the KEY task.
     //
     if(xTaskCreate(KEYTask, (const portCHAR *)"KEY", KEYTASKSTACKSIZE, NULL,
                    tskIDLE_PRIORITY + PRIORITY_KEY_TASK, NULL) != pdTRUE)

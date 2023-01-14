@@ -1,26 +1,3 @@
-//*****************************************************************************
-//
-// switch_task.c - A simple switch task to process the buttons.
-//
-// Copyright (c) 2012-2017 Texas Instruments Incorporated.  All rights reserved.
-// Software License Agreement
-// 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
-// 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
-// 
-// This is part of revision 2.1.4.178 of the EK-TM4C123GXL Firmware Package.
-//
-//*****************************************************************************
 #include <stdbool.h>
 #include <stdint.h>
 #include "inc/hw_memmap.h"
@@ -47,23 +24,21 @@
 #define PWMTASKSTACKSIZE       500        // Stack size in words
 
 extern xQueueHandle g_pLEDQueue;
-extern xSemaphoreHandle g_pUARTSemaphore;
 
-uint8_t temp_max,temp_min,temp;
-bool bstart;
+uint32_t temp_max,temp_min,temp,vel;
+bool bstart,btemp;
 xQueueHandle g_pTempQueue;
 //*****************************************************************************
 //
-// This task reads the buttons' state and passes this information to LEDTask.
+// A tarefa recebe os valores de temperatura, calcula a velocidade e manda
+// um sinal PWM para a ventoinha
 //
 //*****************************************************************************
 static void
 PWMTask(void *pvParameters)
 {
     portBASE_TYPE xStatus;
-    //Temp por uma Queue que recebe caso o valor seja diferente
-    uint32_t vel,temp;
-    while (1)
+    while (bstart==1)
     {
         xStatus = xQueueReceive( g_pTempQueue, &temp, portMAX_DELAY );
         if( xStatus == pdPASS )
@@ -75,11 +50,11 @@ PWMTask(void *pvParameters)
                 PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT, false);
             }
             if(temp>temp_min){
-                if(bstart == false){
+                if(btemp == false){
                     PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,30000);
-                    PWMOutputState(PWM0_BASE, PWM_OUT_3_BIT, true);//inicializacvao do motor para ultrapassar a velocidade minima
+                    PWMOutputState(PWM0_BASE, PWM_OUT_3_BIT, true); //inicializacvao do motor para ultrapassar a velocidade minima
                     //delay
-                    bstart = true;
+                    btemp = true;
                 }
                 if(temp < temp_max){
                     vel = (temp-temp_min)/(temp_max-temp_min)*30000;
@@ -96,7 +71,7 @@ PWMTask(void *pvParameters)
             }
             else{
                 PWMOutputState(PWM0_BASE, PWM_OUT_3_BIT, true);
-                bstart = false;
+                btemp = false;
 
             }
         }
@@ -105,7 +80,7 @@ PWMTask(void *pvParameters)
 
 //*****************************************************************************
 //
-// Initializes the switch task.
+// Initializes the PWM task.
 //
 //*****************************************************************************
 uint32_t
@@ -141,7 +116,7 @@ PWMTaskInit(void)
      PWMOutputState(PWM0_BASE, PWM_OUT_3_BIT, false);
 
     //
-    // Create the switch task.
+    // Create the PWM task.
     //
     if(xTaskCreate(PWMTask, (const portCHAR *)"PWM",
                    PWMTASKSTACKSIZE, NULL, tskIDLE_PRIORITY +
