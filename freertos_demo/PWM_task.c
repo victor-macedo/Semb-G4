@@ -113,6 +113,7 @@ PWMTask(void *pvParameters)
                 PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT, false);
                 PWMOutputState(PWM0_BASE, PWM_OUT_3_BIT, false);
                 btemp = false;
+                vel = 0;
 
             }
             vTaskDelay(1000/ portTICK_RATE_MS);
