@@ -47,10 +47,12 @@ static const char sTMin[] = "Temp min:000 C";
 static const char sData[] = "Data: dd-mm-yyyy";
 static const char sHora[] = "Hora: hh:mm:ss";
 static const char sVel[] = "Velocidade: ";
+static const char start[] = "start";
+static const char stop[] = "stop";
 static const char sClear = 'W';
 static const char sLeft = 'Z';
 static const char sRight = 'B';
-uint8_t col, row, flag_config, i_count,dias,meses,a,hora,minu,secu;
+uint8_t col, row, flag_config, i_count,dias,meses,a,hora,minu,secu,show;
 uint16_t  temp_max, temp_min;
 uint32_t utempo_inicio,vel,ano;
 char t_min[3];
@@ -60,7 +62,7 @@ char mes[2];
 char hor[2];
 char min[2];
 char sec[2];
-char ano_t[6];
+char ano_t[4];
 uint8_t meses_bisseistos[13] = {1,31,29,31,30,31,30,31,31,30,31,30,31};
 uint8_t meses_normais[13]= {1,31,28,31,30,31,30,31,31,30,31,30,31};
 
@@ -118,13 +120,13 @@ vInterrupt_Key()
     else if((status & GPIO_INT_PIN_7) == GPIO_INT_PIN_7)
        {
         col = 3;
-        if (row == 0) { flag_config = 1;}
-        else if (row == 1) { flag_config = 2;}
-        else if (row == 2) { flag_config = 3;}
-        else if (row == 3) { flag_config = 4;}
+        if (row == 0) { flag_config = 1; a= 0;}
+        else if (row == 1) { flag_config = 2;a=0;}
+        else if (row == 2) { flag_config = 3;a=0;}
+        else if (row == 3) { flag_config = 4;a=0;}
         }
-        if ((row == 3) && (col == 0)){ flag_config = 5;}
-        if ((row == 3) && (col == 2)){ flag_config = 6;}
+        if ((row == 3) && (col == 0)){ flag_config = 5;a= 0;}
+        if ((row == 3) && (col == 2)){ flag_config = 6;a= 0;}
 
         tecla = symbol[row][col];
         xQueueSendToBack(g_pKEYQueue, &tecla, 0 );
@@ -141,8 +143,7 @@ vInterrupt_Key()
                     ano_t[i_count-5]= symbol[row][col];
                     i_count++;
                     if(i_count == 9){
-                        ano = atoi(ano_t);
-                        a=0;
+                        ++a;
                      }
                   }
                   if(a==2){
@@ -150,7 +151,6 @@ vInterrupt_Key()
                      i_count++;
                      if(i_count == 5){
                         Key_Shift_Right(1);
-                        meses   = atoi(mes);
                          ++a;
                        }
                     }
@@ -160,21 +160,39 @@ vInterrupt_Key()
                     i_count++;
                     if(i_count == 3){
                       Key_Shift_Right(1);
-                      dias  = atoi(day);
                        ++a;
                        }
                      }
-                 if (i_count == 0)
+                 if (i_count == 0 || a ==0)
                  {
+                     i_count = 0;
+                     show = 0;
                      xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
                      Lcd_Write_String(sData);
                      Key_Shift_Left(10);
+                     if(ano != 0){
+                         xQueueSendToBack(g_pKEYQueue, &day[0], 0 );
+                         xQueueSendToBack(g_pKEYQueue, &day[1], 0 );
+                         Key_Shift_Right(1);
+                         xQueueSendToBack(g_pKEYQueue, &mes[0], 0 );
+                         xQueueSendToBack(g_pKEYQueue, &mes[1], 0 );
+                         Key_Shift_Right(1);
+                         xQueueSendToBack(g_pKEYQueue, &ano_t[0], 0 );
+                         xQueueSendToBack(g_pKEYQueue, &ano_t[1], 0 );
+                         xQueueSendToBack(g_pKEYQueue, &ano_t[2], 0 );
+                         xQueueSendToBack(g_pKEYQueue, &ano_t[3], 0 );
+                         Key_Shift_Left(10);
+                     }
                      i_count++;
                      ++a;
                  }
 
-                 if(a==0)
+                 if(a==4)
                      {
+                         ano = atoi(ano_t);
+                         meses   = atoi(mes);
+                         dias  = atoi(day);
+                         a = 0;
                          i_count = 0;
                          flag_config = 0;
                          xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
@@ -216,7 +234,6 @@ vInterrupt_Key()
                    sec[i_count-5]= symbol[row][col];
                    i_count++;
                    if(i_count == 7){
-                       secu =atoi(sec);
                        ++a;
                    }
                  }
@@ -226,7 +243,6 @@ vInterrupt_Key()
                   i_count++;
                   if(i_count == 5){
                     Key_Shift_Right(1);
-                    minu =atoi(min);
                     ++a;
                      }
                   }
@@ -236,22 +252,38 @@ vInterrupt_Key()
                      i_count++;
                      if(i_count == 3){
                        Key_Shift_Right(1);
-                       hora =atoi(hor);
                        ++a;
                      }
                  }
 
 
-                  if (i_count == 0)
+                  if (i_count == 0|| a ==0)
                   {
+                       i_count = 0;
+                       show = 0;
                        xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
                        Lcd_Write_String(sHora);
                        Key_Shift_Left(8);
+                       if(secu != 0){
+                           xQueueSendToBack(g_pKEYQueue, &hor[0], 0 );
+                           xQueueSendToBack(g_pKEYQueue, &hor[1], 0 );
+                           Key_Shift_Right(1);
+                           xQueueSendToBack(g_pKEYQueue, &min[0], 0 );
+                           xQueueSendToBack(g_pKEYQueue, &min[1], 0 );
+                           Key_Shift_Right(1);
+                           xQueueSendToBack(g_pKEYQueue, &sec[0], 0 );
+                           xQueueSendToBack(g_pKEYQueue, &sec[1], 0 );
+                           Key_Shift_Left(8);
+                       }
+
                        i_count++;
                        a = 1;
                   }
                   if(a==4)
                       {
+                      secu =atoi(sec);
+                      minu =atoi(min);
+                      hora =atoi(hor);
                       if( hora<24 && hora>0 && minu < 60 && minu>0 && secu<60 && secu>0 ){
                           utempo_inicio = (SysTickValueGet()/ (portTICK_RATE_MS*1000));
                           xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
@@ -272,12 +304,23 @@ vInterrupt_Key()
               }
              case(3): // Min Temp
                {
-                   if (i_count == 0)
+                   if (i_count == 0|| a == 0)
                     {
+                       i_count = 0;
+                       show = 0;
                        xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
                        Lcd_Write_String(sTMin);
                        Key_Shift_Left(5);
+                       if(temp_min != 0){
+                           xQueueSendToBack(g_pKEYQueue, &t_min[0], 0 );
+                           xQueueSendToBack(g_pKEYQueue, &t_min[1], 0 );
+                           xQueueSendToBack(g_pKEYQueue, &t_min[2], 0 );
+                           Key_Shift_Left(3);
+
+                       }
+
                        i_count++;
+                       a++;
                     }
                    else if (i_count < 3)
                         {
@@ -294,24 +337,36 @@ vInterrupt_Key()
                            i_count=0;
                            if(temp_min > temp_max){
                                xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                               bstart = false;
                                temp_min = 0;
                                Lcd_Write_String(sinv);
                            }
                            else {
                                 xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
                                 }
+                           a = 0;
                            flag_config = 0;
                        }
                    break;
                }
              case(4): // Max temp
                {
-                   if (i_count == 0)
+                   if (i_count == 0|| a == 0)
                    {
+                          show = 0;
+                          i_count = 0;
                           xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
                           Lcd_Write_String(sTMax);
                           Key_Shift_Left(5);
+                          if(temp_max != 0){
+                           xQueueSendToBack(g_pKEYQueue, &t_max[0], 0 );
+                           xQueueSendToBack(g_pKEYQueue, &t_max[1], 0 );
+                           xQueueSendToBack(g_pKEYQueue, &t_max[2], 0 );
+                           Key_Shift_Left(3);
+
+                           }
                           i_count++;
+                          a++;
                    }
                    else if (i_count < 3)
                         {
@@ -327,14 +382,16 @@ vInterrupt_Key()
                            t_max[i_count-1]= symbol[row][col];
                            temp_max = atoi(t_max);
                            i_count = 0;
-                           if(temp_max>150){
+                           if(temp_max>150 ||temp_max<temp_min ){
                                xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                               bstart = false;
                                temp_max = 0;
                                Lcd_Write_String(sinv);
                            }
                            else {
                                xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
                            }
+                           a = 0;
                            flag_config = 0;
                        }
                    break;
@@ -342,15 +399,41 @@ vInterrupt_Key()
 
              case(5): //Start
                 {
-                     xSemaphoreGive( g_pSTARTSemaphore );
-                     xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                     //xSemaphoreGive( g_pSTARTSemaphore );
+                     //xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                 if(temp_max>temp_min){
+                     show = 0;
+                     if( bstart == true){
+                        bstart = false;
+                        xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                        Lcd_Write_String(stop);
+                    }
+
+                     else{
+                         bstart = true;
+                         xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                         Lcd_Write_String(start);
+                     }
+                 }
+                     else{
+                         xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                         Lcd_Write_String(sinv);
+                     }
+
+
+
                      break;
                 }
              case(6): //Velocidade
                 {
                      xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
-                     xQueueSendToBack(g_pKEYQueue, &sVel, 0 );
-                     xQueueSendToBack(g_pKEYQueue, &vel, 0 ); //Não sei se essa função vai funcionar, pois talvez seja necessario converter o int de velocidade para uma string
+                     ++show;
+                     if(show > 2){
+                        show = 0;
+                     }
+                     //xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                     //xQueueSendToBack(g_pKEYQueue, &sVel, 0 );
+                     //xQueueSendToBack(g_pKEYQueue, &vel, 0 ); //Não sei se essa função vai funcionar, pois talvez seja necessario converter o int de velocidade para uma string
                      break;
                 }
              }

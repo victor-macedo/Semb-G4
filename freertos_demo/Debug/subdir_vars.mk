@@ -11,42 +11,48 @@ CMD_SRCS += \
 C_SRCS += \
 ../I2C_task.c \
 ../LCD.c \
-../freertos_demo.c \
+../PWM_task.c \
+../att_task.c \
 ../keypad.c \
 ../startup_ccs.c 
 
 C_DEPS += \
 ./I2C_task.d \
 ./LCD.d \
-./freertos_demo.d \
+./PWM_task.d \
+./att_task.d \
 ./keypad.d \
 ./startup_ccs.d 
 
 OBJS += \
 ./I2C_task.obj \
 ./LCD.obj \
-./freertos_demo.obj \
+./PWM_task.obj \
+./att_task.obj \
 ./keypad.obj \
 ./startup_ccs.obj 
 
 OBJS__QUOTED += \
 "I2C_task.obj" \
 "LCD.obj" \
-"freertos_demo.obj" \
+"PWM_task.obj" \
+"att_task.obj" \
 "keypad.obj" \
 "startup_ccs.obj" 
 
 C_DEPS__QUOTED += \
 "I2C_task.d" \
 "LCD.d" \
-"freertos_demo.d" \
+"PWM_task.d" \
+"att_task.d" \
 "keypad.d" \
 "startup_ccs.d" 
 
 C_SRCS__QUOTED += \
 "../I2C_task.c" \
 "../LCD.c" \
-"../freertos_demo.c" \
+"../PWM_task.c" \
+"../att_task.c" \
 "../keypad.c" \
 "../startup_ccs.c" 
 

@@ -21,14 +21,16 @@
 // The stack size for the display task.
 //
 //*****************************************************************************
-#define PWMTASKSTACKSIZE       500        // Stack size in words
+#define PWMTASKSTACKSIZE       900        // Stack size in words
 
 
-uint32_t temp_max,temp_min,temp,vel;
+uint32_t temp_max,temp_min,temp;
+int vel;
 bool bstart,btemp;
 static const char sAMin[] = "Temp min atingida";
 static const char sAMax[] = "Temp max atingida";
 static const char sClear = 'W';
+float uValue_Temp_New;
 
 xQueueHandle g_pTempQueue;
 xQueueHandle g_pKEYQueue;
@@ -43,62 +45,80 @@ xSemaphoreHandle g_pSTARTSemaphore;
 static void
 PWMTask(void *pvParameters)
 {
-    portBASE_TYPE xStatus;
-    if( xSemaphoreTake( g_pSTARTSemaphore, portMAX_DELAY ) == pdTRUE )
-    {
+
+      //portBASE_TYPE xStatus,xStart;
+      //vSemaphoreCreateBinary(g_pSTARTSemaphore);
+      //xStart = xSemaphoreTake(g_pSTARTSemaphore,portMAX_DELAY);
+      //if(xStart ==pdTRUE){
+      //if( xSemaphoreTake( g_pSTARTSemaphore, portMAX_DELAY ) == pdTRUE ){
+     // xStatus = xQueueReceive( g_pTempQueue, &temp, portMAX_DELAY );
+
+   // xSemaphoreTake(g_pSTARTSemaphore,portMAX_DELAY);
         while(1)
         {
-            xStatus = xQueueReceive( g_pTempQueue, &temp, portMAX_DELAY );
-            if( xStatus == pdPASS )
+
+            if( bstart == true )
             {
-                if (temp>=temp_max)
+                if(uValue_Temp_New<temp_min){
+                    btemp = false;
+                    PWMOutputState(PWM0_BASE, PWM_OUT_3_BIT, false);
+                    vel = 0;
+
+                }
+
+
+                if (uValue_Temp_New>=temp_max)
                 {
                     PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT, true);
                 }
-                else{
+                if(uValue_Temp_New<temp_max){
                     PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT, false);
                     }
-                if(temp>temp_min)
+                if(uValue_Temp_New>temp_min)
                 {
                     if(btemp == false)
                     {
                         PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,30000);
                         PWMOutputState(PWM0_BASE, PWM_OUT_3_BIT, true); //inicializacvao do motor para ultrapassar a velocidade minima
-                        //delay
+                        vTaskDelay(2000/ portTICK_RATE_MS);
                         btemp = true;
                     }
-                    if(temp < temp_max)
+                    if(uValue_Temp_New < temp_max)
                         {
-                            vel = (temp-temp_min)/(temp_max-temp_min)*30000;
+                            vel = (uValue_Temp_New-temp_min)/(temp_max-temp_min)*30000;
                             if(vel>(30000*0.2))
                             {
                              PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,vel);
                             }
                             else
                             {
-                                PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,30000*0.2);
+                                vel =30000*0.2;
+                                PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,vel);
                             }
                         }
-                    if(temp >= temp_max)
+                    if(uValue_Temp_New >= temp_max)
                     {
-                        PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,30000);
-                        xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
-                        xQueueSendToBack(g_pKEYQueue, &sAMax, 0 );
+                        btemp = true;
+                        vel = 30000;
+                        PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,vel);
+                        //xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                        //xQueueSendToBack(g_pKEYQueue, &sAMax, 0 );
 
                     }
                 }
-                else
-                {
-                    PWMOutputState(PWM0_BASE, PWM_OUT_3_BIT, true);
-                    btemp = false;
-                    xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
-                    xQueueSendToBack(g_pKEYQueue, &sAMin, 0 );
 
-                }
+
             }
+            else{
+                PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT, false);
+                PWMOutputState(PWM0_BASE, PWM_OUT_3_BIT, false);
+                btemp = false;
+
+            }
+            vTaskDelay(1000/ portTICK_RATE_MS);
         }
     }
-}
+
 
 //*****************************************************************************
 //

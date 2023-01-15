@@ -1,5 +1,6 @@
 #include <I2C_task.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdint.h>
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
@@ -20,19 +21,25 @@
 // The stack size for the ATT toggle task.
 //
 //*****************************************************************************
-#define ATTTASKSTACKSIZE        1000         // Stack size in words
+#define ATTTASKSTACKSIZE        700         // Stack size in words
 
 //*****************************************************************************
 //
 // The queue that holds messages sent to the ATT task.
 //
 //*****************************************************************************
-
-uint32_t temp,flag_config,show,vel;
-static const char sTemp[] = "Temperatura:    C";
-static const char sVel[] = "Velocidade:    %";
-
+float temp,uValue_Temp_New;
+uint32_t flag_config;
+int vel;
+uint8_t show;
+static const char sTemp[] = "Temperatura:";
+static const char ssTemp[] = "C";
+static const char sVel[] = "Velocidade:";
+static const char ssVel[] = "%";
+char temp_st [3];
+char vel_st [3];
 xQueueHandle g_pKEYQueue;
+xQueueHandle g_pTempQueue;
 const char sClear;
 //*****************************************************************************
 //
@@ -46,22 +53,38 @@ AttTask()
 {
     while(1)
     {
+        //temp = xQueueReceive( g_pTempQueue, &uValue_Temp_New, 100 );
     	vTaskDelay(1000 / portTICK_RATE_MS);
-        if (flag_config == 0)
+
+
+        if (show > 0)
         {
-        	if (show == 0)
+        	if (show == 1)
         	{
+        	sprintf(temp_st, "%f", uValue_Temp_New);
 			xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
-			xQueueSendToBack(g_pKEYQueue, &sTemp, 0 );
-			Key_Shift_Left(4);
-			xQueueSendToBack(g_pKEYQueue, &temp, 0 ); //Não sei se vai funcionar por ser um int maa vale a pena tentar
+			Lcd_Write_String(sTemp);
+			xQueueSendToBack(g_pKEYQueue, &temp_st[0], 0 );
+			xQueueSendToBack(g_pKEYQueue, &temp_st[1], 0 );
+			xQueueSendToBack(g_pKEYQueue, &temp_st[2], 0 );
+			Lcd_Write_String(ssTemp);
+			Key_Shift_Left(17);
+
+
+			//xQueueSendToBack(g_pKEYQueue, &temp_st, 0 ); //Não sei se vai funcionar por ser um int maa vale a pena tentar
 		}
-		else
+		 if(show == 2)
 		{
+		    sprintf(vel_st, "%d", (vel*100/30000));
 			xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
-			xQueueSendToBack(g_pKEYQueue, &sVel, 0 );
-			Key_Shift_Left(3);
-			xQueueSendToBack(g_pKEYQueue, &vel, 0 ); //Não sei se vai funcionar por ser um int maa vale a pena tentar
+			Lcd_Write_String(sVel);
+			xQueueSendToBack(g_pKEYQueue, &vel_st[0], 0 );
+			xQueueSendToBack(g_pKEYQueue, &vel_st[1], 0 );
+			xQueueSendToBack(g_pKEYQueue, &vel_st[2], 0 );
+			Lcd_Write_String(ssVel);
+			Key_Shift_Left(16);
+
+			//xQueueSendToBack(g_pKEYQueue, &vel, 0 ); //Não sei se vai funcionar por ser um int maa vale a pena tentar
 		}
         }
     }

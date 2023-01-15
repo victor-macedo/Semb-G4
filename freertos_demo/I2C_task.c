@@ -34,7 +34,7 @@ xQueueHandle g_pTempQueue;
 #define CONFIG_TMP_BITS 0x00
 #define TEMP_REG 0x00
 
-uint32_t uValue_Temp_New,uValue_Temp_Old;
+float uValue_Temp_New,uValue_Temp_Old;
 
 //*****************************************************************************
 //
@@ -53,25 +53,36 @@ I2CSENDCONFIG(){
     I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_SEND_FINISH );
     while(I2CMasterBusy(I2C1_BASE));
 }
-static uint32_t
+static float
 I2CReceive(uint32_t slave_addr)
 {
-    uint32_t temp, temp1, temp2;
+    float temp;
+    uint32_t temp1, temp2;
+    float ms,ml;
+
     I2CMasterSlaveAddrSet(I2C1_BASE, SLAVE_ADDRESS_WRITE, false);
+
     I2CMasterDataPut(I2C1_BASE, TEMP_REG);
-    I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_SEND_START);
+    I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_SINGLE_SEND);
     while(I2CMasterBusy(I2C1_BASE)); // delay de 40 ms
     vTaskDelay(100 / portTICK_RATE_MS);
+
     I2CMasterSlaveAddrSet(I2C1_BASE, SLAVE_ADDRESS_READ, true);
+
+
     I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_RECEIVE_START);
     while(I2CMasterBusy(I2C1_BASE));
-    temp1 = I2CMasterDataGet(I2C1_BASE);
     vTaskDelay(1 / portTICK_RATE_MS);
+    temp1 = I2CMasterDataGet(I2C1_BASE);
+    ms = temp1;
+
     I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_RECEIVE_FINISH);
     while(I2CMasterBusy(I2C1_BASE));
     temp2 = I2CMasterDataGet(I2C1_BASE);
-    temp = (int)((temp1<<1)|(temp2>>8))*128/255;
     vTaskDelay(100 / portTICK_RATE_MS);
+    ml = temp2;
+    temp = ((temp1<<1)|(temp2>>8))*128/255;
+
     return temp;
 }
 
@@ -81,12 +92,12 @@ I2CTask()
     uValue_Temp_Old = 0;
     while(1)
     {
-        vTaskDelay(1000 / portTICK_RATE_MS);
+        vTaskDelay(300 / portTICK_RATE_MS);
         uValue_Temp_New = I2CReceive(SLAVE_ADDRESS_READ);
         while (uValue_Temp_New != uValue_Temp_Old)
         {
             uValue_Temp_Old = uValue_Temp_New;
-            xQueueSendToBack( g_pTempQueue, &uValue_Temp_New, 10000 / portTICK_RATE_MS );
+            //xQueueSendToBack( g_pTempQueue, &uValue_Temp_New, 1000 / portTICK_RATE_MS );
         }
     }
 }

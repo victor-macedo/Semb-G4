@@ -12,7 +12,8 @@ GEN_CMDS__FLAG :=
 ORDERED_OBJS += \
 "./I2C_task.obj" \
 "./LCD.obj" \
-"./freertos_demo.obj" \
+"./PWM_task.obj" \
+"./att_task.obj" \
 "./keypad.obj" \
 "./startup_ccs.obj" \
 "./drivers/buttons.obj" \
@@ -23,6 +24,7 @@ ORDERED_OBJS += \
 "./third_party/FreeRTOS/Source/portable/CCS/ARM_CM4F/port.obj" \
 "./third_party/FreeRTOS/Source/portable/CCS/ARM_CM4F/portasm.obj" \
 "./third_party/FreeRTOS/Source/portable/MemMang/heap_2.obj" \
+"./utils/freertos_demo.obj" \
 "./utils/uartstdio.obj" \
 "./utils/ustdlib.obj" \
 "../freertos_demo_ccs.cmd" \
@@ -180,8 +182,8 @@ freertos_demo.bin: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "I2C_task.obj" "LCD.obj" "freertos_demo.obj" "keypad.obj" "startup_ccs.obj" "drivers\buttons.obj" "drivers\rgb.obj" "third_party\FreeRTOS\Source\list.obj" "third_party\FreeRTOS\Source\queue.obj" "third_party\FreeRTOS\Source\tasks.obj" "third_party\FreeRTOS\Source\portable\CCS\ARM_CM4F\port.obj" "third_party\FreeRTOS\Source\portable\CCS\ARM_CM4F\portasm.obj" "third_party\FreeRTOS\Source\portable\MemMang\heap_2.obj" "utils\uartstdio.obj" "utils\ustdlib.obj" 
-	-$(RM) "I2C_task.d" "LCD.d" "freertos_demo.d" "keypad.d" "startup_ccs.d" "drivers\buttons.d" "drivers\rgb.d" "third_party\FreeRTOS\Source\list.d" "third_party\FreeRTOS\Source\queue.d" "third_party\FreeRTOS\Source\tasks.d" "third_party\FreeRTOS\Source\portable\CCS\ARM_CM4F\port.d" "third_party\FreeRTOS\Source\portable\MemMang\heap_2.d" "utils\uartstdio.d" "utils\ustdlib.d" 
+	-$(RM) "I2C_task.obj" "LCD.obj" "PWM_task.obj" "att_task.obj" "keypad.obj" "startup_ccs.obj" "drivers\buttons.obj" "drivers\rgb.obj" "third_party\FreeRTOS\Source\list.obj" "third_party\FreeRTOS\Source\queue.obj" "third_party\FreeRTOS\Source\tasks.obj" "third_party\FreeRTOS\Source\portable\CCS\ARM_CM4F\port.obj" "third_party\FreeRTOS\Source\portable\CCS\ARM_CM4F\portasm.obj" "third_party\FreeRTOS\Source\portable\MemMang\heap_2.obj" "utils\freertos_demo.obj" "utils\uartstdio.obj" "utils\ustdlib.obj" 
+	-$(RM) "I2C_task.d" "LCD.d" "PWM_task.d" "att_task.d" "keypad.d" "startup_ccs.d" "drivers\buttons.d" "drivers\rgb.d" "third_party\FreeRTOS\Source\list.d" "third_party\FreeRTOS\Source\queue.d" "third_party\FreeRTOS\Source\tasks.d" "third_party\FreeRTOS\Source\portable\CCS\ARM_CM4F\port.d" "third_party\FreeRTOS\Source\portable\MemMang\heap_2.d" "utils\freertos_demo.d" "utils\uartstdio.d" "utils\ustdlib.d" 
 	-$(RM) "third_party\FreeRTOS\Source\portable\CCS\ARM_CM4F\portasm.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
