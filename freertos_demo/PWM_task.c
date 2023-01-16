@@ -55,68 +55,66 @@ PWMTask(void *pvParameters)
             xStatus = xQueueReceive( g_pTempQueue, &temp, portMAX_DELAY );
             if( xStatus == pdPASS )
             {
-                if(temp<temp_min){
-                    btemp = false;
-                    PWMOutputState(PWM0_BASE, PWM_OUT_3_BIT, false);
-                    vel = 0;
-
-                }
-
-
-                if (temp>=temp_max)
+                if (bstart == 1)
                 {
-                    PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT, true);
-                }
-                if(temp<temp_max){
-                    PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT, false);
+                    if(temp<temp_min){
+                        btemp = false;
+                        PWMOutputState(PWM0_BASE, PWM_OUT_3_BIT, false);
+                        vel = 0;
+
                     }
-                if(temp>temp_min)
-                {
-                    if(btemp == false)
+
+                    if (temp>=temp_max)
                     {
-                        PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,30000);
-                        PWMOutputState(PWM0_BASE, PWM_OUT_3_BIT, true); //inicializacvao do motor para ultrapassar a velocidade minima
-                        vTaskDelay(2000/ portTICK_RATE_MS);
-                        btemp = true;
+                        PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT, true);
                     }
-                    if(temp < temp_max)
-                        {
-                            vel = (temp-temp_min)/(temp_max-temp_min)*30000;
-                            if(vel>(30000*0.2))
-                            {
-                             PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,vel);
-                            }
-                            else
-                            {
-                                vel =30000*0.2;
-                                PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,vel);
-                            }
+                    if(temp<temp_max){
+                        PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT, false);
                         }
-                    if(temp >= temp_max)
+                    if(temp>temp_min)
                     {
-                        btemp = true;
-                        vel = 30000;
-                        PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,vel);
-                        //xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
-                        //xQueueSendToBack(g_pKEYQueue, &sAMax, 0 );
+                        if(btemp == false)
+                        {
+                            PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,30000);
+                            PWMOutputState(PWM0_BASE, PWM_OUT_3_BIT, true); //inicializacvao do motor para ultrapassar a velocidade minima
+                            vTaskDelay(2000/ portTICK_RATE_MS);
+                            btemp = true;
+                        }
+                        if(temp < temp_max)
+                            {
+                                vel = (temp-temp_min)/(temp_max-temp_min)*30000;
+                                if(vel>(30000*0.2))
+                                {
+                                 PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,vel);
+                                }
+                                else
+                                {
+                                    vel =30000*0.2;
+                                    PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,vel);
+                                }
+                            }
+                        if(temp >= temp_max)
+                        {
+                            btemp = true;
+                            vel = 30000;
+                            PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,vel);
+                            //xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                            //xQueueSendToBack(g_pKEYQueue, &sAMax, 0 );
 
+                        }
                     }
+                    else
+                    {
+                        PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT, false);
+                        PWMOutputState(PWM0_BASE, PWM_OUT_3_BIT, false);
+                        btemp = false;
+                        vel = 0;
+                     }
                 }
-
-
             }
-            else{
-                PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT, false);
-                PWMOutputState(PWM0_BASE, PWM_OUT_3_BIT, false);
-                btemp = false;
-                vel = 0;
-
-            }
-            vTaskDelay(1000/ portTICK_RATE_MS);
         }
-    }
+      }
 }
-
 //*****************************************************************************
 //
 // Initializes the PWM task.

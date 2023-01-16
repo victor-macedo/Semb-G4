@@ -324,14 +324,11 @@ vInterrupt_Key()
                     }
                    else if (i_count < 3)
                         {
-                           //Precisa adicionar aqui a função pra juntar as teclas em uma string
-                           //Salva o valor ou mostra no display
                            t_min[i_count-1]= symbol[row][col];
                            i_count++;
                         }
                    else
                        {
-                           //temp_min = Converter string em int;
                            t_min[i_count-1]= symbol[row][col];
                            temp_min = atoi(t_min);
                            i_count=0;
