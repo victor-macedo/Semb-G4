@@ -13,6 +13,7 @@ C_SRCS += \
 ../LCD.c \
 ../PWM_task.c \
 ../att_task.c \
+../freertos_demo.c \
 ../keypad.c \
 ../startup_ccs.c 
 
@@ -21,6 +22,7 @@ C_DEPS += \
 ./LCD.d \
 ./PWM_task.d \
 ./att_task.d \
+./freertos_demo.d \
 ./keypad.d \
 ./startup_ccs.d 
 
@@ -29,6 +31,7 @@ OBJS += \
 ./LCD.obj \
 ./PWM_task.obj \
 ./att_task.obj \
+./freertos_demo.obj \
 ./keypad.obj \
 ./startup_ccs.obj 
 
@@ -37,6 +40,7 @@ OBJS__QUOTED += \
 "LCD.obj" \
 "PWM_task.obj" \
 "att_task.obj" \
+"freertos_demo.obj" \
 "keypad.obj" \
 "startup_ccs.obj" 
 
@@ -45,6 +49,7 @@ C_DEPS__QUOTED += \
 "LCD.d" \
 "PWM_task.d" \
 "att_task.d" \
+"freertos_demo.d" \
 "keypad.d" \
 "startup_ccs.d" 
 
@@ -53,6 +58,7 @@ C_SRCS__QUOTED += \
 "../LCD.c" \
 "../PWM_task.c" \
 "../att_task.c" \
+"../freertos_demo.c" \
 "../keypad.c" \
 "../startup_ccs.c" 
 

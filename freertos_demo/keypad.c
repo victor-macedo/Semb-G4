@@ -52,9 +52,10 @@ static const char stop[] = "stop";
 static const char sClear = 'W';
 static const char sLeft = 'Z';
 static const char sRight = 'B';
-uint8_t col, row, flag_config, i_count,dias,meses,a,hora,minu,secu,show;
+uint8_t col, row, flag_config, i_count,a,show;
 int  temp_max, temp_min;
-uint32_t utempo_inicio,vel,ano;
+int utempo_inicio,vel,ano,dias,meses,hora,minu,secu;
+int tempo_inicio,temp_final,tempo;
 char t_min[3];
 char t_max[3];
 char day[2];
@@ -285,8 +286,10 @@ vInterrupt_Key()
                       minu =atoi(min);
                       hora =atoi(hor);
                       if( hora<24 && hora>=0 && minu < 60 && minu>=0 && secu<60 && secu>=0 ){
-                          utempo_inicio = (SysTickValueGet()/ (portTICK_RATE_MS*1000));
+
                           xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                          tempo_inicio=0;// resetar os segundos
+                          temp_final,tempo;
                       }
                       else {
                           xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
@@ -425,7 +428,7 @@ vInterrupt_Key()
                 {
                      xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
                      ++show;
-                     if(show > 2){
+                     if(show > 3){
                         show = 0;
                      }
                      //xQueueSendToBack(g_pKEYQueue, &sClear, 0 );

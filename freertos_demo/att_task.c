@@ -36,11 +36,20 @@ static const char sTemp[] = "Temperatura:";
 static const char ssTemp[] = "C";
 static const char sVel[] = "Velocidade:";
 static const char ssVel[] = "%";
+static const char barra[] = "-";
 char temp_st [3];
 char vel_st [3];
 xQueueHandle g_pKEYQueue;
 xQueueHandle g_pTempQueue;
 const char sClear;
+int tempo_inicio,temp_final,tempo;
+char day[2];
+char mes[2];
+char hor[2];
+char min[2];
+char sec[2];
+char ano_t[4];
+int dias,meses,hora,minu,secu,ano;
 //*****************************************************************************
 //
 // Essa tarefa atualiza o LCD com os valores do temperatura ou
@@ -48,11 +57,16 @@ const char sClear;
 //
 //*****************************************************************************
 
+
+
 static void
 AttTask()
 {
+    int meses_bisseistoss[13] = {366,31,29,31,30,31,30,31,31,30,31,30,31};
+    int meses_normaiss[13]= {365,31,28,31,30,31,30,31,31,30,31,30,31};
     while(1)
     {
+        temp_final=temp_final+1;
         //temp = xQueueReceive( g_pTempQueue, &uValue_Temp_New, 100 );
     	vTaskDelay(1000 / portTICK_RATE_MS);
 
@@ -80,6 +94,91 @@ AttTask()
                 xQueueSendToBack(g_pKEYQueue, &vel_st[2], 0 );
                 Lcd_Write_String(ssVel);
                 Key_Shift_Left(16);
+             }
+
+
+
+             if(show == 3){
+                 tempo = temp_final-tempo_inicio;
+                 tempo_inicio = temp_final;
+                 secu = secu + (tempo % 60);
+
+                 if (secu > 59){
+                     secu = 0;
+                     ++minu;
+
+                 }
+
+                 minu = minu + ((tempo/60)%60);
+
+                 if(minu > 59){
+                     minu = 0;
+                     ++hora;
+
+                 }
+
+
+                 hora = hora + ((tempo/60*60)%24);
+
+                 if (hora >23){
+                     hora = 0;
+                     ++dias;
+                 }
+
+                 if ((ano % 4 == 0)  && (ano % 100 != 0)){
+                     if(dias > meses_bisseistoss[meses] ){
+                         dias= 1 + dias - meses_bisseistoss[meses];
+                         ++meses;
+                         if(meses>12){
+                             meses = 1;
+                             ++ano;
+                         }
+                         }
+                     }
+                    else{
+                        if(dias > meses_normaiss[meses] ){
+                          dias= 1 + dias - meses_normaiss[meses];
+                          ++meses;
+                          if(meses>12){
+                           meses = 1;
+                          ++ano;
+                          }
+                        }
+                    }
+
+                 sprintf(sec, "%d", secu);
+                 sprintf(min, "%d", minu);
+                 sprintf(hor, "%d", hora);
+
+                 sprintf(day, "%d", dias);
+                 sprintf(mes, "%d", meses);
+                 sprintf(ano_t, "%d", ano);
+
+
+
+
+                 xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                 xQueueSendToBack(g_pKEYQueue, &hor[0], 0 );
+                 xQueueSendToBack(g_pKEYQueue, &hor[1], 0 );
+                 xQueueSendToBack(g_pKEYQueue, &barra[0], 0 );
+                 xQueueSendToBack(g_pKEYQueue, &min[0], 0 );
+                 xQueueSendToBack(g_pKEYQueue, &min[1], 0 );
+                 xQueueSendToBack(g_pKEYQueue, &barra[0], 0 );
+                 xQueueSendToBack(g_pKEYQueue, &sec[0], 0 );
+                 xQueueSendToBack(g_pKEYQueue, &sec[1], 0 );
+                 Key_Shift_Right(1);
+                 xQueueSendToBack(g_pKEYQueue, &day[0], 0 );
+                 xQueueSendToBack(g_pKEYQueue, &day[1], 0 );
+                 xQueueSendToBack(g_pKEYQueue, &barra[0], 0 );
+                 xQueueSendToBack(g_pKEYQueue, &mes[0], 0 );
+                 xQueueSendToBack(g_pKEYQueue, &mes[1], 0 );
+                 xQueueSendToBack(g_pKEYQueue, &barra[0], 0 );
+                 xQueueSendToBack(g_pKEYQueue, & ano_t[0], 0 );
+                 xQueueSendToBack(g_pKEYQueue, & ano_t[1], 0 );
+                 xQueueSendToBack(g_pKEYQueue, & ano_t[2], 0 );
+                 xQueueSendToBack(g_pKEYQueue, & ano_t[3], 0 );
+                 Key_Shift_Left(20);
+
              }
         }
     }

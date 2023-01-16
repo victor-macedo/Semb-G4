@@ -33,7 +33,6 @@ xQueueHandle g_pTempQueue;
 #define CONFIG_TMP 0x01
 #define CONFIG_TMP_BITS 0x00
 #define TEMP_REG 0x00
-
 int uValue_Temp_New,uValue_Temp_Old;
 
 //*****************************************************************************
