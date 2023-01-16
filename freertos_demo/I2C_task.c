@@ -97,7 +97,7 @@ I2CTask()
         while (uValue_Temp_New != uValue_Temp_Old)
         {
             uValue_Temp_Old = uValue_Temp_New;
-            //xQueueSendToBack( g_pTempQueue, &uValue_Temp_New, 1000 / portTICK_RATE_MS );
+            xQueueSendToBack( g_pTempQueue, &uValue_Temp_New, 1000 / portTICK_RATE_MS );
         }
     }
 }

@@ -55,8 +55,8 @@ main(void)
     //
     // Cria as Queue do sistema
     //
-    g_pKEYQueue = xQueueCreate(32, sizeof(char));
-    g_pTempQueue = xQueueCreate(32, sizeof(uint32_t));
+    g_pKEYQueue = xQueueCreate(48, sizeof(char));
+    g_pTempQueue = xQueueCreate(32, sizeof(float));
     //
     // Create the I2C task.
     //

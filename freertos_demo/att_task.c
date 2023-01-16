@@ -69,23 +69,18 @@ AttTask()
 			xQueueSendToBack(g_pKEYQueue, &temp_st[2], 0 );
 			Lcd_Write_String(ssTemp);
 			Key_Shift_Left(17);
-
-
-			//xQueueSendToBack(g_pKEYQueue, &temp_st, 0 ); //Não sei se vai funcionar por ser um int maa vale a pena tentar
 		}
-		 if(show == 2)
-		{
-		    sprintf(vel_st, "%d", (vel*100/30000));
-			xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
-			Lcd_Write_String(sVel);
-			xQueueSendToBack(g_pKEYQueue, &vel_st[0], 0 );
-			xQueueSendToBack(g_pKEYQueue, &vel_st[1], 0 );
-			xQueueSendToBack(g_pKEYQueue, &vel_st[2], 0 );
-			Lcd_Write_String(ssVel);
-			Key_Shift_Left(16);
-
-			//xQueueSendToBack(g_pKEYQueue, &vel, 0 ); //Não sei se vai funcionar por ser um int maa vale a pena tentar
-		}
+             if(show == 2)
+             {
+                sprintf(vel_st, "%d", (vel*100/30000));
+                xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                Lcd_Write_String(sVel);
+                xQueueSendToBack(g_pKEYQueue, &vel_st[0], 0 );
+                xQueueSendToBack(g_pKEYQueue, &vel_st[1], 0 );
+                xQueueSendToBack(g_pKEYQueue, &vel_st[2], 0 );
+                Lcd_Write_String(ssVel);
+                Key_Shift_Left(16);
+             }
         }
     }
 }

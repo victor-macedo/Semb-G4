@@ -284,7 +284,7 @@ vInterrupt_Key()
                       secu =atoi(sec);
                       minu =atoi(min);
                       hora =atoi(hor);
-                      if( hora<24 && hora>0 && minu < 60 && minu>0 && secu<60 && secu>0 ){
+                      if( hora<24 && hora>=0 && minu < 60 && minu>=0 && secu<60 && secu>=0 ){
                           utempo_inicio = (SysTickValueGet()/ (portTICK_RATE_MS*1000));
                           xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
                       }
@@ -399,7 +399,7 @@ vInterrupt_Key()
 
              case(5): //Start
                 {
-                     //xSemaphoreGive( g_pSTARTSemaphore );
+                     xSemaphoreGive( g_pSTARTSemaphore );
                      //xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
                  if(temp_max>temp_min){
                      show = 0;
@@ -415,9 +415,9 @@ vInterrupt_Key()
                          Lcd_Write_String(start);
                      }
                  }
-                     else{
-                         xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
-                         Lcd_Write_String(sinv);
+                 else{
+                     xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                     Lcd_Write_String(sinv);
                      }
 
 
@@ -464,7 +464,6 @@ KEYTask()
     flag_config = 0;
     bstart = 0;
     SysTickEnable();
-    g_pSTARTSemaphore= xSemaphoreCreateBinary();
     while(test ==false)
     {
        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, GPIO_PIN_2);

@@ -30,7 +30,6 @@ bool bstart,btemp;
 static const char sAMin[] = "Temp min atingida";
 static const char sAMax[] = "Temp max atingida";
 static const char sClear = 'W';
-float uValue_Temp_New;
 
 xQueueHandle g_pTempQueue;
 xQueueHandle g_pKEYQueue;
@@ -46,20 +45,17 @@ static void
 PWMTask(void *pvParameters)
 {
 
-      //portBASE_TYPE xStatus,xStart;
-      //vSemaphoreCreateBinary(g_pSTARTSemaphore);
-      //xStart = xSemaphoreTake(g_pSTARTSemaphore,portMAX_DELAY);
-      //if(xStart ==pdTRUE){
-      //if( xSemaphoreTake( g_pSTARTSemaphore, portMAX_DELAY ) == pdTRUE ){
-     // xStatus = xQueueReceive( g_pTempQueue, &temp, portMAX_DELAY );
-
-   // xSemaphoreTake(g_pSTARTSemaphore,portMAX_DELAY);
+      portBASE_TYPE xStatus,xStart;
+      vSemaphoreCreateBinary(g_pSTARTSemaphore);
+      xSemaphoreTake( g_pSTARTSemaphore, 0 );
+      xStart = xSemaphoreTake(g_pSTARTSemaphore,portMAX_DELAY);
+      if(xStart == pdTRUE){
         while(1)
         {
-
-            if( bstart == true )
+            xStatus = xQueueReceive( g_pTempQueue, &temp, portMAX_DELAY );
+            if( xStatus == pdPASS )
             {
-                if(uValue_Temp_New<temp_min){
+                if(temp<temp_min){
                     btemp = false;
                     PWMOutputState(PWM0_BASE, PWM_OUT_3_BIT, false);
                     vel = 0;
@@ -67,14 +63,14 @@ PWMTask(void *pvParameters)
                 }
 
 
-                if (uValue_Temp_New>=temp_max)
+                if (temp>=temp_max)
                 {
                     PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT, true);
                 }
-                if(uValue_Temp_New<temp_max){
+                if(temp<temp_max){
                     PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT, false);
                     }
-                if(uValue_Temp_New>temp_min)
+                if(temp>temp_min)
                 {
                     if(btemp == false)
                     {
@@ -83,9 +79,9 @@ PWMTask(void *pvParameters)
                         vTaskDelay(2000/ portTICK_RATE_MS);
                         btemp = true;
                     }
-                    if(uValue_Temp_New < temp_max)
+                    if(temp < temp_max)
                         {
-                            vel = (uValue_Temp_New-temp_min)/(temp_max-temp_min)*30000;
+                            vel = (temp-temp_min)/(temp_max-temp_min)*30000;
                             if(vel>(30000*0.2))
                             {
                              PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,vel);
@@ -96,7 +92,7 @@ PWMTask(void *pvParameters)
                                 PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,vel);
                             }
                         }
-                    if(uValue_Temp_New >= temp_max)
+                    if(temp >= temp_max)
                     {
                         btemp = true;
                         vel = 30000;
@@ -119,7 +115,7 @@ PWMTask(void *pvParameters)
             vTaskDelay(1000/ portTICK_RATE_MS);
         }
     }
-
+}
 
 //*****************************************************************************
 //
