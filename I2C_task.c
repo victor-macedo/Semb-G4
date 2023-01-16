@@ -19,7 +19,7 @@
 // The stack size for the I2C toggle task.
 //
 //*****************************************************************************
-#define I2CTASKSTACKSIZE        1400         // Stack size in words
+#define I2CTASKSTACKSIZE        1000         // Stack size in words
 
 //*****************************************************************************
 //
@@ -33,8 +33,7 @@ xQueueHandle g_pTempQueue;
 #define CONFIG_TMP 0x01
 #define CONFIG_TMP_BITS 0x00
 #define TEMP_REG 0x00
-
-float uValue_Temp_New,uValue_Temp_Old;
+int uValue_Temp_New,uValue_Temp_Old;
 
 //*****************************************************************************
 //
@@ -53,7 +52,7 @@ I2CSENDCONFIG(){
     I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_SEND_FINISH );
     while(I2CMasterBusy(I2C1_BASE));
 }
-static float
+static int
 I2CReceive(uint32_t slave_addr)
 {
     float temp;
@@ -92,12 +91,12 @@ I2CTask()
     uValue_Temp_Old = 0;
     while(1)
     {
-        vTaskDelay(1000 / portTICK_RATE_MS);
+        vTaskDelay(300 / portTICK_RATE_MS);
         uValue_Temp_New = I2CReceive(SLAVE_ADDRESS_READ);
         while (uValue_Temp_New != uValue_Temp_Old)
         {
             uValue_Temp_Old = uValue_Temp_New;
-            xQueueSendToBack( g_pTempQueue, &uValue_Temp_New, 10000 / portTICK_RATE_MS );
+            xQueueSendToBack( g_pTempQueue, &uValue_Temp_New, 1000 / portTICK_RATE_MS );
         }
     }
 }
