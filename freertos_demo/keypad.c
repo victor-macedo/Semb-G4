@@ -55,6 +55,7 @@ static const char sRight = 'B';
 uint8_t col, row, flag_config, i_count,a,show;
 int  temp_max, temp_min;
 int utempo_inicio,vel,ano,dias,meses,hora,minu,secu;
+int tempo_inicio,temp_final,tempo;
 char t_min[3];
 char t_max[3];
 char day[2];
@@ -287,6 +288,8 @@ vInterrupt_Key()
                       if( hora<24 && hora>=0 && minu < 60 && minu>=0 && secu<60 && secu>=0 ){
 
                           xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                          tempo_inicio=0;// resetar os segundos
+                          temp_final,tempo;
                       }
                       else {
                           xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
