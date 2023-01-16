@@ -34,7 +34,7 @@ xQueueHandle g_pTempQueue;
 #define CONFIG_TMP_BITS 0x00
 #define TEMP_REG 0x00
 
-float uValue_Temp_New,uValue_Temp_Old;
+int uValue_Temp_New,uValue_Temp_Old;
 
 //*****************************************************************************
 //
@@ -53,7 +53,7 @@ I2CSENDCONFIG(){
     I2CMasterControl(I2C1_BASE, I2C_MASTER_CMD_BURST_SEND_FINISH );
     while(I2CMasterBusy(I2C1_BASE));
 }
-static float
+static int
 I2CReceive(uint32_t slave_addr)
 {
     float temp;

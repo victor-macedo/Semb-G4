@@ -52,12 +52,13 @@ PWMTask(void *pvParameters)
       if(xStart == pdTRUE){
         while(1)
         {
-            xStatus = xQueueReceive( g_pTempQueue, &temp, portMAX_DELAY );
+            xStatus = xQueueReceive( g_pTempQueue, &temp, 1000 );
             if( xStatus == pdPASS )
             {
-                if (bstart == 1)
-                {
+                if(bstart == true){
+
                     if(temp<temp_min){
+
                         btemp = false;
                         PWMOutputState(PWM0_BASE, PWM_OUT_3_BIT, false);
                         vel = 0;
@@ -66,6 +67,12 @@ PWMTask(void *pvParameters)
 
                     if (temp>=temp_max)
                     {
+                        btemp = true;
+                        vel = 30000;
+                        PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,vel);
+                       //xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                       //xQueueSendToBack(g_pKEYQueue, &sAMax, 0 );
+
                         PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT, true);
                     }
                     if(temp<temp_max){
@@ -82,7 +89,7 @@ PWMTask(void *pvParameters)
                         }
                         if(temp < temp_max)
                             {
-                                vel = (temp-temp_min)/(temp_max-temp_min)*30000;
+                                vel = (temp-temp_min)*30000/(temp_max-temp_min);
                                 if(vel>(30000*0.2))
                                 {
                                  PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,vel);
@@ -103,14 +110,20 @@ PWMTask(void *pvParameters)
 
                         }
                     }
-                    else
-                    {
-                        PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT, false);
-                        PWMOutputState(PWM0_BASE, PWM_OUT_3_BIT, false);
-                        btemp = false;
-                        vel = 0;
-                     }
+
                 }
+                    else
+                                  {
+                                    PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT, false);
+                                    PWMOutputState(PWM0_BASE, PWM_OUT_3_BIT, false);
+                                    btemp = false;
+                                    vel = 0;
+                                  }
+
+
+
+                vTaskDelay(1000 / portTICK_RATE_MS);
+
             }
         }
       }

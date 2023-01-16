@@ -28,7 +28,7 @@
 // The queue that holds messages sent to the ATT task.
 //
 //*****************************************************************************
-float temp,uValue_Temp_New;
+int temp,uValue_Temp_New;
 uint32_t flag_config;
 int vel;
 uint8_t show;
@@ -61,7 +61,7 @@ AttTask()
         {
         	if (show == 1)
         	{
-        	sprintf(temp_st, "%f", uValue_Temp_New);
+        	sprintf(temp_st, "%d", uValue_Temp_New);
 			xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
 			Lcd_Write_String(sTemp);
 			xQueueSendToBack(g_pKEYQueue, &temp_st[0], 0 );

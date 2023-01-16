@@ -53,7 +53,7 @@ static const char sClear = 'W';
 static const char sLeft = 'Z';
 static const char sRight = 'B';
 uint8_t col, row, flag_config, i_count,dias,meses,a,hora,minu,secu,show;
-uint16_t  temp_max, temp_min;
+int  temp_max, temp_min;
 uint32_t utempo_inicio,vel,ano;
 char t_min[3];
 char t_max[3];
