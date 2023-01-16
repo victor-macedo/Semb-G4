@@ -104,7 +104,7 @@ AttTask()
                  secu = secu + (tempo % 60);
 
                  if (secu > 59){
-                     secu = 0;
+                     secu = secu-59;
                      ++minu;
 
                  }
@@ -112,7 +112,7 @@ AttTask()
                  minu = minu + ((tempo/60)%60);
 
                  if(minu > 59){
-                     minu = 0;
+                     minu = minu-59;
                      ++hora;
 
                  }
@@ -121,7 +121,7 @@ AttTask()
                  hora = hora + ((tempo/60*60)%24);
 
                  if (hora >23){
-                     hora = 0;
+                     hora = hora-23;
                      ++dias;
                  }
 

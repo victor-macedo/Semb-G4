@@ -53,8 +53,8 @@ PWMTask(void *pvParameters)
         while(1)
         {
             xStatus = xQueueReceive( g_pTempQueue, &temp, 1000 );
-           // if( xStatus == pdPASS )
-            //{
+            if( xStatus == pdPASS )
+            {
                 if(bstart == true){
 
                     if(temp<temp_min){
@@ -72,7 +72,6 @@ PWMTask(void *pvParameters)
                         PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,vel);
                        //xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
                        //xQueueSendToBack(g_pKEYQueue, &sAMax, 0 );
-                        PWMOutputState(PWM0_BASE, PWM_OUT_3_BIT, true);
 
                         PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT, true);
                     }
@@ -101,6 +100,15 @@ PWMTask(void *pvParameters)
                                     PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,vel);
                                 }
                             }
+                        if(temp >= temp_max)
+                        {
+                            btemp = true;
+                            vel = 30000;
+                            PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3,vel);
+                            //xQueueSendToBack(g_pKEYQueue, &sClear, 0 );
+                            //xQueueSendToBack(g_pKEYQueue, &sAMax, 0 );
+
+                        }
                     }
 
                 }
@@ -117,10 +125,7 @@ PWMTask(void *pvParameters)
                 vTaskDelay(1000 / portTICK_RATE_MS);
 
             }
-
-
-
-
+        }
       }
 }
 //*****************************************************************************
